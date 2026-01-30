@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/item_state_list_animator"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="1dp"
+    app:rippleColor="?attr/colorPrimaryContainer"
+    style="@style/Widget.Material3.CardView.Filled">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Device icon -->
+        <ImageView
+            android:id="@+id/deviceIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/cd_device_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorPrimary"
+            tools:src="@drawable/ic_smartphone" />
+
+        <!-- Status indicator -->
+        <ImageView
+            android:id="@+id/statusIndicator"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:contentDescription="@string/cd_device_status"
+            android:src="@drawable/ic_status_dot"
+            app:layout_constraintBottom_toBottomOf="@id/deviceIcon"
+            app:layout_constraintEnd_toEndOf="@id/deviceIcon"
+            tools:tint="@color/device_online" />
+
+        <!-- Device name -->
+        <TextView
+            android:id="@+id/deviceName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintEnd_toStartOf="@id/thisDeviceBadge"
+            app:layout_constraintStart_toEndOf="@id/deviceIcon"
+            app:layout_constraintTop_toTopOf="@id/deviceIcon"
+            tools:text="iPhone 14 Pro" />
+
+        <!-- This device badge -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/thisDeviceBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/this_device"
+            android:textSize="10sp"
+            android:visibility="gone"
+            app:chipMinHeight="24dp"
+            app:chipMinTouchTargetSize="0dp"
+            app:chipStrokeWidth="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/deviceName"
+            tools:visibility="visible" />
+
+        <!-- IP Address -->
+        <TextView
+            android:id="@+id/deviceIp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="monospace"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            app:layout_constraintBottom_toBottomOf="@id/deviceIcon"
+            app:layout_constraintStart_toEndOf="@id/deviceIcon"
+            app:layout_constraintTop_toBottomOf="@id/deviceName"
+            tools:text="192.168.1.100" />
+
+        <!-- Latency -->
+        <TextView
+            android:id="@+id/deviceLatency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorTertiary"
+            android:visibility="gone"
+            app:layout_constraintBaseline_toBaselineOf="@id/deviceIp"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="5ms"
+            tools:visibility="visible" />
+
+        <!-- MAC Address -->
+        <TextView
+            android:id="@+id/deviceMac"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="monospace"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/deviceIcon"
+            app:layout_constraintTop_toBottomOf="@id/deviceIp"
+            tools:text="AA:BB:CC:DD:EE:FF" />
+
+        <!-- Vendor -->
+        <TextView
+            android:id="@+id/deviceVendor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorPrimary"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/deviceIcon"
+            app:layout_constraintTop_toBottomOf="@id/deviceMac"
+            tools:text="Apple Inc."
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

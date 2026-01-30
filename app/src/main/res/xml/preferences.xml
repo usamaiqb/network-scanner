@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Appearance Category -->
+    <PreferenceCategory
+        android:key="category_appearance"
+        android:title="@string/pref_category_appearance"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:key="theme_mode"
+            android:title="@string/pref_theme_title"
+            android:summary="%s"
+            android:icon="@drawable/ic_brightness"
+            android:entries="@array/theme_entries"
+            android:entryValues="@array/theme_values"
+            android:defaultValue="-1"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:key="dynamic_colors"
+            android:title="@string/pref_dynamic_colors_title"
+            android:summary="@string/pref_dynamic_colors_summary"
+            android:icon="@drawable/ic_palette"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Scanning Category -->
+    <PreferenceCategory
+        android:key="category_scanning"
+        android:title="@string/pref_category_scanning"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+            android:key="auto_scan_on_start"
+            android:title="@string/pref_auto_scan_title"
+            android:summary="@string/pref_auto_scan_summary"
+            android:icon="@drawable/ic_radar"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="scan_timeout"
+            android:title="@string/pref_scan_timeout_title"
+            android:summary="%s"
+            android:icon="@drawable/ic_timer"
+            android:entries="@array/timeout_entries"
+            android:entryValues="@array/timeout_values"
+            android:defaultValue="5000"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Data Category -->
+    <PreferenceCategory
+        android:key="category_data"
+        android:title="@string/pref_category_data"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="clear_cache"
+            android:title="@string/pref_clear_cache_title"
+            android:summary="@string/pref_clear_cache_summary"
+            android:icon="@drawable/ic_delete"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="clear_device_history"
+            android:title="@string/pref_clear_history_title"
+            android:summary="@string/pref_clear_history_summary"
+            android:icon="@drawable/ic_history"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- About Category -->
+    <PreferenceCategory
+        android:key="category_about"
+        android:title="@string/pref_category_about"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="app_version"
+            android:title="@string/pref_version_title"
+            android:icon="@drawable/ic_info"
+            android:selectable="false"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="about"
+            android:title="@string/pref_about_title"
+            android:summary="@string/pref_about_summary"
+            android:icon="@drawable/ic_about"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="privacy_policy"
+            android:title="@string/pref_privacy_title"
+            android:summary="@string/pref_privacy_summary"
+            android:icon="@drawable/ic_privacy"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
