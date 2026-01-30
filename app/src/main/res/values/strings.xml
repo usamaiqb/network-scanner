@@ -43,11 +43,13 @@
     <string name="error_no_network">No network connection</string>
 
     <!-- Permissions -->
-    <string name="permission_location_title">Location Permission Required</string>
+    <string name="permission_location_title">Improve Scanning</string>
     <string name="permission_location_message">Location permission is needed to access WiFi information for network scanning.</string>
+    <string name="permission_optional_message">Granting location permission can help discover more devices and show accurate network information. This is optional - the app will work without it.</string>
     <string name="permission_nearby_title">Nearby Devices Permission</string>
     <string name="permission_nearby_message">This permission allows the app to discover nearby devices on your network.</string>
     <string name="grant_permission">Grant Permission</string>
+    <string name="skip">Skip</string>
 
     <!-- Theme -->
     <string name="theme_light">Light</string>

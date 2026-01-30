@@ -45,11 +45,33 @@ object NetworkUtils {
         @Suppress("DEPRECATION")
         val wifiInfo = wifiManager.connectionInfo ?: return null
         @Suppress("DEPRECATION")
-        val dhcpInfo = wifiManager.dhcpInfo ?: return null
+        val dhcpInfo = wifiManager.dhcpInfo
 
-        val ipAddress = intToIpAddress(dhcpInfo.ipAddress)
-        val subnetMask = intToIpAddress(dhcpInfo.netmask)
-        val gateway = intToIpAddress(dhcpInfo.gateway)
+        // Get IP address from DHCP info, fallback to NetworkInterface if 0 or null
+        var ipAddress = if (dhcpInfo != null && dhcpInfo.ipAddress != 0) {
+            intToIpAddress(dhcpInfo.ipAddress)
+        } else {
+            getLocalIpAddress() ?: return null
+        }
+
+        // Validate IP address is not 0.0.0.0
+        if (ipAddress == "0.0.0.0") {
+            ipAddress = getLocalIpAddress() ?: return null
+        }
+
+        val subnetMask = if (dhcpInfo != null && dhcpInfo.netmask != 0) {
+            intToIpAddress(dhcpInfo.netmask)
+        } else {
+            "255.255.255.0" // Default to /24
+        }
+
+        val gateway = if (dhcpInfo != null && dhcpInfo.gateway != 0) {
+            intToIpAddress(dhcpInfo.gateway)
+        } else {
+            // Attempt to derive gateway from IP (common pattern: x.x.x.1)
+            val parts = ipAddress.split(".")
+            if (parts.size == 4) "${parts[0]}.${parts[1]}.${parts[2]}.1" else null
+        }
 
         val networkPrefix = calculateNetworkPrefix(subnetMask)
 
@@ -184,13 +206,17 @@ object NetworkUtils {
     }
 
     /**
-     * Check if an IP address is reachable.
+     * Check if an IP address is reachable using system ping.
+     * This is the most reliable method on Android without root.
      */
-    suspend fun isReachable(ipAddress: String, timeoutMs: Int = 100): Pair<Boolean, Int?> {
+    suspend fun isReachable(ipAddress: String, timeoutMs: Int = 1000): Pair<Boolean, Int?> {
+        val startTime = System.currentTimeMillis()
+        val timeoutSec = maxOf(1, timeoutMs / 1000)
+
         return try {
-            val startTime = System.currentTimeMillis()
-            val address = InetAddress.getByName(ipAddress)
-            val reachable = address.isReachable(timeoutMs)
+            val process = Runtime.getRuntime().exec("/system/bin/ping -c 1 -W $timeoutSec $ipAddress")
+            val reachable = process.waitFor() == 0
+            process.destroy()
             val latency = if (reachable) (System.currentTimeMillis() - startTime).toInt() else null
             Pair(reachable, latency)
         } catch (e: Exception) {

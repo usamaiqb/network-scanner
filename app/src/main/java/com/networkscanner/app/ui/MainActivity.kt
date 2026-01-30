@@ -2,7 +2,6 @@ package com.networkscanner.app.ui
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -10,7 +9,6 @@ import android.view.animation.AnimationUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +28,12 @@ class MainActivity : AppCompatActivity() {
     // Track if we've performed at least one scan
     private var hasScannedOnce = false
 
-    private val requiredPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    companion object {
+        private const val PREFS_NAME = "network_scanner_prefs"
+        private const val KEY_PERMISSIONS_REQUESTED = "permissions_requested"
+    }
+
+    private val optionalPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.NEARBY_WIFI_DEVICES
@@ -41,13 +44,9 @@ class MainActivity : AppCompatActivity() {
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val allGranted = permissions.all { it.value }
-        if (allGranted) {
-            startScan()
-        } else {
-            showPermissionDeniedMessage()
-        }
+    ) { _ ->
+        // Permissions are optional - mark as requested and continue normally
+        markPermissionsRequested()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,8 +67,13 @@ class MainActivity : AppCompatActivity() {
         setupClickListeners()
         observeViewModel()
 
+        // Request permissions on first launch (optional - won't block functionality)
+        if (!hasRequestedPermissions()) {
+            requestOptionalPermissions()
+        }
+
         // Show initial state or start auto-scan
-        if (hasPermissions() && isAutoScanEnabled()) {
+        if (isAutoScanEnabled()) {
             viewModel.startScan()
         } else {
             showInitialState()
@@ -328,46 +332,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestScan() {
-        if (hasPermissions()) {
-            startScan()
-        } else {
-            requestPermissions()
-        }
+        // Start scan directly - permissions are optional
+        startScan()
     }
 
-    private fun hasPermissions(): Boolean {
-        return requiredPermissions.all {
-            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-        }
+    private fun hasRequestedPermissions(): Boolean {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        return prefs.getBoolean(KEY_PERMISSIONS_REQUESTED, false)
     }
 
-    private fun requestPermissions() {
-        val shouldShowRationale = requiredPermissions.any {
-            shouldShowRequestPermissionRationale(it)
-        }
-
-        if (shouldShowRationale) {
-            MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.permission_location_title)
-                .setMessage(R.string.permission_location_message)
-                .setPositiveButton(R.string.grant_permission) { _, _ ->
-                    permissionLauncher.launch(requiredPermissions)
-                }
-                .setNegativeButton(android.R.string.cancel, null)
-                .show()
-        } else {
-            permissionLauncher.launch(requiredPermissions)
-        }
+    private fun markPermissionsRequested() {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        prefs.edit().putBoolean(KEY_PERMISSIONS_REQUESTED, true).apply()
     }
 
-    private fun showPermissionDeniedMessage() {
-        Snackbar.make(
-            binding.root,
-            R.string.error_permission_denied,
-            Snackbar.LENGTH_LONG
-        ).setAction(R.string.grant_permission) {
-            requestPermissions()
-        }.show()
+    private fun requestOptionalPermissions() {
+        // Show rationale dialog explaining why permissions help, but don't block if denied
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.permission_location_title)
+            .setMessage(R.string.permission_optional_message)
+            .setPositiveButton(R.string.grant_permission) { _, _ ->
+                permissionLauncher.launch(optionalPermissions)
+            }
+            .setNegativeButton(R.string.skip) { _, _ ->
+                markPermissionsRequested()
+            }
+            .setCancelable(false)
+            .show()
     }
 
     private fun startScan() {

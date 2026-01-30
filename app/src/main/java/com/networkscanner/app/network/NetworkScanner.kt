@@ -28,10 +28,10 @@ import java.util.concurrent.atomic.AtomicInteger
 class NetworkScanner(private val context: Context) {
 
     companion object {
-        private const val PING_TIMEOUT_MS = 100
-        private const val PING_THREADS = 50
-        private const val MDNS_TIMEOUT_MS = 3000L
-        private const val SSDP_TIMEOUT_MS = 2000L
+        private const val PING_TIMEOUT_MS = 1000  // 1 second timeout for ping
+        private const val PING_THREADS = 50       // High parallelism for faster scanning
+        private const val MDNS_TIMEOUT_MS = 2000L // Reduced for speed
+        private const val SSDP_TIMEOUT_MS = 1500L // Reduced for speed
         private const val SSDP_MULTICAST_ADDRESS = "239.255.255.250"
         private const val SSDP_PORT = 1900
 
@@ -92,6 +92,10 @@ class NetworkScanner(private val context: Context) {
         try {
             // Acquire multicast lock for mDNS
             acquireMulticastLock()
+
+            // Phase 0: Ping gateway to ensure network connectivity and populate ARP cache
+            updateProgress(ScanPhase.READING_ARP_CACHE, 0.05f, "Checking network connectivity...")
+            pingGateway(networkInfo)
 
             // Phase 1: Read ARP cache
             updateProgress(ScanPhase.READING_ARP_CACHE, 0.1f, "Reading ARP cache...")
@@ -582,6 +586,41 @@ class NetworkScanner(private val context: Context) {
         updateDeviceCount()
     }
 
+    /**
+     * Ping the gateway to verify connectivity and add it as a device.
+     */
+    private suspend fun pingGateway(networkInfo: NetworkInfo) = withContext(Dispatchers.IO) {
+        val gateway = networkInfo.gateway ?: return@withContext
+
+        try {
+            val process = Runtime.getRuntime().exec("/system/bin/ping -c 1 -W 1 $gateway")
+            val startTime = System.currentTimeMillis()
+            val reachable = process.waitFor() == 0
+            process.destroy()
+
+            if (reachable) {
+                val latency = (System.currentTimeMillis() - startTime).toInt()
+                val macAddress = ArpReader.getMacForIp(gateway)
+                val vendor = MacVendorLookup.lookup(macAddress)
+
+                val device = Device(
+                    ipAddress = gateway,
+                    macAddress = macAddress,
+                    vendor = vendor,
+                    deviceType = DeviceType.ROUTER,
+                    isOnline = true,
+                    latencyMs = latency,
+                    hostname = "Gateway",
+                    discoveredVia = DiscoveryMethod.PING
+                )
+                discoveredDevices[gateway] = device
+                updateDeviceCount()
+            }
+        } catch (e: Exception) {
+            // Gateway ping failed, continue anyway
+        }
+    }
+
     private fun readArpCache() {
         val entries = ArpReader.readValidEntries()
         for (entry in entries) {
@@ -609,43 +648,42 @@ class NetworkScanner(private val context: Context) {
         val total = ipRange.size
         val completed = AtomicInteger(0)
 
-        // Use chunked parallel execution
-        ipRange.chunked(PING_THREADS).forEach { chunk ->
-            val jobs = chunk.map { ip ->
-                async {
-                    val (reachable, latency) = NetworkUtils.isReachable(ip, PING_TIMEOUT_MS)
-                    if (reachable) {
-                        val macAddress = ArpReader.getMacForIp(ip)
-                        val vendor = MacVendorLookup.lookup(macAddress)
-                        val existing = discoveredDevices[ip]
+        // Launch ALL pings concurrently - system will handle the parallelism
+        val jobs = ipRange.map { ip ->
+            async(Dispatchers.IO) {
+                val (reachable, latency) = NetworkUtils.isReachable(ip, PING_TIMEOUT_MS)
+                if (reachable) {
+                    val macAddress = ArpReader.getMacForIp(ip)
+                    val vendor = MacVendorLookup.lookup(macAddress)
+                    val existing = discoveredDevices[ip]
 
-                        val device = existing?.copy(
-                            isOnline = true,
-                            latencyMs = latency,
-                            lastSeen = Date()
-                        ) ?: Device(
-                            ipAddress = ip,
-                            macAddress = macAddress,
-                            vendor = vendor,
-                            isOnline = true,
-                            latencyMs = latency,
-                            discoveredVia = DiscoveryMethod.PING
-                        )
-                        discoveredDevices[ip] = device
-                    }
-
-                    val progress = completed.incrementAndGet()
-                    val percent = 0.2f + (progress.toFloat() / total) * 0.4f
-                    updateProgress(
-                        ScanPhase.PING_SWEEP,
-                        percent,
-                        "Scanning $ip",
-                        ip
+                    val device = existing?.copy(
+                        isOnline = true,
+                        latencyMs = latency,
+                        lastSeen = Date()
+                    ) ?: Device(
+                        ipAddress = ip,
+                        macAddress = macAddress,
+                        vendor = vendor,
+                        isOnline = true,
+                        latencyMs = latency,
+                        discoveredVia = DiscoveryMethod.PING
                     )
+                    discoveredDevices[ip] = device
+                    updateDeviceCount()
                 }
+
+                val progress = completed.incrementAndGet()
+                val percent = 0.2f + (progress.toFloat() / total) * 0.4f
+                updateProgress(
+                    ScanPhase.PING_SWEEP,
+                    percent,
+                    "Scanned $progress/$total IPs",
+                    ip
+                )
             }
-            jobs.awaitAll()
         }
+        jobs.awaitAll()
     }
 
     private suspend fun discoverMdns() = withContext(Dispatchers.IO) {
