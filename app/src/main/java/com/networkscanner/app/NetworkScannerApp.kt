@@ -1,6 +1,7 @@
 package com.networkscanner.app
 
 import android.app.Application
+import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import com.networkscanner.app.theme.ThemeManager
 
@@ -11,6 +12,9 @@ class NetworkScannerApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Set default values for preferences
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
 
         // Initialize theme manager
         ThemeManager.initialize(this)

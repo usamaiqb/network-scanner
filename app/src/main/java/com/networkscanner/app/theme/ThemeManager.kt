@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 
 /**
@@ -11,7 +12,6 @@ import com.google.android.material.color.DynamicColors
  */
 object ThemeManager {
 
-    private const val PREFS_NAME = "theme_prefs"
     private const val KEY_THEME_MODE = "theme_mode"
     private const val KEY_DYNAMIC_COLORS = "dynamic_colors"
 
@@ -28,7 +28,7 @@ object ThemeManager {
     }
 
     private fun getPrefs(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
     }
 
     /**
@@ -43,7 +43,8 @@ object ThemeManager {
      * Get current theme mode.
      */
     fun getThemeMode(context: Context): ThemeMode {
-        val value = getPrefs(context).getInt(KEY_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        val valueStr = getPrefs(context).getString(KEY_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())
+        val value = valueStr?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         return ThemeMode.fromValue(value)
     }
 
@@ -51,7 +52,7 @@ object ThemeManager {
      * Set theme mode and apply it.
      */
     fun setThemeMode(context: Context, mode: ThemeMode) {
-        getPrefs(context).edit().putInt(KEY_THEME_MODE, mode.value).apply()
+        getPrefs(context).edit().putString(KEY_THEME_MODE, mode.value.toString()).apply()
         AppCompatDelegate.setDefaultNightMode(mode.value)
     }
 

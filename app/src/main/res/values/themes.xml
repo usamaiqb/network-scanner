@@ -50,16 +50,10 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Material3</item>
     </style>
 
-    <!-- Material 3 Preference Theme -->
-    <style name="PreferenceThemeOverlay.Material3" parent="PreferenceThemeOverlay.v14.Material">
-        <item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.Material3</item>
-    </style>
-
-    <style name="Preference.SwitchPreferenceCompat.Material3" parent="Preference.SwitchPreferenceCompat">
-        <item name="widgetLayout">@layout/preference_widget_material_switch</item>
-    </style>
-
     <!-- Dynamic color theme for Android 12+ -->
     <style name="Theme.NetworkScanner.Dynamic" parent="Theme.Material3.DynamicColors.Light" />
+
+    <!-- Material 3 Preference Theme - Reverting to default library style -->
+    <style name="PreferenceThemeOverlay.Material3" parent="PreferenceThemeOverlay.v14.Material" />
 
 </resources>

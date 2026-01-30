@@ -8,7 +8,7 @@
         android:title="@string/pref_category_appearance"
         app:iconSpaceReserved="false">
 
-        <ListPreference
+        <com.networkscanner.app.ui.ExpressiveListPreference
             android:key="theme_mode"
             android:title="@string/pref_theme_title"
             android:summary="%s"
@@ -16,6 +16,8 @@
             android:entries="@array/theme_entries"
             android:entryValues="@array/theme_values"
             android:defaultValue="-1"
+            app:dialogIcon="@drawable/ic_theme"
+            app:dialogMessage="@string/pref_theme_title"
             app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
@@ -42,7 +44,7 @@
             android:defaultValue="true"
             app:iconSpaceReserved="false" />
 
-        <ListPreference
+        <com.networkscanner.app.ui.ExpressiveListPreference
             android:key="scan_timeout"
             android:title="@string/pref_scan_timeout_title"
             android:summary="%s"
@@ -50,6 +52,8 @@
             android:entries="@array/timeout_entries"
             android:entryValues="@array/timeout_values"
             android:defaultValue="5000"
+            app:dialogIcon="@drawable/ic_timer"
+            app:dialogMessage="@string/pref_scan_timeout_title"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>

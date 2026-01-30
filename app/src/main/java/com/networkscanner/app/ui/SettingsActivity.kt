@@ -79,6 +79,8 @@ class SettingsActivity : AppCompatActivity() {
         private fun setupPreferences() {
             setupThemePreference()
             setupDynamicColorsPreference()
+            setupAutoScanPreference()
+            setupScanTimeoutPreference()
             setupClearCachePreference()
             setupClearHistoryPreference()
             setupVersionPreference()
@@ -96,6 +98,9 @@ class SettingsActivity : AppCompatActivity() {
                     val modeValue = (newValue as String).toInt()
                     val mode = ThemeManager.ThemeMode.fromValue(modeValue)
                     ThemeManager.setThemeMode(requireContext(), mode)
+                    
+                    // Recreate activity to apply theme immediately
+                    requireActivity().recreate()
                     true
                 }
             }
@@ -107,23 +112,30 @@ class SettingsActivity : AppCompatActivity() {
                 isVisible = ThemeManager.supportsDynamicColors()
 
                 if (isVisible) {
-                    isChecked = ThemeManager.isDynamicColorsEnabled(requireContext())
-
+                    // isChecked is automatically handled by PreferenceFragmentCompat
+                    // but we can ensure it's synced with ThemeManager's logic if needed.
+                    
                     setOnPreferenceChangeListener { _, newValue ->
                         val enabled = newValue as Boolean
                         ThemeManager.setDynamicColorsEnabled(requireContext(), enabled)
 
-                        // Show restart hint with Material 3 expressive dialog
-                        showExpressiveDialog(
-                            iconRes = R.drawable.ic_palette,
-                            title = getString(R.string.dialog_theme_restart_title),
-                            message = getString(R.string.dialog_theme_restart_message),
-                            positiveText = getString(android.R.string.ok)
-                        )
-
+                        // Recreate activity to apply dynamic colors immediately
+                        requireActivity().recreate()
                         true
                     }
                 }
+            }
+        }
+        private fun setupAutoScanPreference() {
+            findPreference<SwitchPreferenceCompat>("auto_scan_on_start")?.apply {
+                // Already handled by PreferenceFragmentCompat, but we can add logic here if needed
+            }
+        }
+
+        private fun setupScanTimeoutPreference() {
+            findPreference<ListPreference>("scan_timeout")?.apply {
+                // Ensure the summary correctly shows the selected value
+                summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
             }
         }
 
@@ -271,6 +283,16 @@ class SettingsActivity : AppCompatActivity() {
         private fun showSnackbar(message: String) {
             view?.let {
                 Snackbar.make(it, message, Snackbar.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onDisplayPreferenceDialog(preference: Preference) {
+            if (preference is ExpressiveListPreference) {
+                val dialogFragment = ExpressivePreferenceDialogFragment.newInstance(preference.key)
+                dialogFragment.setTargetFragment(this, 0)
+                dialogFragment.show(parentFragmentManager, "androidx.preference.PreferenceFragment.DIALOG")
+            } else {
+                super.onDisplayPreferenceDialog(preference)
             }
         }
     }
