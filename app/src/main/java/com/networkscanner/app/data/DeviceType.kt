@@ -19,7 +19,7 @@ enum class DeviceType(
     SMARTPHONE(
         displayName = "Smartphone",
         iconRes = R.drawable.ic_smartphone,
-        keywords = listOf("iphone", "android", "pixel", "samsung", "oneplus", "xiaomi", "huawei", "mobile")
+        keywords = listOf("iphone", "android", "pixel", "samsung", "oneplus", "xiaomi", "huawei", "mobile", "oppo", "vivo", "redmi", "poco", "motorola", "nokia", "zte", "meizu", "realme", "galaxy")
     ),
     TABLET(
         displayName = "Tablet",
@@ -29,12 +29,12 @@ enum class DeviceType(
     LAPTOP(
         displayName = "Laptop",
         iconRes = R.drawable.ic_laptop,
-        keywords = listOf("macbook", "laptop", "notebook", "thinkpad", "dell", "hp", "lenovo")
+        keywords = listOf("macbook", "laptop", "notebook", "thinkpad", "dell", "hp", "lenovo", "acer", "asus", "msi", "surface", "chromebook", "intel", "realtek")
     ),
     DESKTOP(
         displayName = "Desktop",
         iconRes = R.drawable.ic_desktop,
-        keywords = listOf("desktop", "pc", "imac", "workstation")
+        keywords = listOf("desktop", "pc", "imac", "workstation", "microsoft")
     ),
     TV(
         displayName = "Smart TV",

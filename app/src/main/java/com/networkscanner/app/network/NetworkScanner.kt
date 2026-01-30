@@ -105,6 +105,10 @@ class NetworkScanner(private val context: Context) {
             updateProgress(ScanPhase.PING_SWEEP, 0.2f, "Scanning network...")
             pingSweepp(networkInfo)
 
+            // Phase 2.5: Re-read ARP cache to get MAC addresses for discovered devices
+            updateProgress(ScanPhase.PING_SWEEP, 0.55f, "Getting device information...")
+            enrichDevicesWithArpData()
+
             // Phase 3: mDNS discovery
             updateProgress(ScanPhase.MDNS_DISCOVERY, 0.6f, "Discovering services...")
             discoverMdns()
@@ -686,6 +690,43 @@ class NetworkScanner(private val context: Context) {
         jobs.awaitAll()
     }
 
+    /**
+     * Enrich discovered devices with MAC addresses and vendor info from ARP cache.
+     * Called after ping sweep to get MAC addresses that were populated during pinging.
+     */
+    private fun enrichDevicesWithArpData() {
+        // Re-read ARP cache - it should now have entries for devices we pinged
+        val arpEntries = ArpReader.readValidEntries()
+        val arpMap = arpEntries.associateBy { it.ipAddress }
+
+        // Update devices with MAC and vendor info
+        for ((ip, device) in discoveredDevices.toMap()) {
+            if (device.macAddress == null || device.vendor == null) {
+                val arpEntry = arpMap[ip]
+                if (arpEntry != null) {
+                    val mac = arpEntry.normalizedMac
+                    val vendor = MacVendorLookup.lookup(mac)
+                    val deviceType = DeviceType.identify(
+                        hostname = device.hostname,
+                        vendor = vendor,
+                        mdnsServiceType = device.mdnsServices.firstOrNull(),
+                        ssdpDeviceType = device.ssdpInfo?.deviceType
+                    )
+
+                    val updatedDevice = device.copy(
+                        macAddress = mac,
+                        vendor = vendor ?: device.vendor,
+                        deviceType = if (device.isCurrentDevice) DeviceType.SMARTPHONE
+                                     else if (device.deviceType == DeviceType.UNKNOWN) deviceType
+                                     else device.deviceType
+                    )
+                    discoveredDevices[ip] = updatedDevice
+                }
+            }
+        }
+        updateDeviceCount()
+    }
+
     private suspend fun discoverMdns() = withContext(Dispatchers.IO) {
         val serviceTypes = listOf(
             "_http._tcp.",
@@ -864,26 +905,53 @@ class NetworkScanner(private val context: Context) {
     }
 
     private suspend fun identifyDevices() = withContext(Dispatchers.IO) {
-        for ((ip, device) in discoveredDevices) {
-            if (device.deviceType == DeviceType.UNKNOWN || device.hostname == null) {
-                // Try to resolve hostname
-                val hostname = device.hostname ?: NetworkUtils.resolveHostname(ip)
+        // Final ARP cache read to catch any remaining MAC addresses
+        val arpEntries = ArpReader.readValidEntries()
+        val arpMap = arpEntries.associateBy { it.ipAddress }
 
-                // Identify device type
-                val deviceType = DeviceType.identify(
-                    hostname = hostname,
-                    vendor = device.vendor,
-                    mdnsServiceType = device.mdnsServices.firstOrNull(),
-                    ssdpDeviceType = device.ssdpInfo?.deviceType
-                )
+        for ((ip, device) in discoveredDevices.toMap()) {
+            var updatedDevice = device
 
-                val updatedDevice = device.copy(
-                    hostname = hostname,
-                    deviceType = if (device.isCurrentDevice) DeviceType.SMARTPHONE else deviceType
-                )
-                discoveredDevices[ip] = updatedDevice
+            // Try to get MAC if missing
+            if (device.macAddress == null) {
+                val arpEntry = arpMap[ip]
+                if (arpEntry != null) {
+                    val mac = arpEntry.normalizedMac
+                    val vendor = MacVendorLookup.lookup(mac)
+                    updatedDevice = updatedDevice.copy(
+                        macAddress = mac,
+                        vendor = vendor ?: device.vendor
+                    )
+                }
             }
+
+            // Try to resolve hostname if missing
+            val hostname = updatedDevice.hostname ?: try {
+                NetworkUtils.resolveHostname(ip)
+            } catch (e: Exception) {
+                null
+            }
+
+            // Identify device type based on all available info
+            val deviceType = DeviceType.identify(
+                hostname = hostname,
+                vendor = updatedDevice.vendor,
+                mdnsServiceType = updatedDevice.mdnsServices.firstOrNull(),
+                ssdpDeviceType = updatedDevice.ssdpInfo?.deviceType
+            )
+
+            updatedDevice = updatedDevice.copy(
+                hostname = hostname ?: updatedDevice.hostname,
+                deviceType = when {
+                    device.isCurrentDevice -> DeviceType.SMARTPHONE
+                    updatedDevice.deviceType != DeviceType.UNKNOWN -> updatedDevice.deviceType
+                    else -> deviceType
+                }
+            )
+
+            discoveredDevices[ip] = updatedDevice
         }
+        updateDeviceCount()
     }
 
     private fun updateProgress(

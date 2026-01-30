@@ -206,22 +206,41 @@ object NetworkUtils {
     }
 
     /**
-     * Check if an IP address is reachable using system ping.
-     * This is the most reliable method on Android without root.
+     * Check if an IP address is reachable using ping first, then TCP port probing as fallback.
+     * This handles devices that block ICMP (like Windows laptops with firewall).
      */
     suspend fun isReachable(ipAddress: String, timeoutMs: Int = 1000): Pair<Boolean, Int?> {
         val startTime = System.currentTimeMillis()
         val timeoutSec = maxOf(1, timeoutMs / 1000)
 
-        return try {
+        // Method 1: Try ping first (fastest for responsive devices)
+        try {
             val process = Runtime.getRuntime().exec("/system/bin/ping -c 1 -W $timeoutSec $ipAddress")
             val reachable = process.waitFor() == 0
             process.destroy()
-            val latency = if (reachable) (System.currentTimeMillis() - startTime).toInt() else null
-            Pair(reachable, latency)
+            if (reachable) {
+                val latency = (System.currentTimeMillis() - startTime).toInt()
+                return Pair(true, latency)
+            }
         } catch (e: Exception) {
-            Pair(false, null)
+            // Continue to TCP probe
         }
+
+        // Method 2: TCP port probe for devices that block ping (Windows laptops, etc.)
+        val commonPorts = intArrayOf(445, 139, 22, 80, 443, 8080, 5000, 3389, 62078)
+        for (port in commonPorts) {
+            try {
+                val socket = java.net.Socket()
+                socket.connect(java.net.InetSocketAddress(ipAddress, port), 200)
+                socket.close()
+                val latency = (System.currentTimeMillis() - startTime).toInt()
+                return Pair(true, latency)
+            } catch (e: Exception) {
+                // Port closed or filtered, try next
+            }
+        }
+
+        return Pair(false, null)
     }
 
     /**
