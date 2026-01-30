@@ -143,7 +143,7 @@
     <string name="dialog_about_title">About Network Scanner</string>
     <string name="dialog_about_message">Network Scanner is a powerful tool for discovering and analyzing devices on your local network.\n\nFeatures:\n• Fast network scanning\n• Device identification\n• Deep scan with port detection\n• OS fingerprinting\n• Material You design\n\nDeveloped with care for your privacy. All scanning happens locally on your device.</string>
     <string name="dialog_privacy_title">Privacy Policy</string>
-    <string name="dialog_privacy_message">Network Scanner respects your privacy:\n\n• No data collection: All scan results stay on your device\n• No ads or tracking\n• No internet permission required for scanning\n• Open source and transparent\n\nLocation permission is only used to access WiFi information as required by Android, not for tracking your location.</string>
+    <string name="dialog_privacy_message">Network Scanner respects your privacy:\n\n• No data collection: All scan results stay on your device\n• No ads or tracking\n• No internet permission required for scanning\n\nLocation permission is only used to access WiFi information as required by Android, not for tracking your location.</string>
     <string name="dialog_theme_restart_title">Theme Changed</string>
     <string name="dialog_theme_restart_message">Dynamic color changes will take full effect after restarting the app.</string>
 

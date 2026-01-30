@@ -78,11 +78,7 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setupPreferences() {
             setupThemePreference()
-            setupDynamicColorsPreference()
             setupAutoScanPreference()
-            setupScanTimeoutPreference()
-            setupClearCachePreference()
-            setupClearHistoryPreference()
             setupVersionPreference()
             setupAboutPreference()
             setupPrivacyPreference()
@@ -106,66 +102,18 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        private fun setupDynamicColorsPreference() {
-            findPreference<SwitchPreferenceCompat>("dynamic_colors")?.apply {
-                // Only show on Android 12+
-                isVisible = ThemeManager.supportsDynamicColors()
 
-                if (isVisible) {
-                    // isChecked is automatically handled by PreferenceFragmentCompat
-                    // but we can ensure it's synced with ThemeManager's logic if needed.
-                    
-                    setOnPreferenceChangeListener { _, newValue ->
-                        val enabled = newValue as Boolean
-                        ThemeManager.setDynamicColorsEnabled(requireContext(), enabled)
-
-                        // Recreate activity to apply dynamic colors immediately
-                        requireActivity().recreate()
-                        true
-                    }
-                }
-            }
-        }
         private fun setupAutoScanPreference() {
             findPreference<SwitchPreferenceCompat>("auto_scan_on_start")?.apply {
                 // Already handled by PreferenceFragmentCompat, but we can add logic here if needed
             }
         }
 
-        private fun setupScanTimeoutPreference() {
-            findPreference<ListPreference>("scan_timeout")?.apply {
-                // Ensure the summary correctly shows the selected value
-                summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
-            }
-        }
 
-        private fun setupClearCachePreference() {
-            findPreference<Preference>("clear_cache")?.setOnPreferenceClickListener {
-                showExpressiveConfirmDialog(
-                    iconRes = R.drawable.ic_delete,
-                    title = getString(R.string.dialog_clear_cache_title),
-                    message = getString(R.string.dialog_clear_cache_message),
-                    positiveText = getString(R.string.action_clear),
-                    negativeText = getString(android.R.string.cancel),
-                    onConfirm = { clearCache() }
-                )
-                true
-            }
-        }
 
-        private fun setupClearHistoryPreference() {
-            findPreference<Preference>("clear_device_history")?.setOnPreferenceClickListener {
-                showExpressiveConfirmDialog(
-                    iconRes = R.drawable.ic_history,
-                    title = getString(R.string.dialog_clear_history_title),
-                    message = getString(R.string.dialog_clear_history_message),
-                    positiveText = getString(R.string.action_clear),
-                    negativeText = getString(android.R.string.cancel),
-                    onConfirm = { clearDeviceHistory() }
-                )
-                true
-            }
-        }
+
+
+
 
         private fun setupVersionPreference() {
             findPreference<Preference>("app_version")?.apply {
@@ -252,33 +200,9 @@ class SettingsActivity : AppCompatActivity() {
                 .show()
         }
 
-        private fun clearCache() {
-            try {
-                // Clear app cache directory
-                requireContext().cacheDir.deleteRecursively()
-                requireContext().cacheDir.mkdirs()
 
-                showSnackbar(getString(R.string.cache_cleared))
-            } catch (e: Exception) {
-                showSnackbar("Failed to clear cache: ${e.message}")
-            }
-        }
 
-        private fun clearDeviceHistory() {
-            try {
-                // Clear shared preferences for device history
-                val prefs = requireContext().getSharedPreferences("device_history", android.content.Context.MODE_PRIVATE)
-                prefs.edit().clear().apply()
 
-                // Clear any other device-related data
-                val scanPrefs = requireContext().getSharedPreferences("scan_cache", android.content.Context.MODE_PRIVATE)
-                scanPrefs.edit().clear().apply()
-
-                showSnackbar(getString(R.string.history_cleared))
-            } catch (e: Exception) {
-                showSnackbar("Failed to clear history: ${e.message}")
-            }
-        }
 
         private fun showSnackbar(message: String) {
             view?.let {
@@ -299,8 +223,7 @@ class SettingsActivity : AppCompatActivity() {
 
     companion object {
         const val KEY_THEME_MODE = "theme_mode"
-        const val KEY_DYNAMIC_COLORS = "dynamic_colors"
         const val KEY_AUTO_SCAN = "auto_scan_on_start"
-        const val KEY_SCAN_TIMEOUT = "scan_timeout"
+
     }
 }

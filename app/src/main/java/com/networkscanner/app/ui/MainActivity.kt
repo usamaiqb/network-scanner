@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         setupToolbar()
         setupRecyclerView()
-        setupSwipeRefresh()
+
         setupClickListeners()
         observeViewModel()
 
@@ -123,16 +123,7 @@ class MainActivity : AppCompatActivity() {
         binding.deviceList.scheduleLayoutAnimation()
     }
 
-    private fun setupSwipeRefresh() {
-        binding.swipeRefresh.apply {
-            setColorSchemeColors(
-                ContextCompat.getColor(this@MainActivity, R.color.md_theme_light_primary)
-            )
-            setOnRefreshListener {
-                requestScan()
-            }
-        }
-    }
+
 
     private fun setupClickListeners() {
         // Initial scan button (centered, shown before first scan)
@@ -216,7 +207,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showInitialState() {
-        binding.swipeRefresh.isRefreshing = false
+
         binding.scanStatusCard.visibility = View.GONE
         binding.scanProgress.visibility = View.GONE
         binding.initialState.visibility = View.VISIBLE
@@ -232,7 +223,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showIdleState() {
-        binding.swipeRefresh.isRefreshing = false
+
         binding.scanStatusCard.visibility = View.GONE
         binding.scanProgress.visibility = View.GONE
 
@@ -248,7 +239,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showScanningState() {
         hasScannedOnce = true
-        binding.swipeRefresh.isRefreshing = false
+
         binding.scanStatusCard.visibility = View.VISIBLE
         binding.scanProgress.visibility = View.VISIBLE
         binding.initialState.visibility = View.GONE
@@ -257,7 +248,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showNoWifiState() {
-        binding.swipeRefresh.isRefreshing = false
+
         binding.scanStatusCard.visibility = View.GONE
         binding.scanProgress.visibility = View.GONE
         binding.initialState.visibility = View.GONE
@@ -272,7 +263,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showEmptyResultState() {
-        binding.swipeRefresh.isRefreshing = false
+
         binding.scanStatusCard.visibility = View.GONE
         binding.scanProgress.visibility = View.GONE
         binding.initialState.visibility = View.GONE
@@ -296,7 +287,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSuccessState(deviceCount: Int) {
-        binding.swipeRefresh.isRefreshing = false
+
         binding.scanStatusCard.visibility = View.GONE
         binding.scanProgress.visibility = View.GONE
         binding.initialState.visibility = View.GONE
@@ -311,7 +302,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showErrorState(message: String) {
-        binding.swipeRefresh.isRefreshing = false
+
         binding.scanStatusCard.visibility = View.GONE
         binding.scanProgress.visibility = View.GONE
 
