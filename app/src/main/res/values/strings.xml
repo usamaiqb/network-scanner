@@ -143,7 +143,7 @@
     <string name="dialog_clear_history_title">Clear Device History?</string>
     <string name="dialog_clear_history_message">This will remove all saved device information including custom names. This action cannot be undone.</string>
     <string name="dialog_about_title">About Network Scanner</string>
-    <string name="dialog_about_message">Network Scanner is a powerful tool for discovering and analyzing devices on your local network.\n\nFeatures:\n• Fast network scanning\n• Device identification\n• Deep scan with port detection\n• OS fingerprinting\n• Material You design\n\nDeveloped with care for your privacy. All scanning happens locally on your device.\n\n⚠️ Note: Device detection and port scanning are not 100% accurate. Results may vary based on network conditions and device configurations.\n\nVersion 1.0.0 | GPL-3.0 License</string>
+    <string name="dialog_about_message">Network Scanner is a powerful tool for discovering and analyzing devices on your local network.\n\nDeveloped with care for your privacy. All scanning happens locally on your device.\n\n⚠️ Note: Device detection and port scanning are not 100% accurate. Results may vary based on network conditions and device configurations.\n\nVersion 1.0.0 | GPL-3.0 License</string>
     <string name="view_on_github">View on GitHub</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
     <string name="deep_scan_disclaimer">Port and OS detection are estimates and may not be fully accurate</string>
