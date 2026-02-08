@@ -11,6 +11,8 @@ import com.networkscanner.app.util.NetworkUtils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.DatagramPacket
@@ -20,6 +22,7 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -29,7 +32,7 @@ class NetworkScanner(private val context: Context) {
 
     companion object {
         private const val PING_TIMEOUT_MS = 1000  // 1 second timeout for ping
-        private const val PING_THREADS = 50       // High parallelism for faster scanning
+        private const val PING_THREADS = 50       // Max concurrent ping coroutines
         private const val MDNS_TIMEOUT_MS = 2000L // Reduced for speed
         private const val SSDP_TIMEOUT_MS = 1500L // Reduced for speed
         private const val SSDP_MULTICAST_ADDRESS = "239.255.255.250"
@@ -39,6 +42,10 @@ class NetworkScanner(private val context: Context) {
         private const val PORT_TIMEOUT_MS = 500
         private const val PORT_THREADS = 20
         private const val BANNER_TIMEOUT_MS = 2000
+        private const val BANNER_THREADS = 10
+
+        // Throttle UI updates to avoid flooding
+        private const val UI_UPDATE_INTERVAL_MS = 200L
     }
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -46,6 +53,7 @@ class NetworkScanner(private val context: Context) {
     private val deviceCache = ConcurrentHashMap<String, Device>()
     private var nsdManager: NsdManager? = null
     private var multicastLock: WifiManager.MulticastLock? = null
+    private var lastUiUpdateTime = 0L
 
     private val _scanProgress = MutableStateFlow(ScanProgress(
         phase = ScanPhase.INITIALIZING,
@@ -93,6 +101,9 @@ class NetworkScanner(private val context: Context) {
             // Acquire multicast lock for mDNS
             acquireMulticastLock()
 
+            // Invalidate ARP cache at scan start so we get fresh reads
+            ArpReader.invalidateCache()
+
             // Phase 0: Ping gateway to ensure network connectivity and populate ARP cache
             updateProgress(ScanPhase.READING_ARP_CACHE, 0.05f, "Checking network connectivity...")
             pingGateway(networkInfo)
@@ -101,11 +112,12 @@ class NetworkScanner(private val context: Context) {
             updateProgress(ScanPhase.READING_ARP_CACHE, 0.1f, "Reading ARP cache...")
             readArpCache()
 
-            // Phase 2: Parallel ping sweep
+            // Phase 2: Parallel ping sweep (with concurrency limit)
             updateProgress(ScanPhase.PING_SWEEP, 0.2f, "Scanning network...")
-            pingSweepp(networkInfo)
+            pingSweep(networkInfo)
 
             // Phase 2.5: Re-read ARP cache to get MAC addresses for discovered devices
+            ArpReader.invalidateCache()
             updateProgress(ScanPhase.PING_SWEEP, 0.55f, "Getting device information...")
             enrichDevicesWithArpData()
 
@@ -210,7 +222,7 @@ class NetworkScanner(private val context: Context) {
                 })
             }
 
-            // Phase 2: Banner grabbing for open ports
+            // Phase 2: Banner grabbing for open ports (parallelized)
             if (openPorts.isNotEmpty()) {
                 updateDeepScanProgress(
                     DeepScanPhase.BANNER_GRABBING,
@@ -221,26 +233,32 @@ class NetworkScanner(private val context: Context) {
                     openPortsFound = openPorts.size
                 )
 
+                val bannerSemaphore = Semaphore(BANNER_THREADS)
                 val enhancedPorts = openPorts.mapIndexed { index, portInfo ->
-                    val banner = grabBanner(ipAddress, portInfo.port)
-                    val progress = 0.6f + (index.toFloat() / openPorts.size) * 0.2f
+                    async {
+                        bannerSemaphore.withPermit {
+                            val banner = grabBanner(ipAddress, portInfo.port)
+                            val progress = 0.6f + (index.toFloat() / openPorts.size) * 0.2f
 
-                    updateDeepScanProgress(
-                        DeepScanPhase.BANNER_GRABBING,
-                        progress,
-                        "Analyzing port ${portInfo.port}...",
-                        currentPort = portInfo.port,
-                        portsScanned = ports.size,
-                        portsTotal = ports.size,
-                        openPortsFound = openPorts.size
-                    )
+                            updateDeepScanProgress(
+                                DeepScanPhase.BANNER_GRABBING,
+                                progress,
+                                "Analyzing port ${portInfo.port}...",
+                                currentPort = portInfo.port,
+                                portsScanned = ports.size,
+                                portsTotal = ports.size,
+                                openPortsFound = openPorts.size
+                            )
 
-                    portInfo.copy(
-                        banner = banner?.take(200), // Limit banner size
-                        version = extractVersion(banner),
-                        serviceName = portInfo.serviceName ?: detectService(portInfo.port, banner)
-                    )
-                }
+                            portInfo.copy(
+                                banner = banner?.take(200),
+                                version = extractVersion(banner),
+                                serviceName = portInfo.serviceName ?: detectService(portInfo.port, banner)
+                            )
+                        }
+                    }
+                }.awaitAll()
+
                 openPorts.clear()
                 openPorts.addAll(enhancedPorts)
             }
@@ -312,6 +330,7 @@ class NetworkScanner(private val context: Context) {
 
     /**
      * Grab banner from an open port.
+     * Uses blocking readLine with socket timeout instead of unreliable reader.ready().
      */
     private fun grabBanner(ip: String, port: Int): String? {
         return try {
@@ -331,11 +350,15 @@ class NetworkScanner(private val context: Context) {
 
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val banner = StringBuilder()
-                var line: String?
                 var linesRead = 0
 
-                while (reader.ready() && linesRead < 5) {
-                    line = reader.readLine()
+                // Use blocking readLine with socket timeout as safeguard
+                while (linesRead < 5) {
+                    val line = try {
+                        reader.readLine()
+                    } catch (e: Exception) {
+                        break // Timeout or read error
+                    }
                     if (line != null) {
                         banner.appendLine(line)
                         linesRead++
@@ -419,7 +442,7 @@ class NetworkScanner(private val context: Context) {
         val windowsScore = calculateOsScore(
             portNumbers,
             banners,
-            windowsPorts = setOf(135, 139, 445, 3389, 1433, 5985, 5986),
+            indicatorPorts = setOf(135, 139, 445, 3389, 1433, 5985, 5986),
             keywords = listOf("windows", "microsoft", "iis", "mssql", "msrpc")
         )
 
@@ -427,7 +450,7 @@ class NetworkScanner(private val context: Context) {
         val linuxScore = calculateOsScore(
             portNumbers,
             banners,
-            windowsPorts = setOf(22, 111, 2049),
+            indicatorPorts = setOf(22, 111, 2049),
             keywords = listOf("linux", "ubuntu", "debian", "centos", "fedora", "openssh", "apache", "nginx")
         )
 
@@ -435,7 +458,7 @@ class NetworkScanner(private val context: Context) {
         val macScore = calculateOsScore(
             portNumbers,
             banners,
-            windowsPorts = setOf(22, 548, 5900, 3283, 5000),
+            indicatorPorts = setOf(22, 548, 5900, 3283, 5000),
             keywords = listOf("darwin", "macos", "apple", "airplay", "afp")
         )
 
@@ -443,7 +466,7 @@ class NetworkScanner(private val context: Context) {
         val routerScore = calculateOsScore(
             portNumbers,
             banners,
-            windowsPorts = setOf(23, 80, 443, 161, 53),
+            indicatorPorts = setOf(23, 80, 443, 161, 53),
             keywords = listOf("router", "mikrotik", "cisco", "netgear", "asus", "tp-link", "dlink", "ubiquiti")
         )
 
@@ -451,7 +474,7 @@ class NetworkScanner(private val context: Context) {
         val printerScore = calculateOsScore(
             portNumbers,
             banners,
-            windowsPorts = setOf(515, 631, 9100),
+            indicatorPorts = setOf(515, 631, 9100),
             keywords = listOf("printer", "hp", "epson", "canon", "brother", "cups", "jetdirect")
         )
 
@@ -489,11 +512,11 @@ class NetworkScanner(private val context: Context) {
     private fun calculateOsScore(
         ports: Set<Int>,
         banners: String,
-        windowsPorts: Set<Int>,
+        indicatorPorts: Set<Int>,
         keywords: List<String>
     ): Int {
         var score = 0
-        score += ports.intersect(windowsPorts).size * 2
+        score += ports.intersect(indicatorPorts).size * 2
         keywords.forEach { keyword ->
             if (banners.contains(keyword)) score += 2
         }
@@ -595,15 +618,19 @@ class NetworkScanner(private val context: Context) {
      */
     private suspend fun pingGateway(networkInfo: NetworkInfo) = withContext(Dispatchers.IO) {
         val gateway = networkInfo.gateway ?: return@withContext
+        if (!NetworkUtils.isValidIpAddress(gateway)) return@withContext
 
         try {
-            val process = Runtime.getRuntime().exec("/system/bin/ping -c 1 -W 1 $gateway")
+            val process = Runtime.getRuntime().exec(
+                arrayOf("/system/bin/ping", "-c", "1", "-W", "1", gateway)
+            )
             val startTime = System.currentTimeMillis()
-            val reachable = process.waitFor() == 0
-            process.destroy()
+            val reachable = process.waitFor(2, TimeUnit.SECONDS) && process.exitValue() == 0
+            process.destroyForcibly()
 
             if (reachable) {
                 val latency = (System.currentTimeMillis() - startTime).toInt()
+                ArpReader.invalidateCache()
                 val macAddress = ArpReader.getMacForIp(gateway)
                 val vendor = MacVendorLookup.lookup(macAddress)
 
@@ -647,47 +674,54 @@ class NetworkScanner(private val context: Context) {
         updateDeviceCount()
     }
 
-    private suspend fun pingSweepp(networkInfo: NetworkInfo) = coroutineScope {
+    /**
+     * Parallel ping sweep with concurrency limited by PING_THREADS semaphore.
+     */
+    private suspend fun pingSweep(networkInfo: NetworkInfo) = coroutineScope {
         val ipRange = NetworkUtils.getIpRange(networkInfo)
         val total = ipRange.size
         val completed = AtomicInteger(0)
+        val semaphore = Semaphore(PING_THREADS)
 
-        // Launch ALL pings concurrently - system will handle the parallelism
         val jobs = ipRange.map { ip ->
             async(Dispatchers.IO) {
-                val (reachable, latency) = NetworkUtils.isReachable(ip, PING_TIMEOUT_MS)
-                if (reachable) {
-                    val macAddress = ArpReader.getMacForIp(ip)
-                    val vendor = MacVendorLookup.lookup(macAddress)
-                    val existing = discoveredDevices[ip]
+                semaphore.withPermit {
+                    val (reachable, latency) = NetworkUtils.isReachable(ip, PING_TIMEOUT_MS)
+                    if (reachable) {
+                        val macAddress = ArpReader.getMacForIp(ip)
+                        val vendor = MacVendorLookup.lookup(macAddress)
+                        val existing = discoveredDevices[ip]
 
-                    val device = existing?.copy(
-                        isOnline = true,
-                        latencyMs = latency,
-                        lastSeen = Date()
-                    ) ?: Device(
-                        ipAddress = ip,
-                        macAddress = macAddress,
-                        vendor = vendor,
-                        isOnline = true,
-                        latencyMs = latency,
-                        discoveredVia = DiscoveryMethod.PING
+                        val device = existing?.copy(
+                            isOnline = true,
+                            latencyMs = latency,
+                            lastSeen = Date()
+                        ) ?: Device(
+                            ipAddress = ip,
+                            macAddress = macAddress,
+                            vendor = vendor,
+                            isOnline = true,
+                            latencyMs = latency,
+                            discoveredVia = DiscoveryMethod.PING
+                        )
+                        discoveredDevices[ip] = device
+                        throttledDeviceCountUpdate()
+                    }
+
+                    val progress = completed.incrementAndGet()
+                    val percent = 0.2f + (progress.toFloat() / total) * 0.4f
+                    updateProgress(
+                        ScanPhase.PING_SWEEP,
+                        percent,
+                        "Scanned $progress/$total IPs",
+                        ip
                     )
-                    discoveredDevices[ip] = device
-                    updateDeviceCount()
                 }
-
-                val progress = completed.incrementAndGet()
-                val percent = 0.2f + (progress.toFloat() / total) * 0.4f
-                updateProgress(
-                    ScanPhase.PING_SWEEP,
-                    percent,
-                    "Scanned $progress/$total IPs",
-                    ip
-                )
             }
         }
         jobs.awaitAll()
+        // Final device count update after sweep
+        updateDeviceCount()
     }
 
     /**
@@ -727,7 +761,11 @@ class NetworkScanner(private val context: Context) {
         updateDeviceCount()
     }
 
-    private suspend fun discoverMdns() = withContext(Dispatchers.IO) {
+    /**
+     * Discover devices via mDNS.
+     * Uses the current coroutineScope for the channel consumer to ensure proper cancellation.
+     */
+    private suspend fun discoverMdns() = coroutineScope {
         val serviceTypes = listOf(
             "_http._tcp.",
             "_https._tcp.",
@@ -759,7 +797,7 @@ class NetworkScanner(private val context: Context) {
 
                 override fun onServiceFound(serviceInfo: NsdServiceInfo?) {
                     serviceInfo?.let {
-                        scope.launch { discoveryChannel.send(it) }
+                        discoveryChannel.trySend(it)
                     }
                 }
 
@@ -774,8 +812,8 @@ class NetworkScanner(private val context: Context) {
             }
         }
 
-        // Collect discovered services for a limited time
-        val job = scope.launch {
+        // Collect discovered services using coroutineScope (not class-level scope)
+        val job = launch {
             for (serviceInfo in discoveryChannel) {
                 resolveService(serviceInfo)
             }
@@ -824,48 +862,51 @@ class NetworkScanner(private val context: Context) {
         })
     }
 
+    /**
+     * Discover devices via SSDP/UPnP.
+     * Uses socket.use {} to prevent resource leaks.
+     */
     private suspend fun discoverSsdp() = withContext(Dispatchers.IO) {
         try {
-            val socket = DatagramSocket()
-            socket.soTimeout = SSDP_TIMEOUT_MS.toInt()
-            socket.broadcast = true
+            DatagramSocket().use { socket ->
+                socket.soTimeout = SSDP_TIMEOUT_MS.toInt()
+                socket.broadcast = true
 
-            // SSDP M-SEARCH request
-            val searchRequest = """
-                M-SEARCH * HTTP/1.1
-                HOST: $SSDP_MULTICAST_ADDRESS:$SSDP_PORT
-                MAN: "ssdp:discover"
-                MX: 2
-                ST: ssdp:all
+                // SSDP M-SEARCH request
+                val searchRequest = """
+                    M-SEARCH * HTTP/1.1
+                    HOST: $SSDP_MULTICAST_ADDRESS:$SSDP_PORT
+                    MAN: "ssdp:discover"
+                    MX: 2
+                    ST: ssdp:all
 
-            """.trimIndent().replace("\n", "\r\n")
+                """.trimIndent().replace("\n", "\r\n")
 
-            val requestBytes = searchRequest.toByteArray()
-            val multicastAddress = InetAddress.getByName(SSDP_MULTICAST_ADDRESS)
-            val packet = DatagramPacket(requestBytes, requestBytes.size, multicastAddress, SSDP_PORT)
+                val requestBytes = searchRequest.toByteArray()
+                val multicastAddress = InetAddress.getByName(SSDP_MULTICAST_ADDRESS)
+                val packet = DatagramPacket(requestBytes, requestBytes.size, multicastAddress, SSDP_PORT)
 
-            socket.send(packet)
+                socket.send(packet)
 
-            // Receive responses
-            val buffer = ByteArray(2048)
-            val endTime = System.currentTimeMillis() + SSDP_TIMEOUT_MS
+                // Receive responses
+                val buffer = ByteArray(2048)
+                val endTime = System.currentTimeMillis() + SSDP_TIMEOUT_MS
 
-            while (System.currentTimeMillis() < endTime) {
-                try {
-                    val response = DatagramPacket(buffer, buffer.size)
-                    socket.receive(response)
+                while (System.currentTimeMillis() < endTime) {
+                    try {
+                        val response = DatagramPacket(buffer, buffer.size)
+                        socket.receive(response)
 
-                    val responseText = String(response.data, 0, response.length)
-                    val ip = response.address.hostAddress ?: continue
+                        val responseText = String(response.data, 0, response.length)
+                        val ip = response.address.hostAddress ?: continue
 
-                    parseSsdpResponse(ip, responseText)
-                } catch (e: Exception) {
-                    // Timeout or other error
-                    break
+                        parseSsdpResponse(ip, responseText)
+                    } catch (e: Exception) {
+                        // Timeout or other error
+                        break
+                    }
                 }
             }
-
-            socket.close()
         } catch (e: Exception) {
             // SSDP discovery failed
         }
@@ -904,12 +945,33 @@ class NetworkScanner(private val context: Context) {
         updateDeviceCount()
     }
 
-    private suspend fun identifyDevices() = withContext(Dispatchers.IO) {
+    /**
+     * Identify devices by resolving hostnames (in parallel) and determining device types.
+     */
+    private suspend fun identifyDevices() = coroutineScope {
         // Final ARP cache read to catch any remaining MAC addresses
+        ArpReader.invalidateCache()
         val arpEntries = ArpReader.readValidEntries()
         val arpMap = arpEntries.associateBy { it.ipAddress }
 
-        for ((ip, device) in discoveredDevices.toMap()) {
+        val entries = discoveredDevices.toMap()
+
+        // Resolve hostnames in parallel
+        val hostnameJobs = entries
+            .filter { (_, device) -> device.hostname == null }
+            .map { (ip, _) ->
+                async(Dispatchers.IO) {
+                    ip to try {
+                        NetworkUtils.resolveHostname(ip)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+            }
+
+        val resolvedHostnames = hostnameJobs.awaitAll().toMap()
+
+        for ((ip, device) in entries) {
             var updatedDevice = device
 
             // Try to get MAC if missing
@@ -925,12 +987,8 @@ class NetworkScanner(private val context: Context) {
                 }
             }
 
-            // Try to resolve hostname if missing
-            val hostname = updatedDevice.hostname ?: try {
-                NetworkUtils.resolveHostname(ip)
-            } catch (e: Exception) {
-                null
-            }
+            // Use resolved hostname
+            val hostname = updatedDevice.hostname ?: resolvedHostnames[ip]
 
             // Identify device type based on all available info
             val deviceType = DeviceType.identify(
@@ -967,6 +1025,17 @@ class NetworkScanner(private val context: Context) {
             devicesFound = discoveredDevices.size,
             currentTarget = currentTarget
         )
+    }
+
+    /**
+     * Throttled device count update to avoid flooding UI during ping sweep.
+     */
+    private fun throttledDeviceCountUpdate() {
+        val now = System.currentTimeMillis()
+        if (now - lastUiUpdateTime >= UI_UPDATE_INTERVAL_MS) {
+            lastUiUpdateTime = now
+            updateDeviceCount()
+        }
     }
 
     private fun updateDeviceCount() {

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.networkscanner.app.NetworkScannerApp
 import com.networkscanner.app.data.*
 import com.networkscanner.app.network.NetworkScanner
 import com.networkscanner.app.util.NetworkUtils
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
  */
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val scanner = NetworkScanner(application)
+    private val scanner = (application as NetworkScannerApp).scanner
 
     private val _uiState = MutableLiveData<UiState>(UiState.Idle)
     val uiState: LiveData<UiState> = _uiState
@@ -141,7 +142,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared()
-        scanner.cleanup()
+        scanner.cancel()
     }
 
     /**
