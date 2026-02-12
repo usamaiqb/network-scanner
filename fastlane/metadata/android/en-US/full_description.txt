@@ -1,0 +1,37 @@
+Network Scanner is a fast, lightweight, and privacy-focused tool for discovering and analyzing devices on your local network.
+
+<b>Key Features:</b>
+
+• Fast network scanning to discover all devices on your WiFi network
+• Detailed device information including IP address, MAC address, and hostname
+• Port scanning to identify open ports and running services
+• Device type detection and categorization
+• Material Design 3 interface with modern, intuitive UI
+• Refresh for quick rescans
+• Customizable scan settings
+
+<b>Privacy First:</b>
+
+• No ads or tracking
+• No analytics or data collection
+• No internet connection required (works completely offline)
+• All scanning happens locally on your device
+• Minimal permissions requested
+• 100% open source (GPL-3.0)
+
+<b>Perfect For:</b>
+
+• Network administrators monitoring their home/office network
+• Tech enthusiasts exploring their network setup
+• Troubleshooting network connectivity issues
+• Discovering unauthorized devices on your network
+• Finding IP addresses of network devices (printers, cameras, smart home devices)
+
+<b>Permissions Explained:</b>
+
+Network Scanner only requests permissions essential for network scanning:
+• Network access - To communicate with devices on your network
+• WiFi state - To check if you're connected to WiFi
+• Location (not used for tracking) - Required by Android for WiFi scanning
+
+Network Scanner is completely ad-free, tracker-free, and respects your privacy. All code is open source and auditable.

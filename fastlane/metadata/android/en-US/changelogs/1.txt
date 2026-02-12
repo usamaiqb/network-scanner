@@ -1,0 +1,8 @@
+Initial release of Network Scanner!
+
+• Network device discovery and scanning
+• Device details with IP, MAC, and hostname
+• Port scanning capabilities
+• Material Design 3 interface
+• Privacy-focused: no ads, tracking, or analytics
+• Fully open source (GPL-3.0)
