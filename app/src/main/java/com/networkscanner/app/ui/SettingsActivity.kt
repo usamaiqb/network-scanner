@@ -1,5 +1,7 @@
 package com.networkscanner.app.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -11,6 +13,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.networkscanner.app.BuildConfig
@@ -131,14 +134,29 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setupAboutPreference() {
             findPreference<Preference>("about")?.setOnPreferenceClickListener {
-                showExpressiveDialog(
-                    iconRes = R.drawable.ic_radar,
-                    title = getString(R.string.dialog_about_title),
-                    message = getString(R.string.dialog_about_message),
-                    positiveText = getString(android.R.string.ok)
-                )
+                showAboutDialog()
                 true
             }
+        }
+
+        private fun showAboutDialog() {
+            val dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_about, null)
+
+            dialogView.findViewById<ImageView>(R.id.dialogIcon).setImageResource(R.drawable.ic_radar)
+            dialogView.findViewById<TextView>(R.id.dialogTitle).text = getString(R.string.dialog_about_title)
+            dialogView.findViewById<TextView>(R.id.dialogMessage).text = getString(R.string.dialog_about_message)
+
+            // Setup GitHub button
+            dialogView.findViewById<MaterialButton>(R.id.githubButton).setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.github_url)))
+                startActivity(intent)
+            }
+
+            MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setPositiveButton(getString(android.R.string.ok), null)
+                .show()
         }
 
         private fun setupPrivacyPreference() {

@@ -7,14 +7,20 @@ import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.Build
 import com.networkscanner.app.data.NetworkInfo
+import kotlinx.coroutines.*
 import java.net.Inet4Address
 import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.net.NetworkInterface
+import java.net.Socket
+import java.util.concurrent.TimeUnit
 
 /**
  * Utility class for network-related operations.
  */
 object NetworkUtils {
+
+    private val IP_PATTERN = Regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$")
 
     /**
      * Check if device is connected to WiFi.
@@ -105,20 +111,31 @@ object NetworkUtils {
 
     /**
      * Get device's IP address on the local network.
+     * Prefers the WiFi (wlan0) interface to avoid returning VPN or cellular IPs.
      */
     fun getLocalIpAddress(): String? {
         try {
             val interfaces = NetworkInterface.getNetworkInterfaces()
+
+            // First pass: prefer wlan0 (WiFi interface)
+            var fallbackAddress: String? = null
             while (interfaces.hasMoreElements()) {
                 val networkInterface = interfaces.nextElement()
                 val addresses = networkInterface.inetAddresses
                 while (addresses.hasMoreElements()) {
                     val address = addresses.nextElement()
                     if (!address.isLoopbackAddress && address is Inet4Address) {
-                        return address.hostAddress
+                        if (networkInterface.name.equals("wlan0", ignoreCase = true)) {
+                            return address.hostAddress
+                        }
+                        if (fallbackAddress == null) {
+                            fallbackAddress = address.hostAddress
+                        }
                     }
                 }
             }
+
+            return fallbackAddress
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -146,30 +163,29 @@ object NetworkUtils {
 
     /**
      * Generate list of IP addresses in the subnet to scan.
+     * Respects the actual subnet size instead of always scanning /24.
      */
     fun getIpRange(networkInfo: NetworkInfo): List<String> {
         val baseIp = networkInfo.networkAddress
         val parts = baseIp.split(".")
         if (parts.size != 4) return emptyList()
 
-        val ipList = mutableListOf<String>()
-        val numHosts = minOf(254, networkInfo.maxHosts)  // Limit to /24 equivalent for performance
+        val prefix = networkInfo.networkPrefix
 
-        // For typical /24 networks
-        if (networkInfo.networkPrefix >= 24) {
-            val prefix = parts.take(3).joinToString(".")
-            for (i in 1..254) {
-                ipList.add("$prefix.$i")
-            }
-        } else {
-            // For larger networks, still scan only first 254 addresses
-            val prefix = parts.take(3).joinToString(".")
-            for (i in 1..254) {
-                ipList.add("$prefix.$i")
-            }
+        // For /24 or smaller subnets, scan the exact range
+        if (prefix >= 24) {
+            val ipPrefix = parts.take(3).joinToString(".")
+            val hostBits = 32 - prefix
+            val numHosts = (1 shl hostBits) - 2 // Exclude network and broadcast
+            val startHost = 1
+            val endHost = startHost + numHosts - 1
+
+            return (startHost..endHost).map { "$ipPrefix.$it" }
         }
 
-        return ipList
+        // For larger subnets (< /24), cap at 254 hosts for performance
+        val ipPrefix = parts.take(3).joinToString(".")
+        return (1..254).map { "$ipPrefix.$it" }
     }
 
     /**
@@ -210,14 +226,19 @@ object NetworkUtils {
      * This handles devices that block ICMP (like Windows laptops with firewall).
      */
     suspend fun isReachable(ipAddress: String, timeoutMs: Int = 1000): Pair<Boolean, Int?> {
+        if (!isValidIpAddress(ipAddress)) return Pair(false, null)
+
         val startTime = System.currentTimeMillis()
         val timeoutSec = maxOf(1, timeoutMs / 1000)
 
         // Method 1: Try ping first (fastest for responsive devices)
         try {
-            val process = Runtime.getRuntime().exec("/system/bin/ping -c 1 -W $timeoutSec $ipAddress")
-            val reachable = process.waitFor() == 0
-            process.destroy()
+            val process = Runtime.getRuntime().exec(
+                arrayOf("/system/bin/ping", "-c", "1", "-W", "$timeoutSec", ipAddress)
+            )
+            val reachable = process.waitFor(timeoutMs.toLong() + 500, TimeUnit.MILLISECONDS)
+                    && process.exitValue() == 0
+            process.destroyForcibly()
             if (reachable) {
                 val latency = (System.currentTimeMillis() - startTime).toInt()
                 return Pair(true, latency)
@@ -226,21 +247,31 @@ object NetworkUtils {
             // Continue to TCP probe
         }
 
-        // Method 2: TCP port probe for devices that block ping (Windows laptops, etc.)
+        // Method 2: TCP port probe in parallel for devices that block ping
         val commonPorts = intArrayOf(445, 139, 22, 80, 443, 8080, 5000, 3389, 62078)
-        for (port in commonPorts) {
-            try {
-                val socket = java.net.Socket()
-                socket.connect(java.net.InetSocketAddress(ipAddress, port), 200)
-                socket.close()
-                val latency = (System.currentTimeMillis() - startTime).toInt()
-                return Pair(true, latency)
-            } catch (e: Exception) {
-                // Port closed or filtered, try next
+        return withContext(Dispatchers.IO) {
+            val result = commonPorts.map { port ->
+                async {
+                    try {
+                        Socket().use { socket ->
+                            socket.connect(InetSocketAddress(ipAddress, port), 200)
+                            true
+                        }
+                    } catch (e: Exception) {
+                        false
+                    }
+                }
             }
+            // Return as soon as any port responds
+            for (deferred in result) {
+                if (deferred.await()) {
+                    result.forEach { it.cancel() }
+                    val latency = (System.currentTimeMillis() - startTime).toInt()
+                    return@withContext Pair(true, latency)
+                }
+            }
+            Pair(false, null)
         }
-
-        return Pair(false, null)
     }
 
     /**
@@ -254,5 +285,16 @@ object NetworkUtils {
         } catch (e: Exception) {
             null
         }
+    }
+
+    /**
+     * Validate that a string is a valid IPv4 address.
+     */
+    fun isValidIpAddress(ip: String): Boolean {
+        return ip.matches(IP_PATTERN) &&
+                ip.split(".").all { part ->
+                    val num = part.toIntOrNull() ?: return false
+                    num in 0..255
+                }
     }
 }
