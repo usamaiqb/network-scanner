@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit
 object NetworkUtils {
 
     private val IP_PATTERN = Regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$")
+    private val PING_RTT_PATTERN = Regex("""time[=<]([\d.]+)\s*ms""")
 
     /**
      * Check if device is connected to WiFi.
@@ -249,7 +250,7 @@ object NetworkUtils {
                 // Require a parsed RTT to confirm a real echo reply. A missing RTT means
                 // the router sent ICMP "Destination Unreachable" (exits 0 on some Android
                 // kernels) rather than an actual reply from the host.
-                val latency = Regex("""time[=<]([\d.]+)\s*ms""").find(output)
+                val latency = PING_RTT_PATTERN.find(output)
                     ?.groupValues?.get(1)?.toFloatOrNull()?.toInt()
                 if (latency != null) {
                     return Pair(true, latency)
