@@ -236,12 +236,19 @@ object NetworkUtils {
             val process = Runtime.getRuntime().exec(
                 arrayOf("/system/bin/ping", "-c", "1", "-W", "$timeoutSec", ipAddress)
             )
-            val reachable = process.waitFor(timeoutMs.toLong() + 500, TimeUnit.MILLISECONDS)
+            val completed = process.waitFor(timeoutMs.toLong() + 500, TimeUnit.MILLISECONDS)
                     && process.exitValue() == 0
+            val output = process.inputStream.bufferedReader().readText()
             process.destroyForcibly()
-            if (reachable) {
-                val latency = (System.currentTimeMillis() - startTime).toInt()
-                return Pair(true, latency)
+            if (completed) {
+                // Require a parsed RTT to confirm a real echo reply. A missing RTT means
+                // the router sent ICMP "Destination Unreachable" (exits 0 on some Android
+                // kernels) rather than an actual reply from the host.
+                val latency = Regex("""time[=<]([\d.]+)\s*ms""").find(output)
+                    ?.groupValues?.get(1)?.toFloatOrNull()?.toInt()
+                if (latency != null) {
+                    return Pair(true, latency)
+                }
             }
         } catch (e: Exception) {
             // Continue to TCP probe
