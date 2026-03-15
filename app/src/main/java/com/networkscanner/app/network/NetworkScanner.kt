@@ -187,11 +187,12 @@ class NetworkScanner(private val context: Context) {
 
             val scannedCount = AtomicInteger(0)
             val foundCount = AtomicInteger(0)
+            val portSemaphore = Semaphore(PORT_THREADS)
 
-            // Scan ports in parallel batches
-            ports.chunked(PORT_THREADS).forEach { chunk ->
-                val results = chunk.map { port ->
-                    async {
+            // Scan all ports in parallel, limited by semaphore
+            val results = ports.map { port ->
+                async {
+                    portSemaphore.withPermit {
                         val isOpen = isPortOpen(ipAddress, port)
                         val count = scannedCount.incrementAndGet()
 
@@ -212,15 +213,15 @@ class NetworkScanner(private val context: Context) {
 
                         if (isOpen) port else null
                     }
-                }.awaitAll().filterNotNull()
+                }
+            }.awaitAll().filterNotNull()
 
-                openPorts.addAll(results.map { port ->
-                    PortInfo(
-                        port = port,
-                        serviceName = CommonPorts.getServiceName(port)
-                    )
-                })
-            }
+            openPorts.addAll(results.map { port ->
+                PortInfo(
+                    port = port,
+                    serviceName = CommonPorts.getServiceName(port)
+                )
+            })
 
             // Phase 2: Banner grabbing for open ports (parallelized)
             if (openPorts.isNotEmpty()) {
@@ -624,12 +625,14 @@ class NetworkScanner(private val context: Context) {
             val process = Runtime.getRuntime().exec(
                 arrayOf("/system/bin/ping", "-c", "1", "-W", "1", gateway)
             )
-            val startTime = System.currentTimeMillis()
-            val reachable = process.waitFor(2, TimeUnit.SECONDS) && process.exitValue() == 0
+            val output = process.inputStream.bufferedReader().readText()
+            val completed = process.waitFor(2, TimeUnit.SECONDS) && process.exitValue() == 0
             process.destroyForcibly()
 
-            if (reachable) {
-                val latency = (System.currentTimeMillis() - startTime).toInt()
+            if (completed) {
+                val latency = Regex("""time[=<]([\d.]+)\s*ms""").find(output)
+                    ?.groupValues?.get(1)?.toFloatOrNull()?.toInt()
+                    ?: return@withContext // No real echo reply
                 ArpReader.invalidateCache()
                 val macAddress = ArpReader.getMacForIp(gateway)
                 val vendor = MacVendorLookup.lookup(macAddress)
@@ -660,8 +663,7 @@ class NetworkScanner(private val context: Context) {
 
             val device = existing?.copy(
                 macAddress = entry.normalizedMac,
-                vendor = vendor ?: existing.vendor,
-                discoveredVia = DiscoveryMethod.ARP_CACHE
+                vendor = vendor ?: existing.vendor
             ) ?: Device(
                 ipAddress = entry.ipAddress,
                 macAddress = entry.normalizedMac,
@@ -763,7 +765,7 @@ class NetworkScanner(private val context: Context) {
 
     /**
      * Discover devices via mDNS.
-     * Uses the current coroutineScope for the channel consumer to ensure proper cancellation.
+     * Uses a CountDownLatch-style mechanism to wait for pending resolves before returning.
      */
     private suspend fun discoverMdns() = coroutineScope {
         val serviceTypes = listOf(
@@ -785,6 +787,7 @@ class NetworkScanner(private val context: Context) {
 
         nsdManager = context.getSystemService(Context.NSD_SERVICE) as? NsdManager
 
+        val pendingResolves = AtomicInteger(0)
         val discoveryChannel = Channel<NsdServiceInfo>(Channel.UNLIMITED)
         val listeners = mutableListOf<NsdManager.DiscoveryListener>()
 
@@ -815,7 +818,8 @@ class NetworkScanner(private val context: Context) {
         // Collect discovered services using coroutineScope (not class-level scope)
         val job = launch {
             for (serviceInfo in discoveryChannel) {
-                resolveService(serviceInfo)
+                pendingResolves.incrementAndGet()
+                resolveService(serviceInfo, pendingResolves)
             }
         }
 
@@ -831,32 +835,44 @@ class NetworkScanner(private val context: Context) {
                 // Already stopped
             }
         }
+
+        // Wait briefly for pending resolves to complete (up to 1 second)
+        val resolveDeadline = System.currentTimeMillis() + 1000L
+        while (pendingResolves.get() > 0 && System.currentTimeMillis() < resolveDeadline) {
+            delay(50)
+        }
     }
 
-    private fun resolveService(serviceInfo: NsdServiceInfo) {
+    private fun resolveService(serviceInfo: NsdServiceInfo, pendingResolves: AtomicInteger) {
         nsdManager?.resolveService(serviceInfo, object : NsdManager.ResolveListener {
-            override fun onResolveFailed(serviceInfo: NsdServiceInfo?, errorCode: Int) {}
+            override fun onResolveFailed(serviceInfo: NsdServiceInfo?, errorCode: Int) {
+                pendingResolves.decrementAndGet()
+            }
 
             override fun onServiceResolved(serviceInfo: NsdServiceInfo?) {
-                serviceInfo?.host?.hostAddress?.let { ip ->
-                    val existing = discoveredDevices[ip]
-                    val services = (existing?.mdnsServices ?: emptyList()) + serviceInfo.serviceType
-                    val hostname = serviceInfo.serviceName.takeIf { it.isNotBlank() }
+                try {
+                    serviceInfo?.host?.hostAddress?.let { ip ->
+                        val existing = discoveredDevices[ip]
+                        val services = (existing?.mdnsServices ?: emptyList()) + serviceInfo.serviceType
+                        val hostname = serviceInfo.serviceName.takeIf { it.isNotBlank() }
 
-                    val device = existing?.copy(
-                        hostname = hostname ?: existing.hostname,
-                        mdnsServices = services.distinct(),
-                        discoveredVia = if (existing.discoveredVia == DiscoveryMethod.MANUAL)
-                            existing.discoveredVia else DiscoveryMethod.MDNS
-                    ) ?: Device(
-                        ipAddress = ip,
-                        hostname = hostname,
-                        mdnsServices = services,
-                        isOnline = true,
-                        discoveredVia = DiscoveryMethod.MDNS
-                    )
-                    discoveredDevices[ip] = device
-                    updateDeviceCount()
+                        val device = existing?.copy(
+                            hostname = hostname ?: existing.hostname,
+                            mdnsServices = services.distinct(),
+                            discoveredVia = if (existing.discoveredVia == DiscoveryMethod.MANUAL)
+                                existing.discoveredVia else DiscoveryMethod.MDNS
+                        ) ?: Device(
+                            ipAddress = ip,
+                            hostname = hostname,
+                            mdnsServices = services,
+                            isOnline = true,
+                            discoveredVia = DiscoveryMethod.MDNS
+                        )
+                        discoveredDevices[ip] = device
+                        updateDeviceCount()
+                    }
+                } finally {
+                    pendingResolves.decrementAndGet()
                 }
             }
         })

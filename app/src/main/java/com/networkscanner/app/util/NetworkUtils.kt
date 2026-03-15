@@ -183,9 +183,14 @@ object NetworkUtils {
             return (startHost..endHost).map { "$ipPrefix.$it" }
         }
 
-        // For larger subnets (< /24), cap at 254 hosts for performance
-        val ipPrefix = parts.take(3).joinToString(".")
-        return (1..254).map { "$ipPrefix.$it" }
+        // For larger subnets (< /24), scan the /24 segment the device is actually in
+        val deviceParts = networkInfo.ipAddress.split(".")
+        val localPrefix = if (deviceParts.size == 4) {
+            deviceParts.take(3).joinToString(".")
+        } else {
+            parts.take(3).joinToString(".")
+        }
+        return (1..254).map { "$localPrefix.$it" }
     }
 
     /**
@@ -236,9 +241,9 @@ object NetworkUtils {
             val process = Runtime.getRuntime().exec(
                 arrayOf("/system/bin/ping", "-c", "1", "-W", "$timeoutSec", ipAddress)
             )
+            val output = process.inputStream.bufferedReader().readText()
             val completed = process.waitFor(timeoutMs.toLong() + 500, TimeUnit.MILLISECONDS)
                     && process.exitValue() == 0
-            val output = process.inputStream.bufferedReader().readText()
             process.destroyForcibly()
             if (completed) {
                 // Require a parsed RTT to confirm a real echo reply. A missing RTT means
@@ -255,29 +260,35 @@ object NetworkUtils {
         }
 
         // Method 2: TCP port probe in parallel for devices that block ping
+        // Uses CompletableDeferred to short-circuit as soon as any port responds
         val commonPorts = intArrayOf(445, 139, 22, 80, 443, 8080, 5000, 3389, 62078)
         return withContext(Dispatchers.IO) {
-            val result = commonPorts.map { port ->
+            val firstSuccess = CompletableDeferred<Boolean>()
+            val jobs = commonPorts.map { port ->
                 async {
                     try {
                         Socket().use { socket ->
                             socket.connect(InetSocketAddress(ipAddress, port), 200)
-                            true
+                            firstSuccess.complete(true)
                         }
                     } catch (e: Exception) {
-                        false
+                        // Port closed or unreachable
                     }
                 }
             }
-            // Return as soon as any port responds
-            for (deferred in result) {
-                if (deferred.await()) {
-                    result.forEach { it.cancel() }
-                    val latency = (System.currentTimeMillis() - startTime).toInt()
-                    return@withContext Pair(true, latency)
-                }
+
+            val reachable = withTimeoutOrNull(timeoutMs.toLong()) {
+                firstSuccess.await()
+            } == true
+
+            jobs.forEach { it.cancel() }
+
+            if (reachable) {
+                val latency = (System.currentTimeMillis() - startTime).toInt()
+                Pair(true, latency)
+            } else {
+                Pair(false, null)
             }
-            Pair(false, null)
         }
     }
 
