@@ -3,6 +3,7 @@ package com.networkscanner.app.network
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.os.Build
 import android.net.wifi.WifiManager
 import com.networkscanner.app.data.*
 import com.networkscanner.app.util.ArpReader
@@ -864,38 +865,63 @@ class NetworkScanner(private val context: Context) {
     }
 
     private fun resolveService(serviceInfo: NsdServiceInfo, pendingResolves: AtomicInteger) {
-        nsdManager?.resolveService(serviceInfo, object : NsdManager.ResolveListener {
+        val resolveListener = object : NsdManager.ResolveListener {
             override fun onResolveFailed(serviceInfo: NsdServiceInfo?, errorCode: Int) {
                 pendingResolves.decrementAndGet()
             }
 
             override fun onServiceResolved(serviceInfo: NsdServiceInfo?) {
                 try {
-                    serviceInfo?.host?.hostAddress?.let { ip ->
-                        val existing = discoveredDevices[ip]
-                        val services = (existing?.mdnsServices ?: emptyList()) + serviceInfo.serviceType
-                        val hostname = serviceInfo.serviceName.takeIf { it.isNotBlank() }
+                    val ip = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        serviceInfo?.hostAddresses?.firstOrNull()?.hostAddress
+                    } else {
+                        @Suppress("DEPRECATION")
+                        serviceInfo?.host?.hostAddress
+                    }
+                    ip?.let {
+                        val existing = discoveredDevices[it]
+                        val services = (existing?.mdnsServices ?: emptyList()) + (serviceInfo?.serviceType ?: "")
+                        val hostname = serviceInfo?.serviceName?.takeIf { name -> name.isNotBlank() }
+
+                        // Identify device type immediately so UI shows correct icon
+                        val identifiedType = DeviceType.identify(
+                            hostname = hostname ?: existing?.hostname,
+                            vendor = existing?.vendor,
+                            mdnsServiceType = services.firstOrNull(),
+                            ssdpDeviceType = existing?.ssdpInfo?.deviceType
+                        )
+                        val deviceType = when {
+                            existing?.isCurrentDevice == true -> DeviceType.SMARTPHONE
+                            existing != null && existing.deviceType != DeviceType.UNKNOWN -> existing.deviceType
+                            identifiedType != DeviceType.UNKNOWN -> identifiedType
+                            else -> existing?.deviceType ?: DeviceType.UNKNOWN
+                        }
 
                         val device = existing?.copy(
                             hostname = hostname ?: existing.hostname,
                             mdnsServices = services.distinct(),
+                            deviceType = deviceType,
                             discoveredVia = if (existing.discoveredVia == DiscoveryMethod.MANUAL)
                                 existing.discoveredVia else DiscoveryMethod.MDNS
                         ) ?: Device(
-                            ipAddress = ip,
+                            ipAddress = it,
                             hostname = hostname,
                             mdnsServices = services,
+                            deviceType = identifiedType,
                             isOnline = true,
                             discoveredVia = DiscoveryMethod.MDNS
                         )
-                        discoveredDevices[ip] = device
+                        discoveredDevices[it] = device
                         updateDeviceCount()
                     }
                 } finally {
                     pendingResolves.decrementAndGet()
                 }
             }
-        })
+        }
+
+        @Suppress("DEPRECATION")
+        nsdManager?.resolveService(serviceInfo, resolveListener)
     }
 
     /**
@@ -967,13 +993,30 @@ class NetworkScanner(private val context: Context) {
         )
 
         val existing = discoveredDevices[ip]
+
+        // Identify device type immediately so UI shows correct icon
+        val identifiedType = DeviceType.identify(
+            hostname = existing?.hostname,
+            vendor = existing?.vendor,
+            mdnsServiceType = existing?.mdnsServices?.firstOrNull(),
+            ssdpDeviceType = st
+        )
+        val deviceType = when {
+            existing?.isCurrentDevice == true -> DeviceType.SMARTPHONE
+            existing != null && existing.deviceType != DeviceType.UNKNOWN -> existing.deviceType
+            identifiedType != DeviceType.UNKNOWN -> identifiedType
+            else -> existing?.deviceType ?: DeviceType.UNKNOWN
+        }
+
         val device = existing?.copy(
             ssdpInfo = ssdpInfo,
+            deviceType = deviceType,
             discoveredVia = if (existing.discoveredVia == DiscoveryMethod.MANUAL)
                 existing.discoveredVia else DiscoveryMethod.SSDP
         ) ?: Device(
             ipAddress = ip,
             ssdpInfo = ssdpInfo,
+            deviceType = identifiedType,
             isOnline = true,
             discoveredVia = DiscoveryMethod.SSDP
         )

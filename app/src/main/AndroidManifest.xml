@@ -26,7 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NetworkScanner"
         android:usesCleartextTraffic="true"
-        tools:targetApi="34">
+        tools:targetApi="35">
 
         <activity
             android:name=".ui.MainActivity"
@@ -37,19 +37,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".ui.DeviceDetailActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/Theme.NetworkScanner" />
-
-        <activity
-            android:name=".ui.SettingsActivity"
-            android:exported="false"
-            android:label="@string/settings_title"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/Theme.NetworkScanner" />
 
     </application>
 

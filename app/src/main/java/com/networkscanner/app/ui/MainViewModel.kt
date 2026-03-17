@@ -2,14 +2,16 @@ package com.networkscanner.app.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.networkscanner.app.NetworkScannerApp
 import com.networkscanner.app.data.*
-import com.networkscanner.app.network.NetworkScanner
 import com.networkscanner.app.util.NetworkUtils
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -19,29 +21,28 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val scanner = (application as NetworkScannerApp).scanner
 
-    private val _uiState = MutableLiveData<UiState>(UiState.Idle)
-    val uiState: LiveData<UiState> = _uiState
+    private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    private val _devices = MutableLiveData<List<Device>>(emptyList())
-    val devices: LiveData<List<Device>> = _devices
+    private val _devices = MutableStateFlow<List<Device>>(emptyList())
+    val devices: StateFlow<List<Device>> = _devices.asStateFlow()
 
-    private val _onlineDevices = MutableLiveData<List<Device>>(emptyList())
-    val onlineDevices: LiveData<List<Device>> = _onlineDevices
+    private val _onlineDevices = MutableStateFlow<List<Device>>(emptyList())
+    val onlineDevices: StateFlow<List<Device>> = _onlineDevices.asStateFlow()
 
-    private val _offlineDevices = MutableLiveData<List<Device>>(emptyList())
-    val offlineDevices: LiveData<List<Device>> = _offlineDevices
+    private val _offlineDevices = MutableStateFlow<List<Device>>(emptyList())
+    val offlineDevices: StateFlow<List<Device>> = _offlineDevices.asStateFlow()
 
-    private val _scanProgress = MutableLiveData<ScanProgress>()
-    val scanProgress: LiveData<ScanProgress> = _scanProgress
+    private val _scanProgress = MutableStateFlow(ScanProgress(ScanPhase.INITIALIZING, 0f, "", 0))
+    val scanProgress: StateFlow<ScanProgress> = _scanProgress.asStateFlow()
 
-    private val _networkInfo = MutableLiveData<NetworkInfo?>()
-    val networkInfo: LiveData<NetworkInfo?> = _networkInfo
+    private val _networkInfo = MutableStateFlow<NetworkInfo?>(null)
+    val networkInfo: StateFlow<NetworkInfo?> = _networkInfo.asStateFlow()
 
-    private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
+    private val _errorMessage = Channel<String>(Channel.BUFFERED)
+    val errorMessage = _errorMessage.receiveAsFlow()
 
     init {
-        // Collect device updates from scanner
         viewModelScope.launch {
             scanner.devices.collectLatest { deviceList ->
                 updateDeviceLists(deviceList)
@@ -75,7 +76,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
 
             _uiState.value = UiState.Scanning
-            _errorMessage.value = null
 
             try {
                 val result = scanner.scan()
@@ -93,7 +93,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     }
                     ScanStatus.ERROR -> {
                         _uiState.value = UiState.Error(result.error ?: "Unknown error")
-                        _errorMessage.value = result.error
+                        _errorMessage.trySend(result.error ?: "Unknown error")
                     }
                     else -> {
                         _uiState.value = UiState.Idle
@@ -101,7 +101,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Scan failed")
-                _errorMessage.value = e.message
+                _errorMessage.trySend(e.message ?: "Scan failed")
             }
         }
     }
@@ -115,23 +115,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     * Clear error message.
+     * Get device by unique ID (MAC or IP).
      */
-    fun clearError() {
-        _errorMessage.value = null
-    }
-
-    /**
-     * Get device by IP address.
-     */
-    fun getDeviceByIp(ipAddress: String): Device? {
-        return _devices.value?.find { it.ipAddress == ipAddress }
+    fun getDeviceById(id: String): Device? {
+        return _devices.value.find { it.uniqueId == id }
     }
 
     private fun updateDeviceLists(deviceList: List<Device>) {
         _devices.value = deviceList
 
-        // Sort: current device first, then by IP
         val sorted = deviceList.sortedWith(
             compareBy({ !it.isCurrentDevice }, { !it.isOnline }, { it.ipAddress })
         )

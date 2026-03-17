@@ -54,7 +54,7 @@
     <!-- Theme -->
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_system">System Default</string>
+    <string name="theme_system">System</string>
 
     <!-- Content descriptions -->
     <string name="cd_device_icon">Device type icon</string>
@@ -173,4 +173,8 @@
     <string name="cd_device_item">%1$s, %2$s, IP %3$s</string>
     <string name="cd_device_current">This is your current device</string>
     <string name="cd_section_header">%1$s section with %2$d devices</string>
+
+    <!-- Deep scan progress -->
+    <string name="deep_scan_port_progress">%1$d/%2$d ports</string>
+    <string name="deep_scan_open_count">%d open</string>
 </resources>

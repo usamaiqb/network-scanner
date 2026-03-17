@@ -2,13 +2,13 @@ package com.networkscanner.app.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.networkscanner.app.NetworkScannerApp
 import com.networkscanner.app.data.*
-import com.networkscanner.app.network.NetworkScanner
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -17,40 +17,37 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
     private val scanner = (application as NetworkScannerApp).scanner
 
     // Device info
-    private val _device = MutableLiveData<Device>()
-    val device: LiveData<Device> = _device
+    private val _device = MutableStateFlow<Device?>(null)
+    val device: StateFlow<Device?> = _device.asStateFlow()
 
     // Deep scan state
-    private val _deepScanState = MutableLiveData<DeepScanState>(DeepScanState.Idle)
-    val deepScanState: LiveData<DeepScanState> = _deepScanState
+    private val _deepScanState = MutableStateFlow<DeepScanState>(DeepScanState.Idle)
+    val deepScanState: StateFlow<DeepScanState> = _deepScanState.asStateFlow()
 
     // Deep scan result
-    private val _deepScanResult = MutableLiveData<DeepScanResult?>()
-    val deepScanResult: LiveData<DeepScanResult?> = _deepScanResult
+    private val _deepScanResult = MutableStateFlow<DeepScanResult?>(null)
+    val deepScanResult: StateFlow<DeepScanResult?> = _deepScanResult.asStateFlow()
 
     // Deep scan progress
-    private val _deepScanProgress = MutableLiveData<DeepScanProgress>()
-    val deepScanProgress: LiveData<DeepScanProgress> = _deepScanProgress
-
-    // Error message
-    private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
+    private val _deepScanProgress = MutableStateFlow(DeepScanProgress())
+    val deepScanProgress: StateFlow<DeepScanProgress> = _deepScanProgress.asStateFlow()
 
     private var deepScanJob: Job? = null
+    private var progressJob: Job? = null
     private var hasScannedOnce = false
 
     sealed class DeepScanState {
-        object Idle : DeepScanState()
-        object Scanning : DeepScanState()
-        object Completed : DeepScanState()
+        data object Idle : DeepScanState()
+        data object Scanning : DeepScanState()
+        data object Completed : DeepScanState()
         data class Error(val message: String) : DeepScanState()
     }
 
-    fun setDevice(device: Device) {
+    fun loadDevice(deviceId: String, devices: List<Device>) {
+        val device = devices.find { it.uniqueId == deviceId }
         _device.value = device
 
-        // Auto-trigger deep scan on first view
-        if (!hasScannedOnce && device.isOnline) {
+        if (device != null && !hasScannedOnce && device.isOnline) {
             startDeepScan()
         }
     }
@@ -58,17 +55,16 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
     fun startDeepScan() {
         val currentDevice = _device.value ?: return
 
-        // Cancel any existing scan
         deepScanJob?.cancel()
+        progressJob?.cancel()
 
         _deepScanState.value = DeepScanState.Scanning
         _deepScanResult.value = null
         hasScannedOnce = true
 
-        // Collect progress updates
-        viewModelScope.launch {
+        progressJob = viewModelScope.launch {
             scanner.deepScanProgress.collectLatest { progress ->
-                _deepScanProgress.postValue(progress)
+                _deepScanProgress.value = progress
             }
         }
 
@@ -78,41 +74,38 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
 
                 when (result.status) {
                     DeepScanStatus.COMPLETED -> {
-                        _deepScanResult.postValue(result)
-                        _deepScanState.postValue(DeepScanState.Completed)
+                        _deepScanResult.value = result
+                        _deepScanState.value = DeepScanState.Completed
                     }
                     DeepScanStatus.CANCELLED -> {
-                        _deepScanResult.postValue(result)
-                        _deepScanState.postValue(DeepScanState.Idle)
+                        _deepScanResult.value = result
+                        _deepScanState.value = DeepScanState.Idle
                     }
                     DeepScanStatus.FAILED -> {
-                        _deepScanResult.postValue(result)
-                        _deepScanState.postValue(DeepScanState.Error("Scan failed"))
+                        _deepScanResult.value = result
+                        _deepScanState.value = DeepScanState.Error("Scan failed")
                     }
                     else -> {
-                        _deepScanResult.postValue(result)
-                        _deepScanState.postValue(DeepScanState.Idle)
+                        _deepScanResult.value = result
+                        _deepScanState.value = DeepScanState.Idle
                     }
                 }
             } catch (e: Exception) {
-                _deepScanState.postValue(DeepScanState.Error(e.message ?: "Unknown error"))
-                _errorMessage.postValue(e.message)
+                _deepScanState.value = DeepScanState.Error(e.message ?: "Unknown error")
             }
         }
     }
 
     fun cancelDeepScan() {
         deepScanJob?.cancel()
+        progressJob?.cancel()
         scanner.cancel()
         _deepScanState.value = DeepScanState.Idle
-    }
-
-    fun clearError() {
-        _errorMessage.value = null
     }
 
     override fun onCleared() {
         super.onCleared()
         deepScanJob?.cancel()
+        progressJob?.cancel()
     }
 }

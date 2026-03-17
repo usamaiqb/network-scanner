@@ -1,5 +1,6 @@
 package com.networkscanner.app.data
 
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import java.util.Date
@@ -23,7 +24,12 @@ data class DeepScanResult(
         ipAddress = parcel.readString() ?: "",
         scanTime = Date(parcel.readLong()),
         openPorts = parcel.createTypedArrayList(PortInfo.CREATOR) ?: emptyList(),
-        detectedOs = parcel.readParcelable(OsInfo::class.java.classLoader),
+        detectedOs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            parcel.readParcelable(OsInfo::class.java.classLoader, OsInfo::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            parcel.readParcelable(OsInfo::class.java.classLoader)
+        },
         scanDurationMs = parcel.readLong(),
         status = DeepScanStatus.entries.getOrElse(parcel.readInt()) { DeepScanStatus.PENDING }
     )

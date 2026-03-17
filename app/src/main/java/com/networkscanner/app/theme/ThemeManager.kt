@@ -1,11 +1,12 @@
 package com.networkscanner.app.theme
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
-import com.google.android.material.color.DynamicColors
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Manages app theme settings including light/dark mode and dynamic colors.
@@ -15,78 +16,52 @@ object ThemeManager {
     private const val KEY_THEME_MODE = "theme_mode"
     private const val KEY_DYNAMIC_COLORS = "dynamic_colors"
 
-    enum class ThemeMode(val value: Int) {
+    enum class ThemeMode(val nightMode: Int) {
         LIGHT(AppCompatDelegate.MODE_NIGHT_NO),
         DARK(AppCompatDelegate.MODE_NIGHT_YES),
         SYSTEM(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
 
         companion object {
-            fun fromValue(value: Int): ThemeMode {
-                return entries.find { it.value == value } ?: SYSTEM
+            fun fromName(name: String?): ThemeMode {
+                return entries.find { it.name == name } ?: SYSTEM
             }
         }
     }
 
-    private fun getPrefs(context: Context): SharedPreferences {
-        return androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
-    }
+    private val _themeModeFlow = MutableStateFlow(ThemeMode.SYSTEM)
+    val themeModeFlow: StateFlow<ThemeMode> = _themeModeFlow.asStateFlow()
+
+    private val _dynamicColorsFlow = MutableStateFlow(supportsDynamicColors())
+    val dynamicColorsFlow: StateFlow<Boolean> = _dynamicColorsFlow.asStateFlow()
+
+    private fun getPrefs(context: Context) =
+        PreferenceManager.getDefaultSharedPreferences(context)
 
     /**
      * Initialize theme settings on app startup.
      */
     fun initialize(context: Context) {
-        applyTheme(context)
-        applyDynamicColors(context)
+        val mode = getThemeMode(context)
+        _themeModeFlow.value = mode
+        _dynamicColorsFlow.value = isDynamicColorsEnabled(context)
+        AppCompatDelegate.setDefaultNightMode(mode.nightMode)
     }
 
     /**
      * Get current theme mode.
      */
     fun getThemeMode(context: Context): ThemeMode {
-        val valueStr = getPrefs(context).getString(KEY_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM.toString())
-        val value = valueStr?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        return ThemeMode.fromValue(value)
+        val name = getPrefs(context).getString(KEY_THEME_MODE, null)
+        return ThemeMode.fromName(name)
     }
 
     /**
      * Set theme mode and apply it.
      */
     fun setThemeMode(context: Context, mode: ThemeMode) {
-        getPrefs(context).edit().putString(KEY_THEME_MODE, mode.value.toString()).apply()
-        AppCompatDelegate.setDefaultNightMode(mode.value)
-    }
-
-    /**
-     * Toggle between light and dark themes.
-     * If currently in system mode, switches to opposite of current system theme.
-     */
-    fun toggleTheme(context: Context) {
-        val currentMode = getThemeMode(context)
-        val newMode = when (currentMode) {
-            ThemeMode.LIGHT -> ThemeMode.DARK
-            ThemeMode.DARK -> ThemeMode.LIGHT
-            ThemeMode.SYSTEM -> {
-                // Toggle based on current actual state
-                val isNightMode = context.resources.configuration.uiMode and
-                        android.content.res.Configuration.UI_MODE_NIGHT_MASK ==
-                        android.content.res.Configuration.UI_MODE_NIGHT_YES
-                if (isNightMode) ThemeMode.LIGHT else ThemeMode.DARK
-            }
-        }
-        setThemeMode(context, newMode)
-    }
-
-    /**
-     * Cycle through themes: System -> Light -> Dark -> System
-     */
-    fun cycleTheme(context: Context) {
-        val currentMode = getThemeMode(context)
-        val newMode = when (currentMode) {
-            ThemeMode.SYSTEM -> ThemeMode.LIGHT
-            ThemeMode.LIGHT -> ThemeMode.DARK
-            ThemeMode.DARK -> ThemeMode.SYSTEM
-        }
-        setThemeMode(context, newMode)
+        getPrefs(context).edit().putString(KEY_THEME_MODE, mode.name).apply()
+        _themeModeFlow.value = mode
+        AppCompatDelegate.setDefaultNightMode(mode.nightMode)
     }
 
     /**
@@ -101,6 +76,7 @@ object ThemeManager {
      */
     fun setDynamicColorsEnabled(context: Context, enabled: Boolean) {
         getPrefs(context).edit().putBoolean(KEY_DYNAMIC_COLORS, enabled).apply()
+        _dynamicColorsFlow.value = enabled
     }
 
     /**
@@ -108,16 +84,5 @@ object ThemeManager {
      */
     fun supportsDynamicColors(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-    }
-
-    private fun applyTheme(context: Context) {
-        val mode = getThemeMode(context)
-        AppCompatDelegate.setDefaultNightMode(mode.value)
-    }
-
-    private fun applyDynamicColors(context: Context) {
-        if (supportsDynamicColors() && isDynamicColorsEnabled(context)) {
-            DynamicColors.applyToActivitiesIfAvailable(context.applicationContext as android.app.Application)
-        }
     }
 }

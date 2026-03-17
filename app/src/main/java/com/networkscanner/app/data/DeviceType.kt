@@ -1,84 +1,98 @@
 package com.networkscanner.app.data
 
-import androidx.annotation.DrawableRes
-import com.networkscanner.app.R
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DesktopWindows
+import androidx.compose.material.icons.outlined.DevicesOther
+import androidx.compose.material.icons.outlined.Dns
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Laptop
+import androidx.compose.material.icons.outlined.Print
+import androidx.compose.material.icons.outlined.Router
+import androidx.compose.material.icons.outlined.Smartphone
+import androidx.compose.material.icons.outlined.Speaker
+import androidx.compose.material.icons.outlined.SportsEsports
+import androidx.compose.material.icons.outlined.Storage
+import androidx.compose.material.icons.outlined.Tablet
+import androidx.compose.material.icons.outlined.Tv
+import androidx.compose.material.icons.outlined.Watch
+import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
  * Enumeration of device types with associated icons and display names.
  */
 enum class DeviceType(
     val displayName: String,
-    @DrawableRes val iconRes: Int,
+    val icon: ImageVector,
     val keywords: List<String> = emptyList()
 ) {
     ROUTER(
         displayName = "Router",
-        iconRes = R.drawable.ic_router,
+        icon = Icons.Outlined.Router,
         keywords = listOf("router", "gateway", "netgear", "linksys", "asus", "tp-link", "d-link", "cisco")
     ),
     SMARTPHONE(
         displayName = "Smartphone",
-        iconRes = R.drawable.ic_smartphone,
+        icon = Icons.Outlined.Smartphone,
         keywords = listOf("iphone", "android", "pixel", "samsung", "oneplus", "xiaomi", "huawei", "mobile", "oppo", "vivo", "redmi", "poco", "motorola", "nokia", "zte", "meizu", "realme", "galaxy")
     ),
     TABLET(
         displayName = "Tablet",
-        iconRes = R.drawable.ic_tablet,
+        icon = Icons.Outlined.Tablet,
         keywords = listOf("ipad", "tablet", "galaxy tab", "surface")
     ),
     LAPTOP(
         displayName = "Laptop",
-        iconRes = R.drawable.ic_laptop,
+        icon = Icons.Outlined.Laptop,
         keywords = listOf("macbook", "laptop", "notebook", "thinkpad", "dell", "hp", "lenovo", "acer", "asus", "msi", "surface", "chromebook", "intel", "realtek")
     ),
     DESKTOP(
         displayName = "Desktop",
-        iconRes = R.drawable.ic_desktop,
+        icon = Icons.Outlined.DesktopWindows,
         keywords = listOf("desktop", "pc", "imac", "workstation", "microsoft")
     ),
     TV(
         displayName = "Smart TV",
-        iconRes = R.drawable.ic_tv,
+        icon = Icons.Outlined.Tv,
         keywords = listOf("tv", "television", "roku", "firetv", "chromecast", "appletv", "samsung tv", "lg tv", "sony tv")
     ),
     GAME_CONSOLE(
         displayName = "Game Console",
-        iconRes = R.drawable.ic_game_console,
+        icon = Icons.Outlined.SportsEsports,
         keywords = listOf("playstation", "xbox", "nintendo", "switch", "ps4", "ps5")
     ),
     SMART_SPEAKER(
         displayName = "Smart Speaker",
-        iconRes = R.drawable.ic_smart_speaker,
+        icon = Icons.Outlined.Speaker,
         keywords = listOf("alexa", "echo", "google home", "homepod", "sonos")
     ),
     SMART_HOME(
         displayName = "Smart Home Device",
-        iconRes = R.drawable.ic_smart_home,
+        icon = Icons.Outlined.Home,
         keywords = listOf("nest", "hue", "smart", "iot", "thermostat", "camera", "ring", "wyze")
     ),
     PRINTER(
         displayName = "Printer",
-        iconRes = R.drawable.ic_printer,
+        icon = Icons.Outlined.Print,
         keywords = listOf("printer", "epson", "hp", "canon", "brother")
     ),
     NAS(
         displayName = "NAS/Storage",
-        iconRes = R.drawable.ic_storage,
+        icon = Icons.Outlined.Storage,
         keywords = listOf("nas", "synology", "qnap", "storage", "diskstation")
     ),
     SERVER(
         displayName = "Server",
-        iconRes = R.drawable.ic_server,
+        icon = Icons.Outlined.Dns,
         keywords = listOf("server", "linux", "ubuntu", "debian", "centos", "raspberry")
     ),
     WEARABLE(
         displayName = "Wearable",
-        iconRes = R.drawable.ic_wearable,
+        icon = Icons.Outlined.Watch,
         keywords = listOf("watch", "fitbit", "garmin", "wearable")
     ),
     UNKNOWN(
         displayName = "Unknown Device",
-        iconRes = R.drawable.ic_device_unknown,
+        icon = Icons.Outlined.DevicesOther,
         keywords = emptyList()
     );
 

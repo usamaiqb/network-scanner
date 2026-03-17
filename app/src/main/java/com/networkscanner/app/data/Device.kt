@@ -1,5 +1,6 @@
 package com.networkscanner.app.data
 
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import java.util.Date
@@ -65,10 +66,33 @@ data class Device(
         if (this === other) return true
         if (other !is Device) return false
         return uniqueId == other.uniqueId
+            && ipAddress == other.ipAddress
+            && hostname == other.hostname
+            && deviceType == other.deviceType
+            && vendor == other.vendor
+            && customName == other.customName
+            && isOnline == other.isOnline
+            && isCurrentDevice == other.isCurrentDevice
+            && latencyMs == other.latencyMs
+            && mdnsServices == other.mdnsServices
+            && ssdpInfo == other.ssdpInfo
+            && discoveredVia == other.discoveredVia
     }
 
     override fun hashCode(): Int {
-        return uniqueId.hashCode()
+        var result = uniqueId.hashCode()
+        result = 31 * result + ipAddress.hashCode()
+        result = 31 * result + (hostname?.hashCode() ?: 0)
+        result = 31 * result + deviceType.hashCode()
+        result = 31 * result + (vendor?.hashCode() ?: 0)
+        result = 31 * result + (customName?.hashCode() ?: 0)
+        result = 31 * result + isOnline.hashCode()
+        result = 31 * result + isCurrentDevice.hashCode()
+        result = 31 * result + (latencyMs?.hashCode() ?: 0)
+        result = 31 * result + mdnsServices.hashCode()
+        result = 31 * result + (ssdpInfo?.hashCode() ?: 0)
+        result = 31 * result + discoveredVia.hashCode()
+        return result
     }
 
     // Parcelable implementation
@@ -81,7 +105,12 @@ data class Device(
         customName = parcel.readString(),
         discoveredVia = DiscoveryMethod.entries.getOrElse(parcel.readInt()) { DiscoveryMethod.PING },
         mdnsServices = parcel.createStringArrayList() ?: emptyList(),
-        ssdpInfo = parcel.readParcelable(SsdpDeviceInfo::class.java.classLoader),
+        ssdpInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            parcel.readParcelable(SsdpDeviceInfo::class.java.classLoader, SsdpDeviceInfo::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            parcel.readParcelable(SsdpDeviceInfo::class.java.classLoader)
+        },
         isOnline = parcel.readByte() != 0.toByte(),
         isCurrentDevice = parcel.readByte() != 0.toByte(),
         lastSeen = Date(parcel.readLong()),
