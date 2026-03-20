@@ -1,0 +1,7 @@
+Bug fixes and scanning improvements
+
+• Fixed false positive device detection on some Android kernels
+• Fixed some Windows devices not being detected on some networks
+• Fixed incorrect subnet scanned on networks larger than /24
+• Fixed port scanning not running fully in parallel
+• More accurate OS detection and service banner grabbing
