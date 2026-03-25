@@ -27,7 +27,7 @@ A fast, privacy-focused network scanner for Android that helps you discover and 
 ## Download
 
 ### F-Droid
-_Submission in progress_
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.networkscanner.app/)
 
 ### GitHub Releases
 Download the latest APK from the [Releases](https://github.com/usamaiqb/network-scanner/releases) page.
