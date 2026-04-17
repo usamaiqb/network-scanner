@@ -131,6 +131,7 @@ enum class DeviceType(
                     it.contains("_airplay") -> TV
                     it.contains("_raop") -> SMART_SPEAKER
                     it.contains("_googlecast") -> TV
+                    it.contains("_androidtvremote2") -> TV
                     it.contains("_printer") || it.contains("_ipp") -> PRINTER
                     it.contains("_smb") || it.contains("_afpovertcp") -> NAS
                     it.contains("_ssh") || it.contains("_sftp") -> SERVER

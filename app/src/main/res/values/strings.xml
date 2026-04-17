@@ -78,6 +78,9 @@
     <string name="label_discovered_via">Discovered via</string>
     <string name="label_detected_os">Detected OS</string>
     <string name="label_scan_duration">Scan Duration</string>
+    <string name="device_info">Device Info</string>
+    <string name="label_friendly_name">Friendly Name</string>
+    <string name="label_model">Model</string>
 
     <!-- Deep Scan States -->
     <string name="tap_to_deep_scan">Tap to start a deep scan</string>

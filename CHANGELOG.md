@@ -1,3 +1,17 @@
+## [1.1.1] - 2026-04-13
+
+### Improved
+- Windows and Samba devices now show their actual hostname and workgroup via NetBIOS name resolution
+- Smart devices (TVs, routers, NAS, printers) now display rich info like friendly name, manufacturer, and model number from SSDP device descriptions
+- Increased SSDP discovery timeout to catch devices that respond slowly
+- Cast-enabled devices identified via port probing when mDNS/SSDP aren't available
+- Android TV devices detected via `_androidtvremote2` mDNS service type
+
+### Fixed
+- Fixed device hostnames being overwritten by mDNS names when a better name was already known
+- Fixed garbage/binary hostnames appearing for some devices due to malformed DNS or mDNS responses
+- Fixed mDNS device names showing raw UUID suffixes (e.g. "DEVICE-6d5e7bc166c2" → "DEVICE")
+
 ## [1.1.0] - 2026-03-25
 
 ### Changed

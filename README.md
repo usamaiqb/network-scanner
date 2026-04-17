@@ -6,10 +6,22 @@ A fast, privacy-focused network scanner for Android that helps you discover and 
 
 ## Features
 
-- 🔍 **Fast Network Scanning** - Quickly discover all devices on your network
-- 📱 **Device Details** - View IP addresses, MAC addresses, hostnames, and more
-- 🔓 **Port Scanning** - Identify open ports and running services
-- 🎨 **Material Design 3** - Modern, beautiful interface following latest design guidelines
+### Device Discovery
+- 🔍 **Ping Sweep** - Parallel ICMP ping sweep with TCP fallback for devices that block ICMP (e.g. Windows with firewall)
+- 📋 **ARP Cache** - Reads the ARP table to pick up devices without sending any traffic
+- 📡 **mDNS / Bonjour** - Discovers services like AirPlay, Chromecast, printers, SSH, SMB, HomeKit, and more
+- 📺 **SSDP / UPnP** - Finds UPnP devices and fetches their full description (friendly name, manufacturer, model number)
+- 🪟 **NetBIOS** - Resolves hostnames and workgroups for Windows and Samba devices
+- 🔌 **Port Heuristics** - Identifies Cast-enabled TVs and other devices via targeted port probes when other methods come up empty
+
+### Device Information
+- 🏷️ **MAC Address & Vendor** - Shows MAC address with OUI vendor lookup
+- 🖥️ **OS Fingerprinting** - Detects Windows, Linux, macOS, router firmware, and printer OS from open ports and banners
+- 📱 **Device Type Icons** - Automatically identifies smartphones, laptops, desktops, TVs, routers, printers, NAS, and more
+- 🔓 **Deep Port Scan** - Scans common ports, grabs service banners, and extracts software versions
+
+### App
+- 🎨 **Material Design 3** - Modern interface following latest design guidelines
 - 🔒 **Privacy First** - No ads, no tracking, no analytics
 - 🚀 **Lightweight** - Minimal permissions, efficient battery usage
 - 📡 **Offline** - Works completely offline, no internet required
@@ -93,6 +105,8 @@ Network Scanner:
 - ✅ Does NOT contain ads or tracking
 - ✅ Does NOT share data with third parties
 - ✅ All scanning happens locally on your device
+
+For full details, see the [Privacy Policy](PRIVACY_POLICY.md).
 
 ## Support
 

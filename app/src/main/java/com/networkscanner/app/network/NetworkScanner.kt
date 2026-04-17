@@ -17,6 +17,8 @@ import kotlinx.coroutines.sync.withPermit
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.DatagramPacket
+import java.net.HttpURLConnection
+import java.net.URL
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -35,7 +37,7 @@ class NetworkScanner(private val context: Context) {
         private const val PING_TIMEOUT_MS = 1000  // 1 second timeout for ping
         private const val PING_THREADS = 50       // Max concurrent ping coroutines
         private const val MDNS_TIMEOUT_MS = 2000L // Reduced for speed
-        private const val SSDP_TIMEOUT_MS = 1500L // Reduced for speed
+        private const val SSDP_TIMEOUT_MS = 2500L // MX: 2s + 500ms buffer for slow devices
         private const val SSDP_MULTICAST_ADDRESS = "239.255.255.250"
         private const val SSDP_PORT = 1900
 
@@ -134,9 +136,17 @@ class NetworkScanner(private val context: Context) {
             updateProgress(ScanPhase.SSDP_DISCOVERY, 0.8f, "Finding UPnP devices...")
             discoverSsdp()
 
+            // Phase 4.5: NetBIOS name resolution
+            updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.85f, "Resolving NetBIOS names...")
+            resolveNetBiosNames()
+
             // Phase 5: Identify devices
             updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.9f, "Identifying devices...")
             identifyDevices()
+
+            // Phase 5.5: Port heuristics for still-unknown devices
+            updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.95f, "Classifying devices...")
+            probePortHeuristics()
 
             // Phase 6: Finalize
             updateProgress(ScanPhase.FINALIZING, 1.0f, "Scan complete")
@@ -798,6 +808,7 @@ class NetworkScanner(private val context: Context) {
             "_airplay._tcp.",
             "_raop._tcp.",
             "_googlecast._tcp.",
+            "_androidtvremote2._tcp.",
             "_spotify-connect._tcp.",
             "_printer._tcp.",
             "_ipp._tcp.",
@@ -881,7 +892,9 @@ class NetworkScanner(private val context: Context) {
                     ip?.let {
                         val existing = discoveredDevices[it]
                         val services = (existing?.mdnsServices ?: emptyList()) + (serviceInfo?.serviceType ?: "")
-                        val hostname = serviceInfo?.serviceName?.takeIf { name -> name.isNotBlank() }
+                        val hostname = serviceInfo?.serviceName
+                            ?.takeIf { name -> name.isNotBlank() }
+                            ?.let { sanitizeMdnsName(it) }
 
                         // Identify device type immediately so UI shows correct icon
                         val identifiedType = DeviceType.identify(
@@ -898,7 +911,7 @@ class NetworkScanner(private val context: Context) {
                         }
 
                         val device = existing?.copy(
-                            hostname = hostname ?: existing.hostname,
+                            hostname = existing.hostname ?: hostname,
                             mdnsServices = services.distinct(),
                             deviceType = deviceType,
                             discoveredVia = if (existing.discoveredVia == DiscoveryMethod.MANUAL)
@@ -969,9 +982,67 @@ class NetworkScanner(private val context: Context) {
                     }
                 }
             }
+
+            // Fetch device description XMLs from all location URLs in parallel
+            val toFetch = discoveredDevices.values
+                .filter { it.ssdpInfo?.locationUrl != null }
+                .toList()
+
+            coroutineScope {
+                toFetch.map { device ->
+                    async {
+                        val locationUrl = device.ssdpInfo?.locationUrl ?: return@async
+                        val description = fetchSsdpDescription(locationUrl) ?: return@async
+                        val existing = discoveredDevices[device.ipAddress] ?: return@async
+                        val existingSsdp = existing.ssdpInfo ?: return@async
+                        discoveredDevices[device.ipAddress] = existing.copy(
+                            hostname = existing.hostname ?: description.friendlyName,
+                            ssdpInfo = existingSsdp.copy(
+                                friendlyName = description.friendlyName ?: existingSsdp.friendlyName,
+                                manufacturer = description.manufacturer ?: existingSsdp.manufacturer,
+                                modelName = description.modelName ?: existingSsdp.modelName,
+                                modelNumber = description.modelNumber ?: existingSsdp.modelNumber,
+                                serialNumber = description.serialNumber ?: existingSsdp.serialNumber,
+                                deviceType = description.deviceType ?: existingSsdp.deviceType
+                            )
+                        )
+                    }
+                }.awaitAll()
+            }
         } catch (e: Exception) {
             // SSDP discovery failed
         }
+    }
+
+    /**
+     * Fetch and parse a UPnP device description XML from the given URL.
+     * Returns a partially-filled SsdpDeviceInfo with fields from the XML, or null on failure.
+     */
+    private fun fetchSsdpDescription(locationUrl: String): SsdpDeviceInfo? {
+        return try {
+            val connection = URL(locationUrl).openConnection() as HttpURLConnection
+            connection.connectTimeout = 2000
+            connection.readTimeout = 2000
+            connection.requestMethod = "GET"
+            val xml = connection.inputStream.bufferedReader().readText()
+            connection.disconnect()
+            SsdpDeviceInfo(
+                friendlyName = extractXmlTag(xml, "friendlyName"),
+                manufacturer = extractXmlTag(xml, "manufacturer"),
+                modelName = extractXmlTag(xml, "modelName"),
+                modelNumber = extractXmlTag(xml, "modelNumber"),
+                serialNumber = extractXmlTag(xml, "serialNumber"),
+                deviceType = extractXmlTag(xml, "deviceType"),
+                locationUrl = locationUrl
+            )
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun extractXmlTag(xml: String, tag: String): String? {
+        val match = Regex("<$tag>([^<]*)</$tag>", RegexOption.IGNORE_CASE).find(xml)
+        return match?.groupValues?.get(1)?.trim()?.takeIf { it.isNotEmpty() }
     }
 
     private fun parseSsdpResponse(ip: String, response: String) {
@@ -1022,6 +1093,161 @@ class NetworkScanner(private val context: Context) {
         )
         discoveredDevices[ip] = device
         updateDeviceCount()
+    }
+
+    /**
+     * Query each discovered device via NetBIOS Name Service (UDP port 137) in parallel.
+     * Populates hostname, workgroup, and file-server status for Windows/Samba devices.
+     */
+    private suspend fun resolveNetBiosNames() = coroutineScope {
+        val targets = discoveredDevices.values
+            .filter { !it.isCurrentDevice }
+            .map { it.ipAddress }
+            .toList()
+
+        val semaphore = Semaphore(20)
+        targets.map { ip ->
+            async(Dispatchers.IO) {
+                semaphore.withPermit {
+                    val info = queryNetBios(ip) ?: return@withPermit
+                    val existing = discoveredDevices[ip] ?: return@withPermit
+                    // Prefer a pre-existing hostname only if it looks like a real hostname
+                    // (all-ASCII, no control/binary chars). Garbage from a failed DNS or
+                    // malformed SSDP friendlyName is replaced by the authoritative NetBIOS name.
+                    val validExistingHostname = existing.hostname?.takeIf { h ->
+                        h.isNotBlank() && h.all { it.isLetterOrDigit() || it == '-' || it == '.' || it == '_' }
+                    }
+                    // NetBIOS names are always uppercase; accept that as the canonical name.
+                    val finalHostname = validExistingHostname ?: info.hostname
+                    // Use the hostname (e.g. "LAPTOP-XXX", "DESKTOP-XXX") and vendor to
+                    // distinguish laptop from desktop. Fall back to DESKTOP for plain names.
+                    val inferredType = when {
+                        existing.deviceType != DeviceType.UNKNOWN -> existing.deviceType
+                        else -> {
+                            val fromName = DeviceType.identify(
+                                hostname = finalHostname,
+                                vendor = existing.vendor
+                            )
+                            if (fromName != DeviceType.UNKNOWN) fromName else DeviceType.DESKTOP
+                        }
+                    }
+                    discoveredDevices[ip] = existing.copy(
+                        hostname = finalHostname,
+                        netBiosInfo = info,
+                        deviceType = inferredType
+                    )
+                    updateDeviceCount()
+                }
+            }
+        }.awaitAll()
+    }
+
+    /**
+     * Send a NetBIOS NBSTAT query to the given IP and parse the response.
+     * Returns null if the device doesn't respond or isn't a NetBIOS device.
+     */
+    private fun queryNetBios(ip: String): NetBiosInfo? {
+        return try {
+            DatagramSocket().use { socket ->
+                socket.soTimeout = 300  // LAN NetBIOS response is < 50ms; 300ms is generous
+                val request = buildNetBiosRequest()
+                val address = InetAddress.getByName(ip)
+                socket.send(DatagramPacket(request, request.size, address, 137))
+                val buffer = ByteArray(1024)
+                val response = DatagramPacket(buffer, buffer.size)
+                socket.receive(response)
+                parseNetBiosResponse(buffer, response.length)
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /**
+     * Build a NetBIOS NBSTAT request packet (wildcard query for all names).
+     *
+     * Packet layout (50 bytes total):
+     *   12 bytes header  +  34 bytes question (1 length + 32 encoded wildcard name + 1 null + 2 type + 2 class)
+     *
+     * The wildcard '*' (0x2A) and 15 null padding bytes are first-level encoded:
+     *   each input byte X → two output bytes: ((X >> 4) + 0x41), ((X & 0xF) + 0x41)
+     *   '*' (0x2A) → 0x43 'C', 0x4B 'K'
+     *   0x00      → 0x41 'A', 0x41 'A'
+     */
+    private fun buildNetBiosRequest(): ByteArray = byteArrayOf(
+        // Header
+        0x13, 0x37,                                                         // Transaction ID
+        0x00, 0x00,                                                         // Flags: standard query
+        0x00, 0x01,                                                         // QDCOUNT: 1
+        0x00, 0x00,                                                         // ANCOUNT: 0
+        0x00, 0x00,                                                         // NSCOUNT: 0
+        0x00, 0x00,                                                         // ARCOUNT: 0
+        // QNAME: length byte + 32 encoded bytes + null terminator
+        0x20,                                                               // Name length: 32
+        0x43, 0x4B,                                                         // '*' (0x2A) encoded
+        0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,                   // null bytes 1–4 encoded
+        0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,                   // null bytes 5–8 encoded
+        0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,                   // null bytes 9–12 encoded
+        0x41, 0x41, 0x41, 0x41, 0x41, 0x41,                               // null bytes 13–15 encoded
+        0x00,                                                               // End of name
+        // QTYPE: NBSTAT (33), QCLASS: IN (1)
+        0x00, 0x21,
+        0x00, 0x01
+    )
+
+    /**
+     * Parse a NetBIOS NBSTAT response and extract hostname, workgroup, and file-server status.
+     *
+     * Expected response layout:
+     *   Offset  0–11: DNS-style header
+     *   Offset 12–49: echoed question section (34 bytes: same QNAME + type + class)
+     *   Offset 50–51: answer name (compression pointer 0xC0 0x0C, or full 34-byte name)
+     *   Offset 52–61: type(2) + class(2) + TTL(4) + RDLENGTH(2)  [when pointer used]
+     *   Offset 62:    NUM_NAMES (1 byte)
+     *   Offset 63+:   NAME_ENTRIES — each 18 bytes: 15-byte name + 1-byte suffix + 2-byte flags
+     */
+    private fun parseNetBiosResponse(data: ByteArray, length: Int): NetBiosInfo? {
+        if (length < 57) return null
+        val answerCount = ((data[6].toInt() and 0xFF) shl 8) or (data[7].toInt() and 0xFF)
+        if (answerCount == 0) return null
+
+        // QDCOUNT tells us whether the question section was echoed back.
+        // Windows sets QDCOUNT=0 and omits the question, so the answer starts at offset 12.
+        // Implementations that do echo the question (QDCOUNT=1) start the answer at offset 50.
+        val qdCount = ((data[4].toInt() and 0xFF) shl 8) or (data[5].toInt() and 0xFF)
+        val answerStart = if (qdCount > 0) 50 else 12
+        if (answerStart >= length) return null
+
+        // Answer name is either a 2-byte compression pointer (0xC0 xx) or a full 34-byte encoded name
+        val nameFieldLen = if ((data[answerStart].toInt() and 0xC0) == 0xC0) 2 else 34
+        // Skip name + type(2) + class(2) + ttl(4) + rdlength(2) = name + 10 bytes
+        val numNamesOffset = answerStart + nameFieldLen + 10
+        if (numNamesOffset >= length) return null
+
+        val numNames = data[numNamesOffset].toInt() and 0xFF
+        var offset = numNamesOffset + 1
+
+        var hostname: String? = null
+        var workgroup: String? = null
+
+        for (i in 0 until numNames) {
+            if (offset + 18 > length) break
+            val name = String(data, offset, 15, Charsets.ISO_8859_1).trimEnd()
+            val suffix = data[offset + 15].toInt() and 0xFF
+            val flags = ((data[offset + 16].toInt() and 0xFF) shl 8) or (data[offset + 17].toInt() and 0xFF)
+            val isGroup = (flags and 0x8000) != 0
+            when {
+                suffix == 0x00 && !isGroup && hostname == null -> hostname = name
+                (suffix == 0x00 || suffix == 0x1E) && isGroup && workgroup == null -> workgroup = name
+            }
+            offset += 18
+        }
+
+        val resolvedHostname = hostname?.takeIf { it.isNotBlank() } ?: return null
+        return NetBiosInfo(
+            hostname = resolvedHostname,
+            workgroup = workgroup?.takeIf { it.isNotBlank() }
+        )
     }
 
     /**
@@ -1089,6 +1315,43 @@ class NetworkScanner(private val context: Context) {
             discoveredDevices[ip] = updatedDevice
         }
         updateDeviceCount()
+    }
+
+    /**
+     * Quick TCP port probes on still-unknown devices to infer device type.
+     *   8008/8009 → Google Cast HTTP/control → Chromecast / Cast-enabled TV
+     * Only runs on devices still typed as UNKNOWN to avoid overwriting richer data.
+     */
+    private suspend fun probePortHeuristics() = coroutineScope {
+        val targets = discoveredDevices.values
+            .filter { it.deviceType == DeviceType.UNKNOWN && !it.isCurrentDevice }
+            .toList()
+
+        val semaphore = Semaphore(20)
+        targets.map { device ->
+            async(Dispatchers.IO) {
+                semaphore.withPermit {
+                    val ip = device.ipAddress
+                    val castOpen = listOf(8009, 8008).map { port ->
+                        async { isPortOpen(ip, port) }
+                    }.awaitAll().any { it }
+                    if (!castOpen) return@withPermit
+                    val inferredType = DeviceType.TV
+                    val existing = discoveredDevices[ip] ?: return@withPermit
+                    discoveredDevices[ip] = existing.copy(deviceType = inferredType)
+                }
+            }
+        }.awaitAll()
+    }
+
+    /**
+     * Clean up an mDNS service instance name for display.
+     * Strips trailing hex UUID suffixes (e.g. "DAWLANCE-GSMART-4KTV-6d5e7bc166c22d21c08e111944d3"
+     * → "DAWLANCE GSMART 4KTV") and replaces hyphens with spaces.
+     */
+    private fun sanitizeMdnsName(name: String): String {
+        val stripped = name.replace(Regex("-[0-9a-fA-F]{8,}$"), "")
+        return stripped.replace('-', ' ').trim()
     }
 
     private fun updateProgress(

@@ -23,6 +23,7 @@ data class Device(
     val discoveredVia: DiscoveryMethod = DiscoveryMethod.PING,
     val mdnsServices: List<String> = emptyList(),
     val ssdpInfo: SsdpDeviceInfo? = null,
+    val netBiosInfo: NetBiosInfo? = null,
 
     // Status
     val isOnline: Boolean = true,
@@ -31,8 +32,7 @@ data class Device(
     val firstSeen: Date = Date(),
 
     // Signal/latency info
-    val latencyMs: Int? = null,
-    val signalStrength: Int? = null
+    val latencyMs: Int? = null
 ) : Parcelable {
     /**
      * Get the display name for this device.
@@ -54,7 +54,7 @@ data class Device(
      * Check if this device has detailed information.
      */
     val hasDetails: Boolean
-        get() = hostname != null || vendor != null || mdnsServices.isNotEmpty() || ssdpInfo != null
+        get() = hostname != null || vendor != null || mdnsServices.isNotEmpty() || ssdpInfo != null || netBiosInfo != null
 
     /**
      * Unique identifier combining IP and MAC.
@@ -76,6 +76,7 @@ data class Device(
             && latencyMs == other.latencyMs
             && mdnsServices == other.mdnsServices
             && ssdpInfo == other.ssdpInfo
+            && netBiosInfo == other.netBiosInfo
             && discoveredVia == other.discoveredVia
     }
 
@@ -91,6 +92,7 @@ data class Device(
         result = 31 * result + (latencyMs?.hashCode() ?: 0)
         result = 31 * result + mdnsServices.hashCode()
         result = 31 * result + (ssdpInfo?.hashCode() ?: 0)
+        result = 31 * result + (netBiosInfo?.hashCode() ?: 0)
         result = 31 * result + discoveredVia.hashCode()
         return result
     }
@@ -111,12 +113,17 @@ data class Device(
             @Suppress("DEPRECATION")
             parcel.readParcelable(SsdpDeviceInfo::class.java.classLoader)
         },
+        netBiosInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            parcel.readParcelable(NetBiosInfo::class.java.classLoader, NetBiosInfo::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            parcel.readParcelable(NetBiosInfo::class.java.classLoader)
+        },
         isOnline = parcel.readByte() != 0.toByte(),
         isCurrentDevice = parcel.readByte() != 0.toByte(),
         lastSeen = Date(parcel.readLong()),
         firstSeen = Date(parcel.readLong()),
-        latencyMs = parcel.readValue(Int::class.java.classLoader) as? Int,
-        signalStrength = parcel.readValue(Int::class.java.classLoader) as? Int
+        latencyMs = parcel.readValue(Int::class.java.classLoader) as? Int
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -129,12 +136,12 @@ data class Device(
         parcel.writeInt(discoveredVia.ordinal)
         parcel.writeStringList(mdnsServices)
         parcel.writeParcelable(ssdpInfo, flags)
+        parcel.writeParcelable(netBiosInfo, flags)
         parcel.writeByte(if (isOnline) 1 else 0)
         parcel.writeByte(if (isCurrentDevice) 1 else 0)
         parcel.writeLong(lastSeen.time)
         parcel.writeLong(firstSeen.time)
         parcel.writeValue(latencyMs)
-        parcel.writeValue(signalStrength)
     }
 
     override fun describeContents(): Int = 0
@@ -155,6 +162,31 @@ enum class DiscoveryMethod {
     SSDP,
     NETBIOS,
     MANUAL
+}
+
+/**
+ * NetBIOS name service information for Windows/Samba devices.
+ */
+data class NetBiosInfo(
+    val hostname: String,
+    val workgroup: String? = null
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        hostname = parcel.readString() ?: "",
+        workgroup = parcel.readString()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(hostname)
+        parcel.writeString(workgroup)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<NetBiosInfo> {
+        override fun createFromParcel(parcel: Parcel): NetBiosInfo = NetBiosInfo(parcel)
+        override fun newArray(size: Int): Array<NetBiosInfo?> = arrayOfNulls(size)
+    }
 }
 
 /**

@@ -295,15 +295,22 @@ object NetworkUtils {
 
     /**
      * Resolve hostname for an IP address.
+     * Rejects the result if it equals the IP (unresolved), is blank, or contains
+     * non-hostname characters (e.g. binary garbage from broken mDNS/DNS responses).
      */
     fun resolveHostname(ipAddress: String): String? {
         return try {
             val address = InetAddress.getByName(ipAddress)
             val hostname = address.canonicalHostName
-            if (hostname != ipAddress) hostname else null
+            if (hostname != ipAddress && isValidHostname(hostname)) hostname else null
         } catch (e: Exception) {
             null
         }
+    }
+
+    private fun isValidHostname(hostname: String): Boolean {
+        if (hostname.isBlank() || hostname.length > 253) return false
+        return hostname.all { it.isLetterOrDigit() || it == '-' || it == '.' || it == '_' }
     }
 
     /**

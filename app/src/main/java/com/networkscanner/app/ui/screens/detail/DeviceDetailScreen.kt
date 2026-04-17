@@ -211,6 +211,44 @@ fun DeviceDetailScreen(
                     }
                 }
 
+                // SSDP / UPnP device info section
+                val ssdp = dev.ssdpInfo
+                if (ssdp != null) {
+                    item(key = "device_info") {
+                        val deviceInfoRows = buildList {
+                            ssdp.friendlyName
+                                ?.takeIf { it != dev.hostname }
+                                ?.let { add(stringResource(R.string.label_friendly_name) to it) }
+                            ssdp.manufacturer
+                                ?.takeIf { it != dev.vendor }
+                                ?.let { add(stringResource(R.string.label_vendor) to it) }
+                            val model = listOfNotNull(ssdp.modelName, ssdp.modelNumber)
+                                .joinToString(" ")
+                                .takeIf { it.isNotBlank() }
+                            model?.let { add(stringResource(R.string.label_model) to it) }
+                        }
+                        if (deviceInfoRows.isNotEmpty()) {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                SectionHeader(
+                                    title = stringResource(R.string.device_info),
+                                    count = deviceInfoRows.size
+                                )
+                                Spacer(Modifier.height(8.dp))
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    deviceInfoRows.forEachIndexed { index, (label, value) ->
+                                        SegmentSurface(index = index, count = deviceInfoRows.size) {
+                                            InfoRow(label = label, value = value)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // Deep scan section
                 item {
                     DeepScanSection(

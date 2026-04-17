@@ -1,0 +1,7 @@
+• Windows/Samba devices now show their hostname and workgroup via NetBIOS
+• Smart devices (TVs, routers, NAS) now show friendly name, manufacturer, and model from SSDP
+• Cast-enabled devices identified via port probing when mDNS/SSDP aren't available
+• Android TV devices detected via _androidtvremote2 mDNS service
+• Fixed hostnames being overwritten by worse mDNS names
+• Fixed garbage hostnames from malformed DNS/mDNS responses
+• Fixed mDNS names showing raw UUID suffixes
