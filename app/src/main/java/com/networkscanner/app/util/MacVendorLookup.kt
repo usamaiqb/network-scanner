@@ -527,6 +527,11 @@ object MacVendorLookup {
         val normalized = normalizeMac(macAddress)
         if (normalized.length < 8) return null
 
+        // Locally-administered MACs (bit 1 of first octet set) are randomized
+        // by Android 10+ and iOS 14+. Any OUI match is a false positive.
+        val firstOctet = normalized.substring(0, 2).toIntOrNull(16) ?: return null
+        if ((firstOctet and 0x02) != 0) return null
+
         // Get OUI (first 3 bytes)
         val oui = normalized.substring(0, 8)
         return ouiDatabase[oui]

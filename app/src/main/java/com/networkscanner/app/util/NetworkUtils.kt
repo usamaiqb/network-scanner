@@ -18,10 +18,20 @@ import java.util.concurrent.TimeUnit
 /**
  * Utility class for network-related operations.
  */
+/**
+ * Result of a ping/reachability check.
+ */
+data class PingResult(
+    val reachable: Boolean,
+    val latencyMs: Int? = null,
+    val ttl: Int? = null
+)
+
 object NetworkUtils {
 
     private val IP_PATTERN = Regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$")
     private val PING_RTT_PATTERN = Regex("""time[=<]([\d.]+)\s*ms""")
+    private val PING_TTL_PATTERN = Regex("""ttl=(\d+)""", RegexOption.IGNORE_CASE)
 
     /**
      * Check if device is connected to WiFi.
@@ -231,8 +241,8 @@ object NetworkUtils {
      * Check if an IP address is reachable using ping first, then TCP port probing as fallback.
      * This handles devices that block ICMP (like Windows laptops with firewall).
      */
-    suspend fun isReachable(ipAddress: String, timeoutMs: Int = 1000): Pair<Boolean, Int?> {
-        if (!isValidIpAddress(ipAddress)) return Pair(false, null)
+    suspend fun isReachable(ipAddress: String, timeoutMs: Int = 1000): PingResult {
+        if (!isValidIpAddress(ipAddress)) return PingResult(false)
 
         val startTime = System.currentTimeMillis()
         val timeoutSec = maxOf(1, timeoutMs / 1000)
@@ -253,7 +263,9 @@ object NetworkUtils {
                 val latency = PING_RTT_PATTERN.find(output)
                     ?.groupValues?.get(1)?.toFloatOrNull()?.toInt()
                 if (latency != null) {
-                    return Pair(true, latency)
+                    val ttl = PING_TTL_PATTERN.find(output)
+                        ?.groupValues?.get(1)?.toIntOrNull()
+                    return PingResult(true, latency, ttl)
                 }
             }
         } catch (e: Exception) {
@@ -286,11 +298,23 @@ object NetworkUtils {
 
             if (reachable) {
                 val latency = (System.currentTimeMillis() - startTime).toInt()
-                Pair(true, latency)
+                PingResult(true, latency)
             } else {
-                Pair(false, null)
+                PingResult(false)
             }
         }
+    }
+
+    /**
+     * Check if a MAC address is locally administered (randomized).
+     * Android 10+ and iOS 14+ randomize MACs per-network, setting the
+     * locally-administered bit (bit 1 of the first octet).
+     */
+    fun isLocallyAdministeredMac(mac: String?): Boolean {
+        if (mac == null) return false
+        val firstOctet = mac.split(":").firstOrNull()
+            ?.toIntOrNull(16) ?: return false
+        return (firstOctet and 0x02) != 0
     }
 
     /**

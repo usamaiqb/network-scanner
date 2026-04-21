@@ -719,22 +719,24 @@ class NetworkScanner(private val context: Context) {
         val jobs = ipRange.map { ip ->
             async(Dispatchers.IO) {
                 semaphore.withPermit {
-                    val (reachable, latency) = NetworkUtils.isReachable(ip, PING_TIMEOUT_MS)
-                    if (reachable) {
+                    val pingResult = NetworkUtils.isReachable(ip, PING_TIMEOUT_MS)
+                    if (pingResult.reachable) {
                         val macAddress = ArpReader.getMacForIp(ip)
                         val vendor = MacVendorLookup.lookup(macAddress)
                         val existing = discoveredDevices[ip]
 
                         val device = existing?.copy(
                             isOnline = true,
-                            latencyMs = latency,
+                            latencyMs = pingResult.latencyMs,
+                            ttl = pingResult.ttl ?: existing.ttl,
                             lastSeen = Date()
                         ) ?: Device(
                             ipAddress = ip,
                             macAddress = macAddress,
                             vendor = vendor,
                             isOnline = true,
-                            latencyMs = latency,
+                            latencyMs = pingResult.latencyMs,
+                            ttl = pingResult.ttl,
                             discoveredVia = DiscoveryMethod.PING
                         )
                         discoveredDevices[ip] = device
@@ -808,13 +810,16 @@ class NetworkScanner(private val context: Context) {
             "_airplay._tcp.",
             "_raop._tcp.",
             "_googlecast._tcp.",
+            "_googlezone._tcp.",
             "_androidtvremote2._tcp.",
             "_spotify-connect._tcp.",
             "_printer._tcp.",
             "_ipp._tcp.",
             "_ssh._tcp.",
             "_sftp-ssh._tcp.",
-            "_homekit._tcp."
+            "_homekit._tcp.",
+            "_matter._tcp.",
+            "_sleep-proxy._udp."
         )
 
         nsdManager = context.getSystemService(Context.NSD_SERVICE) as? NsdManager
@@ -883,12 +888,35 @@ class NetworkScanner(private val context: Context) {
 
             override fun onServiceResolved(serviceInfo: NsdServiceInfo?) {
                 try {
-                    val ip = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        serviceInfo?.hostAddresses?.firstOrNull()?.hostAddress
+                    // Prefer IPv4 — mDNS can resolve to IPv6 link-local which creates
+                    // duplicate entries for the same physical device.
+                    var ip = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        val addrs = serviceInfo?.hostAddresses ?: emptyList()
+                        addrs.firstOrNull { it is java.net.Inet4Address }?.hostAddress
+                            ?: addrs.firstOrNull()?.hostAddress
                     } else {
                         @Suppress("DEPRECATION")
                         serviceInfo?.host?.hostAddress
                     }
+
+                    // If we got an IPv6 link-local address, try to find the matching
+                    // IPv4 device by hostname so we merge services instead of duplicating.
+                    if (ip != null && ip.startsWith("fe80")) {
+                        val hostname = serviceInfo?.serviceName
+                            ?.takeIf { name -> name.isNotBlank() }
+                            ?.let { sanitizeMdnsName(it) }
+                        val matchByHostname = hostname?.let { h ->
+                            discoveredDevices.entries.firstOrNull { (_, d) ->
+                                d.hostname != null && d.hostname.equals(h, ignoreCase = true)
+                            }
+                        }
+                        if (matchByHostname != null) {
+                            ip = matchByHostname.key // Use the existing IPv4 address
+                        } else {
+                            return // Skip — IPv6 link-local with no matching IPv4 device
+                        }
+                    }
+
                     ip?.let {
                         val existing = discoveredDevices[it]
                         val services = (existing?.mdnsServices ?: emptyList()) + (serviceInfo?.serviceType ?: "")
@@ -1318,9 +1346,15 @@ class NetworkScanner(private val context: Context) {
     }
 
     /**
-     * Quick TCP port probes on still-unknown devices to infer device type.
-     *   8008/8009 → Google Cast HTTP/control → Chromecast / Cast-enabled TV
-     * Only runs on devices still typed as UNKNOWN to avoid overwriting richer data.
+     * Port probes + TTL-based heuristics for still-unknown devices.
+     *
+     * Step 1: TCP port probes — strong signals from specific ports
+     * Step 2: Passive heuristics — TTL + protocol absence pattern
+     *
+     * Note: MAC-based detection (locally-administered bit) and hostname resolution
+     * (gateway DNS, mDNS reverse PTR, nslookup) were attempted but don't work on
+     * Android 14 due to SELinux restrictions. See docs/discoverability-improvements.md
+     * for the VPN-based approach that would solve both.
      */
     private suspend fun probePortHeuristics() = coroutineScope {
         val targets = discoveredDevices.values
@@ -1332,13 +1366,70 @@ class NetworkScanner(private val context: Context) {
             async(Dispatchers.IO) {
                 semaphore.withPermit {
                     val ip = device.ipAddress
-                    val castOpen = listOf(8009, 8008).map { port ->
-                        async { isPortOpen(ip, port) }
-                    }.awaitAll().any { it }
-                    if (!castOpen) return@withPermit
-                    val inferredType = DeviceType.TV
                     val existing = discoveredDevices[ip] ?: return@withPermit
-                    discoveredDevices[ip] = existing.copy(deviceType = inferredType)
+
+                    // --- Step 1: TCP port probes ---
+                    val portResults = listOf(8008, 8009, 5555, 7000, 7100, 62078).map { port ->
+                        async { port to isPortOpen(ip, port) }
+                    }.awaitAll().toMap()
+
+                    val has8008 = portResults[8008] == true
+                    val has8009 = portResults[8009] == true
+                    val has5555 = portResults[5555] == true
+                    val has7000 = portResults[7000] == true
+                    val has7100 = portResults[7100] == true
+                    val has62078 = portResults[62078] == true
+
+                    val portInferred = when {
+                        // AirPlay receiver → Apple TV
+                        has7000 || has7100 -> DeviceType.TV
+                        // Both Cast ports → dedicated Chromecast or Android TV
+                        has8008 && has8009 -> DeviceType.TV
+                        // Cast HTTP only (no control channel) → phone with Google Home
+                        has8008 && !has8009 -> DeviceType.SMARTPHONE
+                        // Android ADB WiFi debugging
+                        has5555 -> DeviceType.SMARTPHONE
+                        // Apple lockdownd → iOS device
+                        has62078 -> DeviceType.SMARTPHONE
+                        else -> null
+                    }
+
+                    if (portInferred != null) {
+                        discoveredDevices[ip] = existing.copy(deviceType = portInferred)
+                        return@withPermit
+                    }
+
+                    // --- Step 2: Passive heuristics ---
+                    val passiveInferred = when {
+                        // Randomized MAC + no NetBIOS + not Windows TTL
+                        // (works on devices where ARP cache is accessible)
+                        NetworkUtils.isLocallyAdministeredMac(existing.macAddress)
+                            && existing.netBiosInfo == null
+                            && existing.ttl != 128 ->
+                            DeviceType.SMARTPHONE
+
+                        // TTL=64 + no NetBIOS + no SSDP + no mDNS + no vendor
+                        // Real detection using actual network signals:
+                        //   TTL=64 → Linux kernel family (Android, iOS, Linux, macOS)
+                        //   No NetBIOS → not Windows/Samba
+                        //   No SSDP → not a media device/smart TV
+                        //   No mDNS services → not a printer/speaker/Apple device
+                        //   No vendor → no MAC available or randomized MAC
+                        // On home networks this profile matches Android/iOS phones.
+                        // Linux servers are caught earlier by hostname/mDNS/SSH.
+                        existing.ttl == 64
+                            && existing.netBiosInfo == null
+                            && existing.ssdpInfo == null
+                            && existing.mdnsServices.isEmpty()
+                            && existing.vendor == null ->
+                            DeviceType.SMARTPHONE
+
+                        else -> null
+                    }
+
+                    if (passiveInferred != null) {
+                        discoveredDevices[ip] = existing.copy(deviceType = passiveInferred)
+                    }
                 }
             }
         }.awaitAll()

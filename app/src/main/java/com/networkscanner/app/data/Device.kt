@@ -32,7 +32,10 @@ data class Device(
     val firstSeen: Date = Date(),
 
     // Signal/latency info
-    val latencyMs: Int? = null
+    val latencyMs: Int? = null,
+
+    // OS fingerprinting: TTL from ping response (64=Linux/Android/iOS, 128=Windows)
+    val ttl: Int? = null
 ) : Parcelable {
     /**
      * Get the display name for this device.
@@ -74,6 +77,7 @@ data class Device(
             && isOnline == other.isOnline
             && isCurrentDevice == other.isCurrentDevice
             && latencyMs == other.latencyMs
+            && ttl == other.ttl
             && mdnsServices == other.mdnsServices
             && ssdpInfo == other.ssdpInfo
             && netBiosInfo == other.netBiosInfo
@@ -90,6 +94,7 @@ data class Device(
         result = 31 * result + isOnline.hashCode()
         result = 31 * result + isCurrentDevice.hashCode()
         result = 31 * result + (latencyMs?.hashCode() ?: 0)
+        result = 31 * result + (ttl?.hashCode() ?: 0)
         result = 31 * result + mdnsServices.hashCode()
         result = 31 * result + (ssdpInfo?.hashCode() ?: 0)
         result = 31 * result + (netBiosInfo?.hashCode() ?: 0)
@@ -123,7 +128,8 @@ data class Device(
         isCurrentDevice = parcel.readByte() != 0.toByte(),
         lastSeen = Date(parcel.readLong()),
         firstSeen = Date(parcel.readLong()),
-        latencyMs = parcel.readValue(Int::class.java.classLoader) as? Int
+        latencyMs = parcel.readValue(Int::class.java.classLoader) as? Int,
+        ttl = parcel.readValue(Int::class.java.classLoader) as? Int
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -142,6 +148,7 @@ data class Device(
         parcel.writeLong(lastSeen.time)
         parcel.writeLong(firstSeen.time)
         parcel.writeValue(latencyMs)
+        parcel.writeValue(ttl)
     }
 
     override fun describeContents(): Int = 0

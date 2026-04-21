@@ -126,11 +126,13 @@ enum class DeviceType(
             }
 
             // Special cases based on mDNS service types
+            // Note: _googlecast is intentionally omitted — it's advertised by both
+            // dedicated Chromecasts (TV) and Android phones running Google Home.
+            // probePortHeuristics() disambiguates using port 8008/8009.
             mdnsServiceType?.let {
                 return when {
                     it.contains("_airplay") -> TV
                     it.contains("_raop") -> SMART_SPEAKER
-                    it.contains("_googlecast") -> TV
                     it.contains("_androidtvremote2") -> TV
                     it.contains("_printer") || it.contains("_ipp") -> PRINTER
                     it.contains("_smb") || it.contains("_afpovertcp") -> NAS

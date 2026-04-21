@@ -6,6 +6,10 @@ import java.io.FileReader
 
 /**
  * Reads ARP cache from /proc/net/arp to discover devices on the network.
+ *
+ * Note: On Android 10+ (SDK 29), /proc/net/arp access is restricted by SELinux.
+ * Apps may only see the gateway entry. Full neighbor table access requires a
+ * VPN-based packet capture approach (see docs/discoverability-improvements.md).
  */
 object ArpReader {
 

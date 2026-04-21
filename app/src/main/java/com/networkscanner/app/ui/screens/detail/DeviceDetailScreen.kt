@@ -141,14 +141,27 @@ fun DeviceDetailScreen(
                 item(key = "identity") {
                     val identityRows = buildList {
                         add(stringResource(R.string.label_ip_address) to dev.ipAddress)
-                        dev.macAddress?.let {
-                            add(stringResource(R.string.label_mac_address) to it.uppercase())
+                        dev.macAddress?.let { mac ->
+                            val macLabel = if (com.networkscanner.app.util.NetworkUtils.isLocallyAdministeredMac(mac))
+                                "${stringResource(R.string.label_mac_address)} (randomized)"
+                            else
+                                stringResource(R.string.label_mac_address)
+                            add(macLabel to mac.uppercase())
                         }
                         dev.vendor?.let {
                             add(stringResource(R.string.label_vendor) to it)
                         }
                         if (dev.latencyMs != null && dev.isOnline) {
                             add(stringResource(R.string.label_latency) to "${dev.latencyMs}ms")
+                        }
+                        dev.ttl?.let {
+                            val osHint = when (it) {
+                                64 -> "TTL" to "$it (Linux/Android/iOS)"
+                                128 -> "TTL" to "$it (Windows)"
+                                255 -> "TTL" to "$it (Router/Switch)"
+                                else -> "TTL" to "$it"
+                            }
+                            add(osHint)
                         }
                     }
 
