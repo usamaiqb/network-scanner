@@ -80,16 +80,17 @@ class NetworkScanner(private val context: Context) {
     /**
      * Start a full network scan.
      */
-    suspend fun scan(): ScanResult = withContext(scope.coroutineContext) {
+    suspend fun scan(interfaceName: String? = null): ScanResult = withContext(scope.coroutineContext) {
         val startTime = Date()
         discoveredDevices.clear()
 
-        val networkInfo = NetworkUtils.getNetworkInfo(context)
+        val networkInfo = NetworkUtils.getNetworkInfo(context, interfaceName)
             ?: return@withContext ScanResult(
                 devices = emptyList(),
                 scanStartTime = startTime,
                 scanEndTime = Date(),
                 networkInfo = NetworkInfo(
+                    interfaceName = interfaceName,
                     ssid = null,
                     bssid = null,
                     ipAddress = "0.0.0.0",
@@ -98,7 +99,7 @@ class NetworkScanner(private val context: Context) {
                     networkPrefix = 24
                 ),
                 scanStatus = ScanStatus.ERROR,
-                error = "No WiFi connection"
+                error = "No active network interface"
             )
 
         // Add current device
@@ -628,7 +629,7 @@ class NetworkScanner(private val context: Context) {
 
     private fun addCurrentDevice(networkInfo: NetworkInfo) {
         val localIp = networkInfo.ipAddress
-        val localMac = NetworkUtils.getLocalMacAddress()
+        val localMac = NetworkUtils.getLocalMacAddress(networkInfo.interfaceName)
         val vendor = MacVendorLookup.lookup(localMac)
 
         val currentDevice = Device(
