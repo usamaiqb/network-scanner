@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.networkscanner.app.NetworkScannerApp
 import com.networkscanner.app.data.*
+import com.networkscanner.app.util.NetworkInterfaceOption
 import com.networkscanner.app.util.NetworkUtils
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,6 +40,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _networkInfo = MutableStateFlow<NetworkInfo?>(null)
     val networkInfo: StateFlow<NetworkInfo?> = _networkInfo.asStateFlow()
 
+    private val _availableInterfaces = MutableStateFlow<List<NetworkInterfaceOption>>(emptyList())
+    val availableInterfaces: StateFlow<List<NetworkInterfaceOption>> = _availableInterfaces.asStateFlow()
+
+    private val _selectedInterfaceName = MutableStateFlow<String?>(null)
+    val selectedInterfaceName: StateFlow<String?> = _selectedInterfaceName.asStateFlow()
+
     private val _errorMessage = Channel<String>(Channel.BUFFERED)
     val errorMessage = _errorMessage.receiveAsFlow()
 
@@ -54,13 +61,31 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 _scanProgress.value = progress
             }
         }
+
+        refreshInterfaces()
     }
 
     /**
-     * Check if WiFi is connected.
+     * Refresh active network interfaces and keep selection valid.
      */
-    fun isWifiConnected(): Boolean {
-        return NetworkUtils.isWifiConnected(getApplication())
+    fun refreshInterfaces() {
+        val interfaces = NetworkUtils.getAvailableInterfaces()
+        _availableInterfaces.value = interfaces
+
+        val current = _selectedInterfaceName.value
+        _selectedInterfaceName.value = when {
+            interfaces.isEmpty() -> null
+            current != null && interfaces.any { it.name == current } -> current
+            else -> interfaces.first().name
+        }
+    }
+
+    fun onInterfaceSelected(interfaceName: String) {
+        _selectedInterfaceName.value = interfaceName
+
+        // Update header info immediately for the selected interface, then auto-scan.
+        _networkInfo.value = NetworkUtils.getNetworkInfo(getApplication(), interfaceName)
+        startScan()
     }
 
     /**
@@ -70,7 +95,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         if (_uiState.value is UiState.Scanning) return
 
         viewModelScope.launch {
-            if (!isWifiConnected()) {
+            refreshInterfaces()
+            val interfaceName = _selectedInterfaceName.value
+            if (interfaceName == null) {
                 _uiState.value = UiState.NoWifi
                 return@launch
             }
@@ -78,7 +105,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             _uiState.value = UiState.Scanning
 
             try {
-                val result = scanner.scan()
+                val result = scanner.scan(interfaceName)
 
                 _networkInfo.value = result.networkInfo
                 updateDeviceLists(result.devices)
