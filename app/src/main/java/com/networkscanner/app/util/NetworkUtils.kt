@@ -27,6 +27,20 @@ data class PingResult(
     val ttl: Int? = null
 )
 
+data class NetworkInterfaceOption(
+    val name: String,
+    val ipAddress: String,
+    val type: InterfaceType
+)
+
+enum class InterfaceType {
+    WIFI,
+    ETHERNET,
+    VPN,
+    CELLULAR,
+    OTHER
+}
+
 object NetworkUtils {
 
     private val IP_PATTERN = Regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$")
@@ -54,54 +68,69 @@ object NetworkUtils {
 
     /**
      * Get complete network information.
+     * If interfaceName is null, uses the first active non-loopback IPv4 interface.
      */
-    fun getNetworkInfo(context: Context): NetworkInfo? {
-        if (!isWifiConnected(context)) return null
-
-        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        @Suppress("DEPRECATION")
-        val wifiInfo = wifiManager.connectionInfo ?: return null
-        @Suppress("DEPRECATION")
-        val dhcpInfo = wifiManager.dhcpInfo
-
-        // Get IP address from DHCP info, fallback to NetworkInterface if 0 or null
-        var ipAddress = if (dhcpInfo != null && dhcpInfo.ipAddress != 0) {
-            intToIpAddress(dhcpInfo.ipAddress)
+    fun getNetworkInfo(context: Context, interfaceName: String? = null): NetworkInfo? {
+        val selectedInterface = if (interfaceName != null) {
+            getInterfaceByName(interfaceName)
         } else {
-            getLocalIpAddress() ?: return null
-        }
+            getAvailableInterfaces().firstOrNull()?.let { getInterfaceByName(it.name) }
+        } ?: return null
 
-        // Validate IP address is not 0.0.0.0
-        if (ipAddress == "0.0.0.0") {
-            ipAddress = getLocalIpAddress() ?: return null
-        }
+        val interfaceIpv4 = selectedInterface.inetAddresses.toList()
+            .filterIsInstance<Inet4Address>()
+            .firstOrNull { !it.isLoopbackAddress }
+            ?: return null
 
-        val subnetMask = if (dhcpInfo != null && dhcpInfo.netmask != 0) {
-            intToIpAddress(dhcpInfo.netmask)
-        } else {
-            "255.255.255.0" // Default to /24
-        }
+        val ipAddress = interfaceIpv4.hostAddress ?: return null
+        val prefixLength = selectedInterface.interfaceAddresses
+            .firstOrNull { it.address == interfaceIpv4 }
+            ?.networkPrefixLength
+            ?.toInt()
+            ?.coerceIn(0, 32)
+            ?: 24
+        val subnetMask = prefixLengthToSubnetMask(prefixLength)
 
-        val gateway = if (dhcpInfo != null && dhcpInfo.gateway != 0) {
-            intToIpAddress(dhcpInfo.gateway)
-        } else {
-            // Attempt to derive gateway from IP (common pattern: x.x.x.1)
-            val parts = ipAddress.split(".")
-            if (parts.size == 4) "${parts[0]}.${parts[1]}.${parts[2]}.1" else null
-        }
+        var ssid: String? = null
+        var bssid: String? = null
+        var frequency: Int? = null
+        var linkSpeed: Int? = null
+        var signalStrength: Int? = null
+        var gateway: String? = null
 
-        val networkPrefix = calculateNetworkPrefix(subnetMask)
+        // For Wi-Fi interfaces, enrich with DHCP and Wi-Fi details when available.
+        if (selectedInterface.name.equals("wlan0", ignoreCase = true) && isWifiConnected(context)) {
+            val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            @Suppress("DEPRECATION")
+            val wifiInfo = wifiManager.connectionInfo
+            @Suppress("DEPRECATION")
+            val dhcpInfo = wifiManager.dhcpInfo
+
+            ssid = getSSID(context)
+            bssid = wifiInfo?.bssid
+            frequency = wifiInfo?.frequency
+            linkSpeed = wifiInfo?.linkSpeed
+            signalStrength = wifiInfo?.rssi
+
+            gateway = if (dhcpInfo != null && dhcpInfo.gateway != 0) {
+                intToIpAddress(dhcpInfo.gateway)
+            } else {
+                val parts = ipAddress.split(".")
+                if (parts.size == 4) "${parts[0]}.${parts[1]}.${parts[2]}.1" else null
+            }
+        }
 
         return NetworkInfo(
-            ssid = getSSID(context),
-            bssid = wifiInfo.bssid,
+            interfaceName = selectedInterface.name,
+            ssid = ssid,
+            bssid = bssid,
             ipAddress = ipAddress,
             subnetMask = subnetMask,
             gateway = gateway,
-            networkPrefix = networkPrefix,
-            frequency = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) wifiInfo.frequency else null,
-            linkSpeed = wifiInfo.linkSpeed,
-            signalStrength = wifiInfo.rssi
+            networkPrefix = prefixLength,
+            frequency = frequency,
+            linkSpeed = linkSpeed,
+            signalStrength = signalStrength
         )
     }
 
@@ -121,32 +150,46 @@ object NetworkUtils {
     }
 
     /**
-     * Get device's IP address on the local network.
-     * Prefers the WiFi (wlan0) interface to avoid returning VPN or cellular IPs.
+     * Get active non-loopback IPv4 interfaces that can be scanned.
      */
-    fun getLocalIpAddress(): String? {
-        try {
-            val interfaces = NetworkInterface.getNetworkInterfaces()
+    fun getAvailableInterfaces(): List<NetworkInterfaceOption> {
+        return try {
+            val interfaces = NetworkInterface.getNetworkInterfaces().toList()
+            interfaces
+                .filter { isEligibleInterface(it) }
+                .mapNotNull { networkInterface ->
+                    val ipv4 = networkInterface.inetAddresses.toList()
+                        .filterIsInstance<Inet4Address>()
+                        .firstOrNull { !it.isLoopbackAddress }
+                        ?: return@mapNotNull null
 
-            // First pass: prefer wlan0 (WiFi interface)
-            var fallbackAddress: String? = null
-            while (interfaces.hasMoreElements()) {
-                val networkInterface = interfaces.nextElement()
-                val addresses = networkInterface.inetAddresses
-                while (addresses.hasMoreElements()) {
-                    val address = addresses.nextElement()
-                    if (!address.isLoopbackAddress && address is Inet4Address) {
-                        if (networkInterface.name.equals("wlan0", ignoreCase = true)) {
-                            return address.hostAddress
-                        }
-                        if (fallbackAddress == null) {
-                            fallbackAddress = address.hostAddress
-                        }
-                    }
+                    NetworkInterfaceOption(
+                        name = networkInterface.name,
+                        ipAddress = ipv4.hostAddress ?: return@mapNotNull null,
+                        type = inferInterfaceType(networkInterface.name)
+                    )
                 }
+                .sortedWith(compareBy<NetworkInterfaceOption> { interfaceTypePriority(it.type) }
+                    .thenBy { it.name })
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    /**
+     * Get device's IP address on the selected local interface.
+     */
+    fun getLocalIpAddress(interfaceName: String? = null): String? {
+        try {
+            if (interfaceName != null) {
+                val networkInterface = getInterfaceByName(interfaceName) ?: return null
+                val address = networkInterface.inetAddresses.toList()
+                    .filterIsInstance<Inet4Address>()
+                    .firstOrNull { !it.isLoopbackAddress }
+                return address?.hostAddress
             }
 
-            return fallbackAddress
+            return getAvailableInterfaces().firstOrNull()?.ipAddress
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -154,22 +197,68 @@ object NetworkUtils {
     }
 
     /**
-     * Get local device's MAC address.
+     * Get local device's MAC address for the selected interface.
      */
-    fun getLocalMacAddress(): String? {
+    fun getLocalMacAddress(interfaceName: String? = null): String? {
         try {
-            val interfaces = NetworkInterface.getNetworkInterfaces()
-            while (interfaces.hasMoreElements()) {
-                val networkInterface = interfaces.nextElement()
-                if (networkInterface.name.equals("wlan0", ignoreCase = true)) {
-                    val mac = networkInterface.hardwareAddress ?: return null
-                    return mac.joinToString(":") { String.format("%02X", it) }
-                }
-            }
+            val networkInterface = if (interfaceName != null) {
+                getInterfaceByName(interfaceName)
+            } else {
+                getAvailableInterfaces().firstOrNull()?.let { getInterfaceByName(it.name) }
+            } ?: return null
+
+            val mac = networkInterface.hardwareAddress ?: return null
+            return mac.joinToString(":") { String.format("%02X", it) }
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return null
+    }
+
+    private fun getInterfaceByName(interfaceName: String): NetworkInterface? {
+        return try {
+            NetworkInterface.getNetworkInterfaces().toList()
+                .firstOrNull { it.name.equals(interfaceName, ignoreCase = true) && isEligibleInterface(it) }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun isEligibleInterface(networkInterface: NetworkInterface): Boolean {
+        if (!networkInterface.isUp || networkInterface.isLoopback) return false
+        val hasIpv4 = networkInterface.inetAddresses.toList().any { address ->
+            address is Inet4Address && !address.isLoopbackAddress
+        }
+        return hasIpv4
+    }
+
+    private fun inferInterfaceType(interfaceName: String): InterfaceType {
+        val name = interfaceName.lowercase()
+        return when {
+            name.startsWith("wlan") || name.startsWith("wifi") -> InterfaceType.WIFI
+            name.startsWith("eth") || name.startsWith("en") -> InterfaceType.ETHERNET
+            name.startsWith("tun") || name.startsWith("tap") || name.startsWith("ppp") -> InterfaceType.VPN
+            name.startsWith("rmnet") || name.startsWith("ccmni") -> InterfaceType.CELLULAR
+            else -> InterfaceType.OTHER
+        }
+    }
+
+    private fun interfaceTypePriority(type: InterfaceType): Int {
+        return when (type) {
+            InterfaceType.WIFI -> 0
+            InterfaceType.ETHERNET -> 1
+            InterfaceType.VPN -> 2
+            InterfaceType.CELLULAR -> 3
+            else -> 4
+        }
+    }
+
+    private fun prefixLengthToSubnetMask(prefixLength: Int): String {
+        if (prefixLength <= 0) return "0.0.0.0"
+        if (prefixLength >= 32) return "255.255.255.255"
+
+        val mask = -1 shl (32 - prefixLength)
+        return "${(mask ushr 24) and 0xFF}.${(mask ushr 16) and 0xFF}.${(mask ushr 8) and 0xFF}.${mask and 0xFF}"
     }
 
     /**
