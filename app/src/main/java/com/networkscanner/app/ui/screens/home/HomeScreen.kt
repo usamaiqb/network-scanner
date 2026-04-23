@@ -55,6 +55,8 @@ fun HomeScreen(
     val offlineDevices by viewModel.offlineDevices.collectAsState()
     val scanProgress by viewModel.scanProgress.collectAsState()
     val networkInfo by viewModel.networkInfo.collectAsState()
+    val availableInterfaces by viewModel.availableInterfaces.collectAsState()
+    val selectedInterfaceName by viewModel.selectedInterfaceName.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -69,6 +71,8 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) {
+        viewModel.refreshInterfaces()
+
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val autoScan = prefs.getBoolean("auto_scan_on_start", true)
         if (autoScan && uiState is MainViewModel.UiState.Idle) {
@@ -118,7 +122,13 @@ fun HomeScreen(
                 .padding(innerPadding)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                NetworkInfoBar(networkInfo = networkInfo)
+                NetworkInfoBar(
+                    networkInfo = networkInfo,
+                    interfaces = availableInterfaces,
+                    selectedInterfaceName = selectedInterfaceName,
+                    onInterfaceSelected = viewModel::onInterfaceSelected,
+                    isScanning = isScanning
+                )
 
                 AnimatedContent(
                     targetState = uiState,
