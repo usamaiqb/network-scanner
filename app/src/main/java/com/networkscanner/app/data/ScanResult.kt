@@ -36,6 +36,7 @@ data class ScanResult(
  * Network information for the current connection.
  */
 data class NetworkInfo(
+    val interfaceName: String? = null,
     val ssid: String?,
     val bssid: String?,
     val ipAddress: String,
