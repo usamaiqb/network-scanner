@@ -36,7 +36,15 @@
     <string name="no_devices_message">Make sure you\'re connected to a WiFi network and try scanning again.</string>
     <string name="no_wifi_title">No WiFi Connection</string>
     <string name="no_wifi_message">Connect to a WiFi network to scan for devices.</string>
+    <string name="no_active_interfaces">No active interface</string>
 
+    <!-- Interface Types -->
+    <string name="interface_type_wifi">Wi-Fi</string>
+    <string name="interface_type_ethernet">Ethernet</string>
+    <string name="interface_type_vpn">VPN</string>
+    <string name="interface_type_cellular">Cellular</string>
+    <string name="interface_type_network">Network</string>
+    
     <!-- Errors -->
     <string name="error_scan_failed">Scan failed: %s</string>
     <string name="error_permission_denied">Permission denied</string>
@@ -102,6 +110,7 @@
     <string name="confidence_percent">%d%% confidence</string>
     <string name="duration_seconds">%.1fs</string>
     <string name="action_retry">Retry</string>
+    <string name="interface_option_format">%1$s (%2$s) - %3$s</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">Settings</string>
@@ -170,6 +179,7 @@
     <string name="cd_cancel_scan">Cancel current scan</string>
     <string name="cd_empty_state_icon">No devices illustration</string>
     <string name="cd_network_info">Network information</string>
+    <string name="cd_interface_selector">Select network interface</string>
     <string name="cd_port_status">Port %1$d is %2$s</string>
 
     <!-- Device list accessibility -->
