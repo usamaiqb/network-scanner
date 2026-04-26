@@ -99,7 +99,7 @@ object NetworkUtils {
         var gateway: String? = null
 
         // For Wi-Fi interfaces, enrich with DHCP and Wi-Fi details when available.
-        if (selectedInterface.name.equals("wlan0", ignoreCase = true) && isWifiConnected(context)) {
+        if (inferInterfaceType(selectedInterface.name) == InterfaceType.WIFI && isWifiConnected(context)) {
             val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             @Suppress("DEPRECATION")
             val wifiInfo = wifiManager.connectionInfo
@@ -226,6 +226,7 @@ object NetworkUtils {
 
     private fun isEligibleInterface(networkInterface: NetworkInterface): Boolean {
         if (!networkInterface.isUp || networkInterface.isLoopback) return false
+        if (inferInterfaceType(networkInterface.name) == InterfaceType.CELLULAR) return false
         val hasIpv4 = networkInterface.inetAddresses.toList().any { address ->
             address is Inet4Address && !address.isLoopbackAddress
         }

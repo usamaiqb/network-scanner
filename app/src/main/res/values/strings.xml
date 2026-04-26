@@ -34,8 +34,8 @@
     <!-- Empty states -->
     <string name="no_devices_title">No Devices Found</string>
     <string name="no_devices_message">Make sure you\'re connected to a WiFi network and try scanning again.</string>
-    <string name="no_wifi_title">No WiFi Connection</string>
-    <string name="no_wifi_message">Connect to a WiFi network to scan for devices.</string>
+    <string name="no_wifi_title">No Network Connection</string>
+    <string name="no_wifi_message">No active network interfaces found. Connect to a network and try again.</string>
     <string name="no_active_interfaces">No active interface</string>
 
     <!-- Interface Types -->

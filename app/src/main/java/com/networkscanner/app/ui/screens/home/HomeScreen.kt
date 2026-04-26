@@ -71,8 +71,6 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.refreshInterfaces()
-
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val autoScan = prefs.getBoolean("auto_scan_on_start", true)
         if (autoScan && uiState is MainViewModel.UiState.Idle) {

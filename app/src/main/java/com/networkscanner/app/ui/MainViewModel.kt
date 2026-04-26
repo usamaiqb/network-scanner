@@ -78,14 +78,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             current != null && interfaces.any { it.name == current } -> current
             else -> interfaces.first().name
         }
+
+        _networkInfo.value = _networkInfo.value
+            ?: NetworkUtils.getNetworkInfo(getApplication(), _selectedInterfaceName.value)
     }
 
     fun onInterfaceSelected(interfaceName: String) {
         _selectedInterfaceName.value = interfaceName
-
-        // Update header info immediately for the selected interface, then auto-scan.
         _networkInfo.value = NetworkUtils.getNetworkInfo(getApplication(), interfaceName)
-        startScan()
     }
 
     /**

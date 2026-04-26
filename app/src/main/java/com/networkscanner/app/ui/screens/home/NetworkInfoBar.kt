@@ -3,8 +3,8 @@ package com.networkscanner.app.ui.screens.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.data.NetworkInfo
@@ -60,17 +60,6 @@ fun NetworkInfoBar(
     val selectedType = selectedInterface?.type
     val selectedNetworkInfo = networkInfo?.takeIf { it.interfaceName == selectedInterfaceName }
 
-    val selectedLabel = if (selectedInterface != null) {
-        stringResource(
-            R.string.interface_option_format,
-            interfaceTypeLabel(selectedInterface.type),
-            selectedInterface.name,
-            selectedInterface.ipAddress
-        )
-    } else {
-        stringResource(R.string.no_active_interfaces)
-    }
-
     val interfaceIcon = when (selectedType) {
         InterfaceType.WIFI -> Icons.Outlined.Wifi
         InterfaceType.ETHERNET -> Icons.Outlined.SettingsEthernet
@@ -79,105 +68,97 @@ fun NetworkInfoBar(
         InterfaceType.OTHER, null -> Icons.Outlined.Public
     }
 
+    val networkName = selectedNetworkInfo?.ssid
+        ?: selectedType?.let { interfaceTypeLabel(it) }
+        ?: stringResource(R.string.unknown_device)
+
+    val cidrText = selectedNetworkInfo?.cidrNotation
+        ?: selectedInterface?.ipAddress
+        ?: stringResource(R.string.no_active_interfaces)
+
     AnimatedVisibility(
         visible = networkInfo != null || interfaces.isNotEmpty(),
         enter = expandVertically(motionScheme.defaultSpatialSpec()),
         exit = shrinkVertically(motionScheme.defaultSpatialSpec()),
         modifier = modifier
     ) {
-        val unknownNetwork = stringResource(R.string.unknown_device)
-        val description = stringResource(
-            R.string.cd_network_info
-        )
+        val description = stringResource(R.string.cd_network_info)
         Surface(
             color = MaterialTheme.colorScheme.surfaceContainer,
-            modifier = Modifier.semantics {
-                contentDescription = description
-            }
+            modifier = Modifier.semantics { contentDescription = description }
         ) {
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Icon(
+                    imageVector = interfaceIcon,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = networkName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Box {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = if (interfaces.size > 1 && !isScanning) {
+                            Modifier.clickable { menuExpanded = true }
+                        } else Modifier,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = interfaceIcon,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
                         Text(
-                            text = selectedInterface?.name
-                                ?: selectedNetworkInfo?.ssid
-                                ?: selectedType?.let { interfaceTypeLabel(it) }
-                                ?: unknownNetwork,
-                            style = MaterialTheme.typography.bodyMedium
+                            text = cidrText,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1
                         )
-                    }
-
-                    Box {
-                        TextButton(
-                            enabled = !isScanning && interfaces.isNotEmpty(),
-                            onClick = { menuExpanded = true }
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = selectedLabel,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Icon(
-                                    imageVector = Icons.Outlined.ArrowDropDown,
-                                    contentDescription = stringResource(R.string.cd_interface_selector),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
-
-                        DropdownMenu(
-                            expanded = menuExpanded,
-                            onDismissRequest = { menuExpanded = false }
-                        ) {
-                            interfaces.forEach { option ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            stringResource(
-                                                R.string.interface_option_format,
-                                                interfaceTypeLabel(option.type),
-                                                option.name,
-                                                option.ipAddress
-                                            )
-                                        )
-                                    },
-                                    onClick = {
-                                        onInterfaceSelected(option.name)
-                                        menuExpanded = false
-                                    }
-                                )
-                            }
+                        if (interfaces.size > 1) {
+                            Icon(
+                                imageVector = Icons.Outlined.ArrowDropDown,
+                                contentDescription = stringResource(R.string.cd_interface_selector),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
-                }
-
-                if (selectedNetworkInfo != null) {
-                    Text(
-                        text = selectedNetworkInfo.cidrNotation,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false },
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                    ) {
+                        interfaces.forEach { option ->
+                            val optionIcon = when (option.type) {
+                                InterfaceType.WIFI -> Icons.Outlined.Wifi
+                                InterfaceType.ETHERNET -> Icons.Outlined.SettingsEthernet
+                                InterfaceType.VPN -> Icons.Outlined.VpnKey
+                                InterfaceType.CELLULAR -> Icons.Outlined.SignalCellular4Bar
+                                InterfaceType.OTHER -> Icons.Outlined.Public
+                            }
+                            DropdownMenuItem(
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = optionIcon,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                },
+                                text = {
+                                    Text("${interfaceTypeLabel(option.type)} — ${option.ipAddress}")
+                                },
+                                onClick = {
+                                    onInterfaceSelected(option.name)
+                                    menuExpanded = false
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
