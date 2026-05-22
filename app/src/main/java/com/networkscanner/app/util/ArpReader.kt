@@ -5,11 +5,11 @@ import java.io.File
 import java.io.FileReader
 
 /**
- * Reads ARP cache from /proc/net/arp to discover devices on the network.
+ * Reads ARP cache from /proc/net/arp or ip neigh to discover devices on the network.
  *
  * Note: On Android 10+ (SDK 29), /proc/net/arp access is restricted by SELinux.
- * Apps may only see the gateway entry. Full neighbor table access requires a
- * VPN-based packet capture approach (see docs/discoverability-improvements.md).
+ * Apps may only see the gateway entry. We try both /proc/net/arp and 'ip neigh show'
+ * to maximize MAC address discovery.
  */
 object ArpReader {
 
@@ -49,6 +49,7 @@ object ArpReader {
     /**
      * Read all entries from the ARP cache.
      * Uses a short-lived cache to avoid re-reading the file excessively during scans.
+     * Tries both /proc/net/arp and 'ip neigh show' for maximum compatibility.
      */
     fun readArpCache(): List<ArpEntry> {
         val now = System.currentTimeMillis()
@@ -56,6 +57,26 @@ object ArpReader {
             return cachedEntries
         }
 
+        val entries = mutableListOf<ArpEntry>()
+
+        // Method 1: Try reading /proc/net/arp (works on older Android, limited on 10+)
+        entries.addAll(readFromProcNetArp())
+        
+        // Method 2: Try 'ip neigh show' command (works better on Android 10+)
+        entries.addAll(readFromIpNeigh())
+
+        // Remove duplicates (same IP address)
+        val uniqueEntries = entries.distinctBy { it.ipAddress }
+
+        cachedEntries = uniqueEntries
+        cacheTimestamp = now
+        return uniqueEntries
+    }
+
+    /**
+     * Read ARP entries from /proc/net/arp file.
+     */
+    private fun readFromProcNetArp(): List<ArpEntry> {
         val entries = mutableListOf<ArpEntry>()
 
         try {
@@ -70,7 +91,7 @@ object ArpReader {
 
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
-                    val entry = parseLine(line!!)
+                    val entry = parseProcNetArpLine(line!!)
                     if (entry != null) {
                         entries.add(entry)
                     }
@@ -80,9 +101,116 @@ object ArpReader {
             e.printStackTrace()
         }
 
-        cachedEntries = entries
-        cacheTimestamp = now
         return entries
+    }
+
+    /**
+     * Read ARP entries using 'ip neigh show' command.
+     * This works better on Android 10+ where /proc/net/arp is restricted.
+     */
+    private fun readFromIpNeigh(): List<ArpEntry> {
+        val entries = mutableListOf<ArpEntry>()
+
+        try {
+            val process = Runtime.getRuntime().exec(arrayOf("ip", "neigh", "show"))
+            val reader = BufferedReader(process.inputStream.reader())
+            
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                val entry = parseIpNeighLine(line!!)
+                if (entry != null) {
+                    entries.add(entry)
+                }
+            }
+            
+            process.waitFor()
+            reader.close()
+        } catch (e: Exception) {
+            // Command might not be available or permission denied
+            e.printStackTrace()
+        }
+
+        return entries
+    }
+
+    /**
+     * Parse a single line from /proc/net/arp.
+     * Format: IP address       HW type     Flags       HW address            Mask     Device
+     * Example: 192.168.1.1     0x1         0x2         aa:bb:cc:dd:ee:ff     *        wlan0
+     */
+    private fun parseProcNetArpLine(line: String): ArpEntry? {
+        val parts = line.trim().split(Regex("\\s+"))
+        if (parts.size < 6) return null
+
+        return try {
+            ArpEntry(
+                ipAddress = parts[0],
+                hwType = parts[1],
+                flags = parts[2],
+                macAddress = parts[3],
+                mask = parts[4],
+                device = parts[5]
+            )
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /**
+     * Parse a single line from 'ip neigh show' output.
+     * Format examples:
+     * 192.168.1.1 dev wlan0 lladdr aa:bb:cc:dd:ee:ff REACHABLE
+     * 192.168.1.2 dev wlan0 lladdr aa:bb:cc:dd:ee:ff STALE
+     * 192.168.1.3 dev wlan0  FAILED
+     */
+    private fun parseIpNeighLine(line: String): ArpEntry? {
+        try {
+            val parts = line.trim().split(Regex("\\s+"))
+            if (parts.size < 4) return null
+
+            val ipAddress = parts[0]
+            var macAddress = "00:00:00:00:00:00"
+            var device = ""
+            var flags = "0x0"
+
+            // Parse key-value pairs
+            var i = 1
+            while (i < parts.size) {
+                when (parts[i]) {
+                    "dev" -> {
+                        if (i + 1 < parts.size) device = parts[i + 1]
+                        i += 2
+                    }
+                    "lladdr" -> {
+                        if (i + 1 < parts.size) {
+                            macAddress = parts[i + 1]
+                            flags = "0x2" // Mark as valid
+                        }
+                        i += 2
+                    }
+                    "REACHABLE", "STALE", "DELAY", "PROBE" -> {
+                        flags = "0x2" // Valid states
+                        i++
+                    }
+                    "FAILED", "INCOMPLETE" -> {
+                        flags = "0x0" // Invalid states
+                        i++
+                    }
+                    else -> i++
+                }
+            }
+
+            return ArpEntry(
+                ipAddress = ipAddress,
+                hwType = "0x1",
+                flags = flags,
+                macAddress = macAddress,
+                mask = "*",
+                device = device
+            )
+        } catch (e: Exception) {
+            return null
+        }
     }
 
     /**
@@ -113,29 +241,6 @@ object ArpReader {
     fun getIpForMac(macAddress: String): String? {
         val normalizedMac = macAddress.uppercase().replace("-", ":")
         return readValidEntries().find { it.normalizedMac == normalizedMac }?.ipAddress
-    }
-
-    /**
-     * Parse a single line from the ARP file.
-     * Format: IP address       HW type     Flags       HW address            Mask     Device
-     * Example: 192.168.1.1     0x1         0x2         aa:bb:cc:dd:ee:ff     *        wlan0
-     */
-    private fun parseLine(line: String): ArpEntry? {
-        val parts = line.trim().split(Regex("\\s+"))
-        if (parts.size < 6) return null
-
-        return try {
-            ArpEntry(
-                ipAddress = parts[0],
-                hwType = parts[1],
-                flags = parts[2],
-                macAddress = parts[3],
-                mask = parts[4],
-                device = parts[5]
-            )
-        } catch (e: Exception) {
-            null
-        }
     }
 
     /**

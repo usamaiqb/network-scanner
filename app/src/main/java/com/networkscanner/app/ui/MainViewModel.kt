@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.networkscanner.app.NetworkScannerApp
 import com.networkscanner.app.data.*
+import com.networkscanner.app.data.repository.DeviceCustomizationRepository
 import com.networkscanner.app.util.NetworkInterfaceOption
 import com.networkscanner.app.util.NetworkUtils
 import kotlinx.coroutines.channels.Channel
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val scanner = (application as NetworkScannerApp).scanner
+    private val customizationRepository = (application as NetworkScannerApp).deviceCustomizationRepository
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -62,8 +64,28 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
+        // React to customization changes — refresh list display names
+        viewModelScope.launch {
+            customizationRepository.customizations.collectLatest {
+                val current = _devices.value
+                if (current.isNotEmpty()) updateDeviceLists(current)
+            }
+        }
+
         refreshInterfaces()
     }
+
+    /**
+     * Get custom name for a device, or null if none set.
+     */
+    fun getCustomName(deviceId: String): String? =
+        customizationRepository.getCustomization(deviceId)?.customName
+
+    /**
+     * Get custom icon for a device, or null if none set.
+     */
+    fun getCustomIcon(deviceId: String): String? =
+        customizationRepository.getCustomization(deviceId)?.customIcon
 
     /**
      * Refresh active network interfaces and keep selection valid.
@@ -149,9 +171,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun updateDeviceLists(deviceList: List<Device>) {
-        _devices.value = deviceList
+        // Apply custom names from repository
+        val customized = deviceList.map { device ->
+            val custom = customizationRepository.getCustomization(device.uniqueId)
+            if (custom != null) device.copy(customName = custom.customName) else device
+        }
 
-        val sorted = deviceList.sortedWith(
+        _devices.value = customized
+
+        val sorted = customized.sortedWith(
             compareBy({ !it.isCurrentDevice }, { !it.isOnline }, { it.ipAddress })
         )
 

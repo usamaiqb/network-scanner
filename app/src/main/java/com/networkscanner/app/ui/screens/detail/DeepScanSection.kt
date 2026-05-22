@@ -36,13 +36,25 @@ fun DeepScanSection(
     result: DeepScanResult?,
     isDeviceOnline: Boolean,
     onCancelScan: () -> Unit,
+    onFullScan: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        SectionHeader(
-            title = stringResource(R.string.deep_scan_results),
-            count = result?.openPorts?.size ?: 0
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SectionHeader(
+                title = stringResource(R.string.deep_scan_results),
+                count = result?.openPorts?.size ?: 0
+            )
+            if (state !is DeviceDetailViewModel.DeepScanState.Scanning && isDeviceOnline) {
+                TextButton(onClick = onFullScan) {
+                    Text(stringResource(R.string.full_scan))
+                }
+            }
+        }
         Spacer(Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.deep_scan_disclaimer),

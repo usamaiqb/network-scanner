@@ -26,6 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NetworkScanner"
         android:usesCleartextTraffic="true"
+        android:localeConfig="@xml/locales_config"
         tools:targetApi="35">
 
         <activity

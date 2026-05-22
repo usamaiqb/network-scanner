@@ -19,7 +19,8 @@ fun DeviceList(
     offlineDevices: List<Device>,
     onDeviceClick: (Device) -> Unit,
     modifier: Modifier = Modifier,
-    header: (@Composable () -> Unit)? = null
+    header: (@Composable () -> Unit)? = null,
+    getCustomIcon: (String) -> String? = { null }
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -44,7 +45,8 @@ fun DeviceList(
                 ) { device, shape ->
                     DeviceCard(
                         device = device,
-                        onClick = { onDeviceClick(device) }
+                        onClick = { onDeviceClick(device) },
+                        customIconKey = getCustomIcon(device.uniqueId)
                     )
                 }
             }
@@ -64,7 +66,8 @@ fun DeviceList(
                 ) { device, shape ->
                     DeviceCard(
                         device = device,
-                        onClick = { onDeviceClick(device) }
+                        onClick = { onDeviceClick(device) },
+                        customIconKey = getCustomIcon(device.uniqueId)
                     )
                 }
             }

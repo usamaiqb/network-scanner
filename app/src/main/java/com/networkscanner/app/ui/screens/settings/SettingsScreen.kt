@@ -40,11 +40,13 @@ import com.networkscanner.app.ui.components.SegmentSurface
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToCustomPorts: () -> Unit
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
     val dynamicColors by viewModel.dynamicColors.collectAsState()
     val autoScan by viewModel.autoScan.collectAsState()
+    val language by viewModel.language.collectAsState()
 
     var showAboutDialog by remember { mutableStateOf(false) }
     var showPrivacyDialog by remember { mutableStateOf(false) }
@@ -83,7 +85,7 @@ fun SettingsScreen(
                 SettingsCategoryHeader(stringResource(R.string.pref_category_appearance))
             }
             item {
-                val appearanceCount = if (supportsDynamic) 2 else 1
+                val appearanceCount = if (supportsDynamic) 3 else 2
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -103,8 +105,27 @@ fun SettingsScreen(
                             )
                         }
                     }
+                    SegmentSurface(index = 1, count = appearanceCount) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = stringResource(R.string.pref_language_title),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            LanguageSegmentedButtons(
+                                selectedLanguage = language,
+                                onLanguageSelected = { newLanguage ->
+                                    viewModel.setLanguage(newLanguage)
+                                    // Recreate activity to apply language change
+                                    (context as? android.app.Activity)?.recreate()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 12.dp)
+                            )
+                        }
+                    }
                     if (supportsDynamic) {
-                        SegmentSurface(index = 1, count = appearanceCount) {
+                        SegmentSurface(index = 2, count = appearanceCount) {
                             SwitchSettingItem(
                                 title = stringResource(R.string.pref_dynamic_colors_title),
                                 summary = stringResource(R.string.pref_dynamic_colors_summary),
@@ -121,13 +142,25 @@ fun SettingsScreen(
                 SettingsCategoryHeader(stringResource(R.string.pref_category_scanning))
             }
             item {
-                SegmentSurface(index = 0, count = 1) {
-                    SwitchSettingItem(
-                        title = stringResource(R.string.pref_auto_scan_title),
-                        summary = stringResource(R.string.pref_auto_scan_summary),
-                        checked = autoScan,
-                        onCheckedChange = { viewModel.setAutoScan(it) }
-                    )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    SegmentSurface(index = 0, count = 2) {
+                        SwitchSettingItem(
+                            title = stringResource(R.string.pref_auto_scan_title),
+                            summary = stringResource(R.string.pref_auto_scan_summary),
+                            checked = autoScan,
+                            onCheckedChange = { viewModel.setAutoScan(it) }
+                        )
+                    }
+                    SegmentSurface(index = 1, count = 2) {
+                        ClickableSettingItem(
+                            title = stringResource(R.string.pref_custom_ports_title),
+                            summary = stringResource(R.string.pref_custom_ports_summary),
+                            onClick = onNavigateToCustomPorts
+                        )
+                    }
                 }
             }
 

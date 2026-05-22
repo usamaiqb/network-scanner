@@ -6,16 +6,20 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.networkscanner.app.ui.CustomPortsViewModel
 import com.networkscanner.app.ui.DeviceDetailViewModel
 import com.networkscanner.app.ui.MainViewModel
 import com.networkscanner.app.ui.SettingsViewModel
 import com.networkscanner.app.ui.screens.detail.DeviceDetailScreen
 import com.networkscanner.app.ui.screens.home.HomeScreen
+import com.networkscanner.app.ui.screens.settings.CustomPortsScreen
 import com.networkscanner.app.ui.screens.settings.SettingsScreen
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -80,7 +84,26 @@ fun NavGraph() {
             val settingsViewModel: SettingsViewModel = viewModel()
             SettingsScreen(
                 viewModel = settingsViewModel,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCustomPorts = { navController.navigate(CustomPorts) }
+            )
+        }
+
+        composable<CustomPorts> {
+            val customPortsViewModel: CustomPortsViewModel = viewModel()
+            val ports by customPortsViewModel.ports.collectAsState()
+            CustomPortsScreen(
+                ports = ports,
+                onNavigateBack = { navController.popBackStack() },
+                onAddPort = { port, serviceName ->
+                    customPortsViewModel.addPort(port, serviceName)
+                },
+                onDeletePort = { id ->
+                    customPortsViewModel.deletePort(id)
+                },
+                onTogglePort = { id, enabled ->
+                    customPortsViewModel.togglePort(id, enabled)
+                }
             )
         }
     }

@@ -1,14 +1,18 @@
 package com.networkscanner.app.ui
 
 import android.Manifest
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.preference.PreferenceManager
 import com.networkscanner.app.ui.navigation.NavGraph
 import com.networkscanner.app.ui.theme.NetworkScannerTheme
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
 
@@ -32,8 +36,33 @@ class MainActivity : ComponentActivity() {
         markPermissionsRequested()
     }
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(updateBaseContextLocale(newBase))
+    }
+
+    private fun updateBaseContextLocale(context: Context): Context {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val languageCode = prefs.getString(SettingsViewModel.KEY_LANGUAGE, "system") ?: "system"
+        
+        if (languageCode == "system") {
+            return context
+        }
+
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(locale)
+
+        return context.createConfigurationContext(config)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Apply saved language preference on app start
+        val savedLanguage = SettingsViewModel.getCurrentLanguage(this)
+        SettingsViewModel.applyLanguage(this, savedLanguage)
 
         enableEdgeToEdge()
 

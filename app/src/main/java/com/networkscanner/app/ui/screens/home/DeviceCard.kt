@@ -31,13 +31,17 @@ import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.data.Device
 import com.networkscanner.app.ui.components.StatusIndicator
+import com.networkscanner.app.ui.screens.detail.iconKeyToVector
 
 @Composable
 fun DeviceCard(
     device: Device,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    customIconKey: String? = null
 ) {
+    val displayIcon = iconKeyToVector(customIconKey) ?: device.deviceType.icon
+    
     val description = buildString {
         append(device.displayName)
         append(", ${device.deviceType.displayName}")
@@ -109,7 +113,7 @@ fun DeviceCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = device.deviceType.icon,
+                        imageVector = displayIcon,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.size(24.dp)

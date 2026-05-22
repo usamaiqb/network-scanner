@@ -1,5 +1,7 @@
 package com.networkscanner.app.ui.screens.home
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -31,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -83,9 +86,17 @@ fun NetworkInfoBar(
         modifier = modifier
     ) {
         val description = stringResource(R.string.cd_network_info)
+        val context = LocalContext.current
+        
         Surface(
             color = MaterialTheme.colorScheme.surfaceContainer,
-            modifier = Modifier.semantics { contentDescription = description }
+            modifier = Modifier
+                .semantics { contentDescription = description }
+                .clickable(enabled = !isScanning) {
+                    // Открываем системные настройки Wi-Fi
+                    val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+                    context.startActivity(intent)
+                }
         ) {
             Row(
                 modifier = Modifier
@@ -100,13 +111,27 @@ fun NetworkInfoBar(
                     modifier = Modifier.size(18.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
-                Text(
-                    text = networkName,
-                    style = MaterialTheme.typography.bodyMedium,
+                
+                // Network name with dropdown indicator
+                Row(
                     modifier = Modifier.weight(1f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = networkName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    // Dropdown arrow to indicate clickability
+                    Text(
+                        text = "▼",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 Box {
                     Row(
                         modifier = if (interfaces.size > 1 && !isScanning) {

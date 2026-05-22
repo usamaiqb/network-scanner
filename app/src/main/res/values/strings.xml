@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Network Scanner</string>
+    <string name="app_name" translatable="false">Network Scanner</string>
 
     <!-- Menu items -->
     <string name="action_settings">Settings</string>
@@ -123,6 +123,7 @@
 
     <!-- Appearance Preferences -->
     <string name="pref_theme_title">Theme</string>
+    <string name="pref_language_title">Language</string>
     <string name="pref_dynamic_colors_title">Dynamic Colors</string>
     <string name="pref_dynamic_colors_summary">Use colors from your wallpaper (Android 12+)</string>
 
@@ -190,4 +191,35 @@
     <!-- Deep scan progress -->
     <string name="deep_scan_port_progress">%1$d/%2$d ports</string>
     <string name="deep_scan_open_count">%d open</string>
+
+    <!-- Custom Device Names -->
+    <string name="edit_device_name">Edit Device Name</string>
+    <string name="edit_device_name_hint">Give this device a custom name to easily identify it</string>
+    <string name="device_name">Device Name</string>
+    <string name="action_save">Save</string>
+
+    <!-- Custom Ports -->
+    <string name="custom_ports">Custom Ports</string>
+    <string name="add_port">Add Port</string>
+    <string name="add_custom_port">Add Custom Port</string>
+    <string name="port_number">Port Number</string>
+    <string name="service_name">Service Name</string>
+    <string name="action_add">Add</string>
+    <string name="delete_port">Delete port</string>
+    <string name="no_custom_ports">No custom ports configured</string>
+    <string name="tap_add_to_create">Tap + to add custom ports to scan</string>
+
+    <!-- Full Port Scan -->
+    <string name="full_scan">Full Scan</string>
+    <string name="full_port_scan">Full Port Scan</string>
+    <string name="full_scan_warning">This will scan all 65,535 ports on this device. This may take several minutes and generate significant network traffic.</string>
+    <string name="full_scan_details">• Scan time: 5-15 minutes\n• Network intensive\n• May be detected by security systems</string>
+    <string name="action_start">Start</string>
+
+    <!-- Settings - Custom Ports -->
+    <string name="pref_custom_ports_title">Custom Ports</string>
+    <string name="pref_custom_ports_summary">Manage ports to scan during deep scan</string>
+
+    <!-- Device Icon Selection -->
+    <string name="choose_device_icon">Choose Device Icon</string>
 </resources>
