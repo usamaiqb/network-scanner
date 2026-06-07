@@ -152,7 +152,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _devices.value = deviceList
 
         val sorted = deviceList.sortedWith(
-            compareBy({ !it.isCurrentDevice }, { !it.isOnline }, { it.ipAddress })
+           compareBy(
+              { !it.isCurrentDevice },
+              { !it.isOnline },
+              { it.ipAddress.split('.').fold(0L) { acc, part -> (acc shl 8) or part.toLong() } }
+           )
         )
 
         _onlineDevices.value = sorted.filter { it.isOnline }
