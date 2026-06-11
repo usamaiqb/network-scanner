@@ -1,0 +1,1 @@
+• Fixed device list sort order — IPs now sort numerically (e.g. .2 before .10)
