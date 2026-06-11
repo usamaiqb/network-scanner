@@ -1,0 +1,99 @@
+name: Release Checks
+
+on:
+  push:
+    branches:
+      - 'release/v*'
+
+jobs:
+  validate:
+    name: Validate release PR
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - name: Fetch main
+        run: git fetch origin main --depth=1
+
+      - name: Extract versions from release branch
+        id: pr
+        run: |
+          VERSION_CODE=$(grep -oP 'versionCode\s*=\s*\K\d+' app/build.gradle.kts)
+          VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts)
+          [ -z "$VERSION_CODE" ] && echo "❌ Could not parse versionCode from app/build.gradle.kts" && exit 1
+          [ -z "$VERSION_NAME" ] && echo "❌ Could not parse versionName from app/build.gradle.kts" && exit 1
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+
+      - name: Extract versions from main
+        id: base
+        run: |
+          BASE_CODE=$(git show origin/main:app/build.gradle.kts | grep -oP 'versionCode\s*=\s*\K\d+')
+          BASE_NAME=$(git show origin/main:app/build.gradle.kts | grep -oP 'versionName\s*=\s*"\K[^"]+')
+          [ -z "$BASE_CODE" ] && echo "❌ Could not parse versionCode from main" && exit 1
+          [ -z "$BASE_NAME" ] && echo "❌ Could not parse versionName from main" && exit 1
+          echo "version_code=$BASE_CODE" >> $GITHUB_OUTPUT
+          echo "version_name=$BASE_NAME" >> $GITHUB_OUTPUT
+
+      - name: versionCode incremented by exactly 1
+        env:
+          NEW: ${{ steps.pr.outputs.version_code }}
+          OLD: ${{ steps.base.outputs.version_code }}
+        run: |
+          EXPECTED=$((OLD + 1))
+          if [ "$NEW" != "$EXPECTED" ]; then
+            echo "❌ versionCode must be $EXPECTED (was $OLD on main, got $NEW)"
+            exit 1
+          fi
+          echo "✅ versionCode: $OLD → $NEW"
+
+      - name: versionName changed
+        env:
+          NEW: ${{ steps.pr.outputs.version_name }}
+          OLD: ${{ steps.base.outputs.version_name }}
+        run: |
+          if [ "$NEW" = "$OLD" ]; then
+            echo "❌ versionName was not changed (still $OLD)"
+            exit 1
+          fi
+          echo "✅ versionName: $OLD → $NEW"
+
+      - name: Branch name matches versionName
+        env:
+          BRANCH: ${{ github.ref_name }}
+          VERSION: ${{ steps.pr.outputs.version_name }}
+        run: |
+          EXPECTED="release/v$VERSION"
+          if [ "$BRANCH" != "$EXPECTED" ]; then
+            echo "❌ Branch '$BRANCH' does not match versionName '$VERSION' (expected '$EXPECTED')"
+            exit 1
+          fi
+          echo "✅ Branch matches version: $BRANCH"
+
+      - name: CHANGELOG.md has entry for new version
+        env:
+          VERSION: ${{ steps.pr.outputs.version_name }}
+        run: |
+          if ! grep -qF "## [$VERSION]" CHANGELOG.md; then
+            echo "❌ CHANGELOG.md has no entry for ## [$VERSION]"
+            exit 1
+          fi
+          echo "✅ CHANGELOG.md contains entry for $VERSION"
+
+      - name: F-Droid changelog exists and is non-empty
+        env:
+          VERSION_CODE: ${{ steps.pr.outputs.version_code }}
+        run: |
+          FILE="fastlane/metadata/android/en-US/changelogs/${VERSION_CODE}.txt"
+          if [ ! -f "$FILE" ]; then
+            echo "❌ Missing F-Droid changelog: $FILE"
+            exit 1
+          fi
+          if [ ! -s "$FILE" ]; then
+            echo "❌ F-Droid changelog is empty: $FILE"
+            exit 1
+          fi
+          echo "✅ F-Droid changelog present: $FILE"
+          echo "--- contents ---"
+          cat "$FILE"
