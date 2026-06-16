@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import com.networkscanner.app.BuildConfig
 import com.networkscanner.app.R
 import com.networkscanner.app.ui.SettingsViewModel
@@ -50,6 +50,7 @@ fun SettingsScreen(
 
     var showAboutDialog by remember { mutableStateOf(false) }
     var showPrivacyDialog by remember { mutableStateOf(false) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -105,27 +106,8 @@ fun SettingsScreen(
                             )
                         }
                     }
-                    SegmentSurface(index = 1, count = appearanceCount) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                text = stringResource(R.string.pref_language_title),
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            LanguageSegmentedButtons(
-                                selectedLanguage = language,
-                                onLanguageSelected = { newLanguage ->
-                                    viewModel.setLanguage(newLanguage)
-                                    // Recreate activity to apply language change
-                                    (context as? android.app.Activity)?.recreate()
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp)
-                            )
-                        }
-                    }
                     if (supportsDynamic) {
-                        SegmentSurface(index = 2, count = appearanceCount) {
+                        SegmentSurface(index = 1, count = appearanceCount) {
                             SwitchSettingItem(
                                 title = stringResource(R.string.pref_dynamic_colors_title),
                                 summary = stringResource(R.string.pref_dynamic_colors_summary),
@@ -133,6 +115,13 @@ fun SettingsScreen(
                                 onCheckedChange = { viewModel.setDynamicColors(it) }
                             )
                         }
+                    }
+                    SegmentSurface(index = appearanceCount - 1, count = appearanceCount) {
+                        ClickableSettingItem(
+                            title = stringResource(R.string.pref_language_title),
+                            summary = currentLanguageLabel(language),
+                            onClick = { showLanguageDialog = true }
+                        )
                     }
                 }
             }
@@ -200,7 +189,7 @@ fun SettingsScreen(
                             summary = githubUrl,
                             onClick = {
                                 try {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
+                                    val intent = Intent(Intent.ACTION_VIEW, githubUrl.toUri())
                                     context.startActivity(intent)
                                 } catch (_: ActivityNotFoundException) {
                                     // No browser available
@@ -226,5 +215,19 @@ fun SettingsScreen(
     }
     if (showPrivacyDialog) {
         PrivacyDialog(onDismiss = { showPrivacyDialog = false })
+    }
+    if (showLanguageDialog) {
+        LanguageDialog(
+            selectedLanguage = language,
+            onLanguageSelected = { newLanguage ->
+                showLanguageDialog = false
+                if (newLanguage != language) {
+                    // AppCompat reloads resources and recreates the activity once;
+                    // no manual recreate() needed.
+                    viewModel.setLanguage(newLanguage)
+                }
+            },
+            onDismiss = { showLanguageDialog = false }
+        )
     }
 }

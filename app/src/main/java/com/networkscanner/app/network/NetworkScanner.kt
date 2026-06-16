@@ -25,6 +25,7 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -41,9 +42,17 @@ class NetworkScanner(private val context: Context) {
         private const val SSDP_MULTICAST_ADDRESS = "239.255.255.250"
         private const val SSDP_PORT = 1900
 
-        // Deep scan constants
+        // Deep scan constants (quick scan: curated/common port list)
         private const val PORT_TIMEOUT_MS = 500
         private const val PORT_THREADS = 20
+
+        // Full scan (all 65,535 ports): higher concurrency and a shorter
+        // per-port timeout, since most ports on a LAN host are closed and
+        // RST/respond fast — this keeps the full sweep to a few minutes
+        // instead of ~27 min at the quick-scan settings.
+        private const val FULL_SCAN_PORT_TIMEOUT_MS = 300
+        private const val FULL_SCAN_PORT_THREADS = 128
+
         private const val BANNER_TIMEOUT_MS = 2000
         private const val BANNER_THREADS = 10
 
@@ -187,8 +196,12 @@ class NetworkScanner(private val context: Context) {
      */
     suspend fun performDeepScan(
         ipAddress: String,
-        ports: List<Int> = CommonPorts.TOP_PORTS
+        ports: List<Int> = CommonPorts.TOP_PORTS,
+        customServiceNames: Map<Int, String> = emptyMap(),
+        fullScan: Boolean = false
     ): DeepScanResult = withContext(scope.coroutineContext) {
+        val portThreads = if (fullScan) FULL_SCAN_PORT_THREADS else PORT_THREADS
+        val portTimeoutMs = if (fullScan) FULL_SCAN_PORT_TIMEOUT_MS else PORT_TIMEOUT_MS
         val startTime = System.currentTimeMillis()
         val openPorts = mutableListOf<PortInfo>()
 
@@ -203,39 +216,52 @@ class NetworkScanner(private val context: Context) {
 
             val scannedCount = AtomicInteger(0)
             val foundCount = AtomicInteger(0)
-            val portSemaphore = Semaphore(PORT_THREADS)
+            val foundPorts = ConcurrentLinkedQueue<Int>()
+            val totalPorts = ports.size
 
-            // Scan all ports in parallel, limited by semaphore
-            val results = ports.map { port ->
+            // Feed ports through a rendezvous channel consumed by a fixed pool
+            // of workers. This keeps only `portThreads` scans in flight instead
+            // of eagerly allocating one coroutine per port (a full 1-65535 scan
+            // would otherwise spawn ~65k coroutines up front).
+            val portChannel = Channel<Int>(Channel.RENDEZVOUS)
+            val producer = launch {
+                try {
+                    ports.forEach { portChannel.send(it) }
+                } finally {
+                    portChannel.close()
+                }
+            }
+            val workers = List(portThreads) {
                 async {
-                    portSemaphore.withPermit {
-                        val isOpen = isPortOpen(ipAddress, port)
+                    for (port in portChannel) {
+                        val isOpen = isPortOpen(ipAddress, port, portTimeoutMs)
                         val count = scannedCount.incrementAndGet()
 
                         if (isOpen) {
                             foundCount.incrementAndGet()
+                            foundPorts.add(port)
                         }
 
-                        val progress = count.toFloat() / ports.size * 0.6f
+                        val progress = count.toFloat() / totalPorts * 0.6f
                         updateDeepScanProgress(
                             DeepScanPhase.PORT_SCANNING,
                             progress,
                             "Scanning port $port...",
                             currentPort = port,
                             portsScanned = count,
-                            portsTotal = ports.size,
+                            portsTotal = totalPorts,
                             openPortsFound = foundCount.get()
                         )
-
-                        if (isOpen) port else null
                     }
                 }
-            }.awaitAll().filterNotNull()
+            }
+            workers.awaitAll()
+            producer.join()
 
-            openPorts.addAll(results.map { port ->
+            openPorts.addAll(foundPorts.sorted().map { port ->
                 PortInfo(
                     port = port,
-                    serviceName = CommonPorts.getServiceName(port)
+                    serviceName = customServiceNames[port] ?: CommonPorts.getServiceName(port)
                 )
             })
 
@@ -334,10 +360,10 @@ class NetworkScanner(private val context: Context) {
     /**
      * Check if a port is open on the target.
      */
-    private fun isPortOpen(ip: String, port: Int): Boolean {
+    private fun isPortOpen(ip: String, port: Int, timeoutMs: Int = PORT_TIMEOUT_MS): Boolean {
         return try {
             Socket().use { socket ->
-                socket.connect(InetSocketAddress(ip, port), PORT_TIMEOUT_MS)
+                socket.connect(InetSocketAddress(ip, port), timeoutMs)
                 true
             }
         } catch (e: Exception) {

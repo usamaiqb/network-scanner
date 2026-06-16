@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.networkscanner.app.NetworkScannerApp
 import com.networkscanner.app.data.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -98,14 +99,20 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
 
         deepScanJob = viewModelScope.launch {
             try {
+                val enabledCustomPorts = customPortRepository.getEnabledPorts()
+                val customServiceNames = enabledCustomPorts.associate { it.port to it.serviceName }
                 val ports = if (fullScan) {
                     (1..65535).toList()
                 } else {
-                    val customPorts = customPortRepository.getEnabledPortNumbers()
-                    (CommonPorts.TOP_PORTS + customPorts).distinct().sorted()
+                    (CommonPorts.TOP_PORTS + enabledCustomPorts.map { it.port }).distinct().sorted()
                 }
 
-                val result = scanner.performDeepScan(currentDevice.ipAddress, ports)
+                val result = scanner.performDeepScan(
+                    currentDevice.ipAddress,
+                    ports,
+                    customServiceNames,
+                    fullScan = fullScan
+                )
 
                 when (result.status) {
                     DeepScanStatus.COMPLETED -> {
@@ -125,6 +132,11 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
                         _deepScanState.value = DeepScanState.Idle
                     }
                 }
+            } catch (e: CancellationException) {
+                // Cancellation is expected (user tapped Cancel / scope torn down);
+                // cancelDeepScan() already moved state to Idle, so don't surface
+                // it as an error. Rethrow to honor structured concurrency.
+                throw e
             } catch (e: Exception) {
                 _deepScanState.value = DeepScanState.Error(e.message ?: "Unknown error")
             }

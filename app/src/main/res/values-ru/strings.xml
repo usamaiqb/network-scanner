@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Network Scanner</string>
-
     <!-- Menu items -->
     <string name="action_settings">Настройки</string>
     <string name="action_refresh">Обновить</string>
@@ -124,6 +122,7 @@
     <!-- Appearance Preferences -->
     <string name="pref_theme_title">Тема</string>
     <string name="pref_language_title">Язык</string>
+    <string name="language_system_default">Как в системе</string>
     <string name="pref_dynamic_colors_title">Динамические цвета</string>
     <string name="pref_dynamic_colors_summary">Использовать цвета из обоев (Android 12+)</string>
 
@@ -213,7 +212,7 @@
     <string name="full_scan">Полное сканирование</string>
     <string name="full_port_scan">Полное сканирование портов</string>
     <string name="full_scan_warning">Это просканирует все 65,535 портов на этом устройстве. Это может занять несколько минут и создать значительный сетевой трафик.</string>
-    <string name="full_scan_details">• Время сканирования: 5-15 минут\n• Интенсивная нагрузка на сеть\n• Может быть обнаружено системами безопасности</string>
+    <string name="full_scan_details">• Время сканирования: 1–3 минуты\n• Интенсивная нагрузка на сеть\n• Может быть обнаружено системами безопасности</string>
     <string name="action_start">Начать</string>
 
     <!-- Settings - Custom Ports -->

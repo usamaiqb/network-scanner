@@ -1,6 +1,7 @@
 package com.networkscanner.app.data.repository
 
 import android.content.Context
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +39,7 @@ class CustomPortRepository(private val context: Context) {
     }
 
     private fun saveAll(list: List<CustomPortData>) {
-        prefs.edit().putString(KEY_PORTS, json.encodeToString(list)).apply()
+        prefs.edit { putString(KEY_PORTS, json.encodeToString(list)) }
         _ports.value = list
     }
 
@@ -63,8 +64,8 @@ class CustomPortRepository(private val context: Context) {
         saveAll(_ports.value.map { if (it.id == id) it.copy(isEnabled = enabled) else it })
     }
 
-    fun getEnabledPortNumbers(): List<Int> {
-        return _ports.value.filter { it.isEnabled }.map { it.port }
+    fun getEnabledPorts(): List<CustomPortData> {
+        return _ports.value.filter { it.isEnabled }
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.networkscanner.app.ui.screens.home
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.animation.AnimatedVisibility
@@ -93,9 +94,12 @@ fun NetworkInfoBar(
             modifier = Modifier
                 .semantics { contentDescription = description }
                 .clickable(enabled = !isScanning) {
-                    // Открываем системные настройки Wi-Fi
-                    val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
-                    context.startActivity(intent)
+                    // Open the system Wi-Fi settings
+                    try {
+                        context.startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+                    } catch (_: ActivityNotFoundException) {
+                        // No Wi-Fi settings activity available on this device
+                    }
                 }
         ) {
             Row(

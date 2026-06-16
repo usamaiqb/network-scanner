@@ -110,26 +110,25 @@ object ArpReader {
      */
     private fun readFromIpNeigh(): List<ArpEntry> {
         val entries = mutableListOf<ArpEntry>()
-
+        var process: Process? = null
         try {
-            val process = Runtime.getRuntime().exec(arrayOf("ip", "neigh", "show"))
-            val reader = BufferedReader(process.inputStream.reader())
-            
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                val entry = parseIpNeighLine(line!!)
-                if (entry != null) {
-                    entries.add(entry)
+            process = Runtime.getRuntime().exec(arrayOf("ip", "neigh", "show"))
+            process.inputStream.bufferedReader().use { reader ->
+                var line: String?
+                while (reader.readLine().also { line = it } != null) {
+                    val entry = parseIpNeighLine(line!!)
+                    if (entry != null) {
+                        entries.add(entry)
+                    }
                 }
             }
-            
             process.waitFor()
-            reader.close()
         } catch (e: Exception) {
             // Command might not be available or permission denied
             e.printStackTrace()
+        } finally {
+            process?.destroy()
         }
-
         return entries
     }
 
@@ -249,11 +248,14 @@ object ArpReader {
      */
     fun clearArpEntry(ipAddress: String): Boolean {
         if (!isValidIpAddress(ipAddress)) return false
+        var process: Process? = null
         return try {
-            val process = Runtime.getRuntime().exec(arrayOf("ip", "neigh", "del", ipAddress, "dev", "wlan0"))
+            process = Runtime.getRuntime().exec(arrayOf("ip", "neigh", "del", ipAddress, "dev", "wlan0"))
             process.waitFor() == 0
         } catch (e: Exception) {
             false
+        } finally {
+            process?.destroy()
         }
     }
 
@@ -263,12 +265,15 @@ object ArpReader {
      */
     fun refreshArpEntry(ipAddress: String) {
         if (!isValidIpAddress(ipAddress)) return
+        var process: Process? = null
         try {
-            val process = Runtime.getRuntime().exec(arrayOf("/system/bin/ping", "-c", "1", "-W", "1", ipAddress))
+            process = Runtime.getRuntime().exec(arrayOf("/system/bin/ping", "-c", "1", "-W", "1", ipAddress))
             process.waitFor()
             invalidateCache()
         } catch (e: Exception) {
             // Ignore errors
+        } finally {
+            process?.destroy()
         }
     }
 

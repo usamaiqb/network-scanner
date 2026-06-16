@@ -50,6 +50,24 @@
 }
 
 # ============================================================================
+# KOTLINX SERIALIZATION
+# ============================================================================
+
+# @Serializable classes are persisted as JSON (DeviceCustomizationData,
+# CustomPortData) and used for type-safe navigation. The data.** keep rule
+# above covers the data package, but these explicit rules guard every
+# @Serializable in the app package against R8 stripping the generated
+# serializer (which fails only at runtime, not at build time).
+-keepattributes *Annotation*, InnerClasses
+-keep,includedescriptorclasses class com.networkscanner.app.**$$serializer { *; }
+-keepclassmembers class com.networkscanner.app.** {
+    *** Companion;
+}
+-keepclasseswithmembers class com.networkscanner.app.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# ============================================================================
 # DEBUG INFO
 # ============================================================================
 

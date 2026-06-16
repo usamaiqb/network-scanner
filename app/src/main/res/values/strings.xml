@@ -124,6 +124,7 @@
     <!-- Appearance Preferences -->
     <string name="pref_theme_title">Theme</string>
     <string name="pref_language_title">Language</string>
+    <string name="language_system_default">System default</string>
     <string name="pref_dynamic_colors_title">Dynamic Colors</string>
     <string name="pref_dynamic_colors_summary">Use colors from your wallpaper (Android 12+)</string>
 
@@ -213,7 +214,7 @@
     <string name="full_scan">Full Scan</string>
     <string name="full_port_scan">Full Port Scan</string>
     <string name="full_scan_warning">This will scan all 65,535 ports on this device. This may take several minutes and generate significant network traffic.</string>
-    <string name="full_scan_details">• Scan time: 5-15 minutes\n• Network intensive\n• May be detected by security systems</string>
+    <string name="full_scan_details">• Scan time: 1–3 minutes\n• Network intensive\n• May be detected by security systems</string>
     <string name="action_start">Start</string>
 
     <!-- Settings - Custom Ports -->

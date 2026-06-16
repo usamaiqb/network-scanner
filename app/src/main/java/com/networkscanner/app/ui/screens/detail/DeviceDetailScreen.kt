@@ -1,7 +1,7 @@
 package com.networkscanner.app.ui.screens.detail
 
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -210,7 +210,7 @@ fun DeviceDetailScreen(
                                             label = label,
                                             value = value,
                                             onClick = {
-                                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://$value"))
+                                                val intent = Intent(Intent.ACTION_VIEW, "http://$value".toUri())
                                                 try {
                                                     context.startActivity(intent)
                                                 } catch (e: Exception) {
@@ -392,11 +392,11 @@ private fun DeviceHeaderCard(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Кликабельная иконка устройства с увеличенным padding для карандашика
+        // Clickable device icon with extra padding so the edit pencil isn't clipped
         Box(
             modifier = Modifier
-                .size(80.dp) // Увеличил с 72dp до 80dp
-                .padding(4.dp), // Добавил padding чтобы карандашик не обрезался
+                .size(80.dp) // Increased from 72dp to 80dp
+                .padding(4.dp), // Added padding so the edit pencil isn't clipped
             contentAlignment = Alignment.Center
         ) {
             Box(
@@ -414,7 +414,7 @@ private fun DeviceHeaderCard(
                     modifier = Modifier.size(36.dp)
                 )
             }
-            // Маленький индикатор "редактировать иконку" - теперь не обрезается
+            // Small "edit icon" indicator — no longer clipped
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -432,7 +432,7 @@ private fun DeviceHeaderCard(
             }
         }
 
-        // Имя + карандашик — карандашик не влияет на центрирование текста
+        // Name + edit pencil — the pencil doesn't affect text centering
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = customName ?: device.displayName,
@@ -441,7 +441,7 @@ private fun DeviceHeaderCard(
                 textAlign = TextAlign.Center,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(end = 32.dp) // место для карандашика
+                modifier = Modifier.padding(end = 32.dp) // room for the edit pencil
             )
             IconButton(
                 onClick = onEditName,

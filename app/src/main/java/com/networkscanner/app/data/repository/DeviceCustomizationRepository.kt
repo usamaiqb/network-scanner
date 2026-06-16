@@ -1,6 +1,7 @@
 package com.networkscanner.app.data.repository
 
 import android.content.Context
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,7 @@ class DeviceCustomizationRepository(private val context: Context) {
 
     private fun saveAll(map: Map<String, DeviceCustomizationData>) {
         val list = map.values.toList()
-        prefs.edit().putString(KEY_CUSTOMIZATIONS, json.encodeToString(list)).apply()
+        prefs.edit { putString(KEY_CUSTOMIZATIONS, json.encodeToString(list)) }
         _customizations.value = map
     }
 
@@ -48,14 +49,16 @@ class DeviceCustomizationRepository(private val context: Context) {
     fun saveCustomization(deviceId: String, customName: String?, customIcon: String? = null) {
         val current = _customizations.value.toMutableMap()
         val existing = current[deviceId]
-        if (customName.isNullOrBlank() && customIcon == null && existing == null) return
-        if (customName.isNullOrBlank() && customIcon == null) {
+        val newName = customName?.takeIf { it.isNotBlank() }
+        val newIcon = customIcon ?: existing?.customIcon // null arg = preserve existing icon
+        if (newName == null && newIcon == null) {
+            if (existing == null) return
             current.remove(deviceId)
         } else {
             current[deviceId] = DeviceCustomizationData(
                 deviceId = deviceId,
-                customName = customName?.takeIf { it.isNotBlank() } ?: existing?.customName,
-                customIcon = customIcon ?: existing?.customIcon,
+                customName = newName,
+                customIcon = newIcon,
                 lastUpdated = System.currentTimeMillis()
             )
         }

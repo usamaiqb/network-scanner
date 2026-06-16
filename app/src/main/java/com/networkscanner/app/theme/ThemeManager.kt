@@ -2,7 +2,7 @@ package com.networkscanner.app.theme
 
 import android.content.Context
 import android.os.Build
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,10 +16,8 @@ object ThemeManager {
     private const val KEY_THEME_MODE = "theme_mode"
     private const val KEY_DYNAMIC_COLORS = "dynamic_colors"
 
-    enum class ThemeMode(val nightMode: Int) {
-        LIGHT(AppCompatDelegate.MODE_NIGHT_NO),
-        DARK(AppCompatDelegate.MODE_NIGHT_YES),
-        SYSTEM(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+    enum class ThemeMode {
+        LIGHT, DARK, SYSTEM;
 
         companion object {
             fun fromName(name: String?): ThemeMode {
@@ -41,10 +39,8 @@ object ThemeManager {
      * Initialize theme settings on app startup.
      */
     fun initialize(context: Context) {
-        val mode = getThemeMode(context)
-        _themeModeFlow.value = mode
+        _themeModeFlow.value = getThemeMode(context)
         _dynamicColorsFlow.value = isDynamicColorsEnabled(context)
-        AppCompatDelegate.setDefaultNightMode(mode.nightMode)
     }
 
     /**
@@ -59,9 +55,8 @@ object ThemeManager {
      * Set theme mode and apply it.
      */
     fun setThemeMode(context: Context, mode: ThemeMode) {
-        getPrefs(context).edit().putString(KEY_THEME_MODE, mode.name).apply()
+        getPrefs(context).edit { putString(KEY_THEME_MODE, mode.name) }
         _themeModeFlow.value = mode
-        AppCompatDelegate.setDefaultNightMode(mode.nightMode)
     }
 
     /**
@@ -75,7 +70,7 @@ object ThemeManager {
      * Enable or disable dynamic colors (Android 12+).
      */
     fun setDynamicColorsEnabled(context: Context, enabled: Boolean) {
-        getPrefs(context).edit().putBoolean(KEY_DYNAMIC_COLORS, enabled).apply()
+        getPrefs(context).edit { putBoolean(KEY_DYNAMIC_COLORS, enabled) }
         _dynamicColorsFlow.value = enabled
     }
 

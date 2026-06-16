@@ -39,6 +39,16 @@
             </intent-filter>
         </activity>
 
+        <!-- Enables AppCompat to auto-store and restore the per-app locale on API < 33 -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
+
     </application>
 
 </manifest>
