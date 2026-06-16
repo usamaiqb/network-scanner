@@ -42,7 +42,7 @@
     <string name="interface_type_vpn">VPN</string>
     <string name="interface_type_cellular">Сотовая связь</string>
     <string name="interface_type_network">Сеть</string>
-    
+
     <!-- Errors -->
     <string name="error_scan_failed">Ошибка сканирования: %s</string>
     <string name="error_permission_denied">Доступ запрещен</string>

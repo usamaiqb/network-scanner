@@ -165,7 +165,7 @@ fun DeviceDetailScreen(
                     val identityRows = buildList {
                         // IP Address is special - it's clickable
                         add(Triple(stringResource(R.string.label_ip_address), dev.ipAddress, true))
-                        
+
                         // Always show MAC address row (even if unknown)
                         val macValue = dev.macAddress?.let { mac ->
                             val macLabel = if (com.networkscanner.app.util.NetworkUtils.isLocallyAdministeredMac(mac))
@@ -175,7 +175,7 @@ fun DeviceDetailScreen(
                             Triple(macLabel, mac.uppercase(), false)
                         } ?: Triple(stringResource(R.string.label_mac_address), "Unknown", false)
                         add(macValue)
-                        
+
                         dev.vendor?.let {
                             add(Triple(stringResource(R.string.label_vendor), it, false))
                         }

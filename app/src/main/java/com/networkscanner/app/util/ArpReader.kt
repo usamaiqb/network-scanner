@@ -61,7 +61,7 @@ object ArpReader {
 
         // Method 1: Try reading /proc/net/arp (works on older Android, limited on 10+)
         entries.addAll(readFromProcNetArp())
-        
+
         // Method 2: Try 'ip neigh show' command (works better on Android 10+)
         entries.addAll(readFromIpNeigh())
 

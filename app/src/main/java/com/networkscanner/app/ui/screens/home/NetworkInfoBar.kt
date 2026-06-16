@@ -88,7 +88,7 @@ fun NetworkInfoBar(
     ) {
         val description = stringResource(R.string.cd_network_info)
         val context = LocalContext.current
-        
+
         Surface(
             color = MaterialTheme.colorScheme.surfaceContainer,
             modifier = Modifier
@@ -115,7 +115,7 @@ fun NetworkInfoBar(
                     modifier = Modifier.size(18.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
-                
+
                 // Network name with dropdown indicator
                 Row(
                     modifier = Modifier.weight(1f),

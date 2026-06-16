@@ -41,7 +41,7 @@ fun DeviceCard(
     customIconKey: String? = null
 ) {
     val displayIcon = iconKeyToVector(customIconKey) ?: device.deviceType.icon
-    
+
     val description = buildString {
         append(device.displayName)
         append(", ${device.deviceType.displayName}")
