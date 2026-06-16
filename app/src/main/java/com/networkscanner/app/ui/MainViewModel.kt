@@ -180,7 +180,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _devices.value = customized
 
         val sorted = customized.sortedWith(
-            compareBy({ !it.isCurrentDevice }, { !it.isOnline }, { it.ipAddress })
+            compareBy(
+                { !it.isCurrentDevice },
+                { !it.isOnline },
+                {
+                    it.ipAddress
+                        .split('.')
+                        .take(4)
+                        .fold(0L) { acc, part ->
+                            (acc shl 8) or ((part.toLongOrNull() ?: 0L) and 0xFF)
+                        }
+                }
+            )
         )
 
         _onlineDevices.value = sorted.filter { it.isOnline }

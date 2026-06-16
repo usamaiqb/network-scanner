@@ -1,3 +1,8 @@
+## [1.1.3] - 2026-06-11
+
+### Fixed
+- Device list now sorts by IP address in correct numerical order (e.g. .2 before .10)
+
 ## [1.1.2] - 2026-05-20
 
 ### Added
