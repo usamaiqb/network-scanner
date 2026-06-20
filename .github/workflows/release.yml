@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+permissions:
+  contents: write   # required to create the GitHub Release
+
+jobs:
+  release:
+    name: Build & publish release
+    runs-on: ubuntu-24.04
+
+    steps:
+      # fetch-depth: 0 so auto-generated release notes can find the previous tag
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
+
+      # Guard: the exact tagged commit is re-tested before we ship a signed APK.
+      # Lint is skipped here — it's static and already covered on the PR.
+      - name: Run unit tests
+        run: ./gradlew test
+
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > keystore.jks
+
+      - name: Build signed release APK
+        run: ./gradlew assembleRelease
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/keystore.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Rename APK
+        run: mv app/build/outputs/apk/release/*.apk app/build/outputs/apk/release/network-scanner-${{ github.ref_name }}.apk
+
+      # Auto-generated notes: categorized PR list + "New Contributors" + compare
+      # link. CHANGELOG.md is intentionally NOT used here (kept in-repo for
+      # convention; the Release page is the auto-generated view).
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: app/build/outputs/apk/release/network-scanner-${{ github.ref_name }}.apk

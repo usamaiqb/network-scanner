@@ -1,0 +1,25 @@
+# Controls GitHub's auto-generated release notes (used by release.yml).
+# PRs are grouped by the "type: *" label applied by pr-conventions.yml.
+# Bots are excluded so Dependabot doesn't show up as a "contributor".
+# The "## New Contributors" section is added automatically and is not configured here.
+changelog:
+  exclude:
+    authors:
+      - dependabot
+      - dependabot[bot]
+      - github-actions
+      - github-actions[bot]
+  categories:
+    - title: 🚀 Features
+      labels: ['type: feature']
+    - title: 🐛 Bug Fixes
+      labels: ['type: fix']
+    - title: ⚡ Performance
+      labels: ['type: performance']
+    - title: 📝 Documentation
+      labels: ['type: docs']
+    - title: 🧹 Maintenance
+      labels: ['type: maintenance']
+    # Catch-all for PRs without a type label (e.g. labeler didn't run).
+    - title: Other Changes
+      labels: ['*']
