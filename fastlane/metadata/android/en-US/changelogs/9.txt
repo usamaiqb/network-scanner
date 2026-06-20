@@ -1,0 +1,5 @@
+• Rename devices and assign custom icons
+• Configure which ports are scanned, plus a new full 65k-port scan
+• Select network interface; tap IP addresses
+• Smarter MAC display with randomization detection
+• Added Russian translation

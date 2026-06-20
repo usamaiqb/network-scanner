@@ -1,3 +1,26 @@
+## [1.1.4] - 2026-06-20
+
+### Added
+- Custom device management: rename devices and assign custom icons (#3)
+- Configurable port list for scans (#7)
+- Full port scan (all 65k ports) via a channel-based worker pool (#14)
+- Network interface selection
+- Clickable IP addresses
+- Smart MAC address display with randomization detection
+- Multilingual support (English + Russian)
+
+### Improved
+- Per-app locale switching via AppCompat (removes Activity recreate hacks; works across all supported API levels)
+- Language selection now uses a scalable radio-button dialog
+- Full port scan reworked to 128-thread worker pool (300ms timeout), cutting a 65k-port sweep to ~1–3 min
+
+### Fixed
+- Process resource leaks in ArpReader (destroy() in finally blocks)
+- Correct CancellationException propagation in DeviceDetailViewModel
+
+### Changed
+- CI overhaul: split build into ci.yml (PRs/main) and release.yml (tags); SHA-pinned actions; unsigned release APK built on every PR to catch R8 regressions
+
 ## [1.1.3] - 2026-06-11
 
 ### Fixed
