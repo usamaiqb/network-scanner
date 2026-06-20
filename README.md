@@ -15,12 +15,17 @@ A fast, privacy-focused network scanner for Android that helps you discover and 
 - 🔌 **Port Heuristics** - Identifies Cast-enabled TVs and other devices via targeted port probes when other methods come up empty
 
 ### Device Information
-- 🏷️ **MAC Address & Vendor** - Shows MAC address with OUI vendor lookup
+- 🏷️ **MAC Address & Vendor** - Shows MAC address with OUI vendor lookup, including detection of randomized (private) MAC addresses
 - 🖥️ **OS Fingerprinting** - Detects Windows, Linux, macOS, router firmware, and printer OS from open ports and banners
 - 📱 **Device Type Icons** - Automatically identifies smartphones, laptops, desktops, TVs, routers, printers, NAS, and more
 - 🔓 **Deep Port Scan** - Scans common ports, grabs service banners, and extracts software versions
+- 🧩 **Full Port Scan** - Optional sweep of all 65,535 ports via a fast worker pool
+- ⚙️ **Configurable Ports** - Customize which ports are probed during scans
 
 ### App
+- 🏷️ **Custom Devices** - Rename devices and assign your own icons for easy identification
+- 📶 **Interface Selection** - Choose which network interface to scan (Wi-Fi, Ethernet, VPN)
+- 🌍 **Multilingual** - Available in English and Russian
 - 🎨 **Material Design 3** - Modern interface following latest design guidelines
 - 🔒 **Privacy First** - No ads, no tracking, no analytics
 - 🚀 **Lightweight** - Minimal permissions, efficient battery usage
@@ -65,7 +70,7 @@ Network Scanner requests only essential permissions:
 ### Prerequisites
 - Android Studio Hedgehog (2023.1.1) or later
 - JDK 17
-- Android SDK with API level 34
+- Android SDK with API level 35
 
 ### Build Steps
 
@@ -87,7 +92,8 @@ cd network-scanner
 1. Open the app and grant necessary permissions
 2. Tap the scan button to discover devices
 3. Tap any device to view detailed information
-4. Use the deep scan option for port scanning
+4. Use the deep scan option for port scanning, or run a full port scan for all 65,535 ports
+5. Rename devices or assign custom icons to keep track of your network
 
 ## Contributing
 
