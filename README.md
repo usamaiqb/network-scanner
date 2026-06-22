@@ -1,5 +1,10 @@
 # Network Scanner
 
+[![CI](https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml/badge.svg)](https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/usamaiqb/network-scanner)](https://github.com/usamaiqb/network-scanner/releases/latest)
+[![F-Droid](https://img.shields.io/f-droid/v/com.networkscanner.app)](https://f-droid.org/packages/com.networkscanner.app/)
+[![Downloads](https://img.shields.io/github/downloads/usamaiqb/network-scanner/total)](https://github.com/usamaiqb/network-scanner/releases)
+[![API](https://img.shields.io/badge/API-26%2B-brightgreen)](https://developer.android.com/about/versions/oreo)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 A fast, privacy-focused network scanner for Android that helps you discover and analyze devices on your local network.
