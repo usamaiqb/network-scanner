@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="fastlane/metadata/android/en-US/images/icon.png" width="160" height="160">
+<img src="fastlane/metadata/android/en-US/images/icon_readme.svg" width="160" height="160">
 
 # Network Scanner
 
@@ -8,7 +8,6 @@
 
 <p align="center">
   <a href="https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml"><img src="https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-  <a href="https://github.com/usamaiqb/network-scanner/releases/latest"><img src="https://img.shields.io/github/v/release/usamaiqb/network-scanner?logo=github&logoColor=white&label=Release" alt="Release" /></a>
   <a href="https://github.com/usamaiqb/network-scanner/releases"><img src="https://img.shields.io/github/downloads/usamaiqb/network-scanner/total?logo=github&logoColor=white&label=Downloads" alt="Downloads" /></a>
   <a href="https://f-droid.org/packages/com.networkscanner.app/"><img src="https://img.shields.io/f-droid/v/com.networkscanner.app?logo=fdroid&logoColor=white&label=F-Droid" alt="F-Droid" /></a>
   <img src="https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white" alt="Platform" />
