@@ -24,6 +24,20 @@ display_name() {
     esac
 }
 
+# Percentage -> 12-char Unicode block progress bar (e.g. ███████████░)
+progress_bar() {
+    local pct=$1
+    awk -v p="$pct" 'BEGIN {
+        w = 12
+        f = int(p * w / 100 + 0.5)
+        e = w - f
+        bar = ""
+        for (i = 0; i < f; i++) bar = bar "█"
+        for (i = 0; i < e; i++) bar = bar "░"
+        print bar
+    }'
+}
+
 # Sorted translatable key names from the source strings.xml
 source_keys() {
     grep '<string name=' "$SOURCE_XML" \
@@ -47,20 +61,21 @@ compute_table() {
     src_keys="$(source_keys)"
     total="$(echo "$src_keys" | wc -l | tr -d '[:space:]')"
 
-    echo "| Language | Code | Complete |"
-    echo "| --- | --- | --- |"
-    echo "| English | en | 100% (source) |"
+    echo "| Language | Progress |"
+    echo "| --- | --- |"
+    echo "| English | $(progress_bar 100) 100% (source) |"
 
     find "$REPO_ROOT/app/src/main/res" -maxdepth 1 -name 'values-*' -type d \
         | sort \
         | while IFS= read -r locale_dir; do
-            local code lkeys matched pct name
+            local code lkeys matched pct name bar
             code="$(basename "$locale_dir" | sed 's/^values-//')"
             lkeys="$(locale_keys "$locale_dir/strings.xml")"
             matched="$(comm -12 <(echo "$src_keys") <(echo "$lkeys") | wc -l | tr -d '[:space:]')"
             pct="$(awk "BEGIN { printf \"%d\", int($matched * 100 / $total + 0.5) }")"
             name="$(display_name "$code")"
-            echo "| $name | $code | ${pct}% |"
+            bar="$(progress_bar "$pct")"
+            echo "| $name | $bar ${pct}% |"
         done
 }
 

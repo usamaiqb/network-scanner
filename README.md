@@ -113,15 +113,16 @@ cd network-scanner
 ## Translations
 
 <!-- translations:start -->
-| Language | Code | Complete |
-| --- | --- | --- |
-| English | en | 100% (source) |
-| Español | es | 100% |
-| Русский | ru | 92% |
-| Українська | uk | 92% |
+| Language | Progress |
+| --- | --- |
+| English | ████████████ 100% (source) |
+| Español | ████████████ 100% |
+| Русский | ███████████░ 92% |
+| Українська | ███████████░ 92% |
 <!-- translations:end -->
 
-Want to add a language? See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Contributions to translations are welcome!
 
 ## Contributing
 
