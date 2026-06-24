@@ -1,13 +1,24 @@
+<div align="center">
+
+<img src="fastlane/metadata/android/en-US/images/icon.png" width="160" height="160">
+
 # Network Scanner
 
-[![CI](https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml/badge.svg)](https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/usamaiqb/network-scanner)](https://github.com/usamaiqb/network-scanner/releases/latest)
-[![F-Droid](https://img.shields.io/f-droid/v/com.networkscanner.app)](https://f-droid.org/packages/com.networkscanner.app/)
-[![Downloads](https://img.shields.io/github/downloads/usamaiqb/network-scanner/total)](https://github.com/usamaiqb/network-scanner/releases)
-[![API](https://img.shields.io/badge/API-26%2B-brightgreen)](https://developer.android.com/about/versions/oreo)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+### A fast, privacy-focused network scanner for Android
 
-A fast, privacy-focused network scanner for Android that helps you discover and analyze devices on your local network.
+<p align="center">
+  <a href="https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml"><img src="https://github.com/usamaiqb/network-scanner/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/usamaiqb/network-scanner/releases/latest"><img src="https://img.shields.io/github/v/release/usamaiqb/network-scanner?logo=github&logoColor=white&label=Release" alt="Release" /></a>
+  <a href="https://github.com/usamaiqb/network-scanner/releases"><img src="https://img.shields.io/github/downloads/usamaiqb/network-scanner/total?logo=github&logoColor=white&label=Downloads" alt="Downloads" /></a>
+  <a href="https://f-droid.org/packages/com.networkscanner.app/"><img src="https://img.shields.io/f-droid/v/com.networkscanner.app?logo=fdroid&logoColor=white&label=F-Droid" alt="F-Droid" /></a>
+  <img src="https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white" alt="Platform" />
+  <img src="https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose" />
+  <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3" /></a>
+</p>
+
+</div>
+
+Discover and analyze devices on your local network with no ads, no tracking, and no internet required.
 
 ## Features
 
@@ -30,7 +41,7 @@ A fast, privacy-focused network scanner for Android that helps you discover and 
 ### App
 - 🏷️ **Custom Devices** - Rename devices and assign your own icons for easy identification
 - 📶 **Interface Selection** - Choose which network interface to scan (Wi-Fi, Ethernet, VPN)
-- 🌍 **Multilingual** - Available in English and Russian
+- 🌍 **Multilingual** - Available in multiple languages (see [Translations](#translations))
 - 🎨 **Material Design 3** - Modern interface following latest design guidelines
 - 🔒 **Privacy First** - No ads, no tracking, no analytics
 - 🚀 **Lightweight** - Minimal permissions, efficient battery usage
@@ -99,6 +110,19 @@ cd network-scanner
 3. Tap any device to view detailed information
 4. Use the deep scan option for port scanning, or run a full port scan for all 65,535 ports
 5. Rename devices or assign custom icons to keep track of your network
+
+## Translations
+
+<!-- translations:start -->
+| Language | Code | Complete |
+| --- | --- | --- |
+| English | en | 100% (source) |
+| Español | es | 100% |
+| Русский | ru | 92% |
+| Українська | uk | 92% |
+<!-- translations:end -->
+
+Want to add a language? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Contributing
 
