@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Menu items -->
     <string name="action_settings">Налаштування</string>
@@ -25,7 +25,7 @@
     <string name="unknown_manufacturer">Невідомий виробник</string>
     <string name="ip_address">IP: %s</string>
     <string name="mac_address">MAC: %s</string>
-    <string name="hostname">Ім'я хоста: %s</string>
+    <string name="hostname">Ім\'я хоста: %s</string>
     <string name="last_seen">Останній раз: %s</string>
     <string name="this_device">Цей пристрій</string>
 
@@ -46,7 +46,7 @@
     <!-- Errors -->
     <string name="error_scan_failed">Сканування не вдалося: %s</string>
     <string name="error_permission_denied">Дозвіл відхилено</string>
-    <string name="error_no_network">Немає мережевого з'єднання</string>
+    <string name="error_no_network">Немає мережевого з\'єднання</string>
 
     <!-- Permissions -->
     <string name="permission_location_title">Покращити сканування</string>
@@ -79,13 +79,13 @@
     <string name="label_mac_address">MAC адреса</string>
     <string name="label_vendor">Постачальник</string>
     <string name="label_latency">Затримка</string>
-    <string name="label_hostname">Ім'я хоста</string>
+    <string name="label_hostname">Ім\'я хоста</string>
     <string name="label_services">Сервіси</string>
     <string name="label_discovered_via">Виявлено через</string>
-    <string name="label_detected_os">Виявлена ​​ОС</string>
+    <string name="label_detected_os">Виявлена ОС</string>
     <string name="label_scan_duration">Тривалість сканування</string>
     <string name="device_info">Інформація про пристрій</string>
-    <string name="label_friendly_name">Зрозуміле ім'я</string>
+    <string name="label_friendly_name">Зрозуміле ім\'я</string>
     <string name="label_model">Модель</string>
 
     <!-- Deep Scan States -->
