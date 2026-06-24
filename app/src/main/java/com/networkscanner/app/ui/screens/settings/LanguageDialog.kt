@@ -29,7 +29,7 @@ import com.networkscanner.app.R
  * in that language) are intentionally not translated; only the "system" option
  * is localized.
  */
-private val LANGUAGE_CODES = listOf("system", "en", "ru", "es")
+private val LANGUAGE_CODES = listOf("system", "en", "ru", "es", "uk")
 
 @Composable
 private fun languageLabel(code: String): String = when (code) {
@@ -37,6 +37,7 @@ private fun languageLabel(code: String): String = when (code) {
     "en" -> "English"
     "ru" -> "Русский"
     "es" -> "Español"
+    "uk" -> "Українська"
     else -> code
 }
 
