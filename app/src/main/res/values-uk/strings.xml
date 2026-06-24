@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Menu items -->
+    <string name="action_settings">Налаштування</string>
+    <string name="action_refresh">Оновити</string>
+    <string name="action_theme">Перемкнути тему</string>
+
+    <!-- Scan states -->
+    <string name="scanning">Сканування мережі…</string>
+    <string name="scan_complete">Сканування завершено</string>
+    <string name="devices_found">Знайдено %d пристроїв</string>
+    <string name="pull_to_refresh">Потягніть, щоб оновити</string>
+
+    <!-- Initial state -->
+    <string name="initial_scan_title">Скануйте свою мережу</string>
+    <string name="initial_scan_message">Знайдіть усі пристрої, підключені до вашої мережі Wi-Fi</string>
+    <string name="action_scan_network">Сканування мережі</string>
+
+    <!-- Device sections -->
+    <string name="section_active">Активні пристрої</string>
+    <string name="section_offline">Офлайн пристрої</string>
+
+    <!-- Device info -->
+    <string name="unknown_device">Невідомий пристрій</string>
+    <string name="unknown_manufacturer">Невідомий виробник</string>
+    <string name="ip_address">IP: %s</string>
+    <string name="mac_address">MAC: %s</string>
+    <string name="hostname">Ім\'я хоста: %s</string>
+    <string name="last_seen">Останній раз: %s</string>
+    <string name="this_device">Цей пристрій</string>
+
+    <!-- Empty states -->
+    <string name="no_devices_title">Пристроїв не знайдено</string>
+    <string name="no_devices_message">Переконайтеся, що ви підключені до мережі Wi-Fi, і спробуйте сканувати ще раз.</string>
+    <string name="no_wifi_title">Відсутнє підключення до мережі</string>
+    <string name="no_wifi_message">Не знайдено активних мережевих інтерфейсів. Підключіться до мережі та повторіть спробу.</string>
+    <string name="no_active_interfaces">Немає активного інтерфейсу</string>
+
+    <!-- Interface Types -->
+    <string name="interface_type_wifi">Wi-Fi</string>
+    <string name="interface_type_ethernet">Ethernet</string>
+    <string name="interface_type_vpn">VPN</string>
+    <string name="interface_type_cellular">Мобільний зв’язок</string>
+    <string name="interface_type_network">Мережа</string>
+    
+    <!-- Errors -->
+    <string name="error_scan_failed">Сканування не вдалося: %s</string>
+    <string name="error_permission_denied">Дозвіл відхилено</string>
+    <string name="error_no_network">Немає мережевого з\'єднання</string>
+
+    <!-- Permissions -->
+    <string name="permission_location_title">Покращити сканування</string>
+    <string name="permission_location_message">Для доступу до інформації про Wi-Fi з метою сканування мережі потрібен дозвіл на визначення місцезнаходження.</string>
+    <string name="permission_optional_message">Надання дозволу на доступ до місцезнаходження допоможе виявити більше пристроїв та відобразити точну інформацію про мережу. Це необов’язково — додаток працюватиме й без цього.</string>
+    <string name="permission_nearby_title">Дозвіл на доступ до пристроїв поблизу</string>
+    <string name="permission_nearby_message">Цей дозвіл дозволяє додатку виявляти пристрої, що знаходяться поблизу у вашій мережі.</string>
+    <string name="grant_permission">Надати дозвіл</string>
+    <string name="skip">Пропустити</string>
+
+    <!-- Theme -->
+    <string name="theme_light">Світла</string>
+    <string name="theme_dark">Темна</string>
+    <string name="theme_system">Системна</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_device_icon">Іконка типу пристрою</string>
+    <string name="cd_scan_button">Розпочати сканування мережі</string>
+    <string name="cd_device_status">Індикатор стану пристрою</string>
+
+    <!-- Device Detail Screen -->
+    <string name="device_details">Деталі пристрою</string>
+    <string name="basic_info">Основна інформація</string>
+    <string name="network_info">Інформація про мережу</string>
+    <string name="deep_scan_results">Результати глибокого сканування</string>
+    <string name="open_ports">Відкриті порти</string>
+
+    <!-- Labels -->
+    <string name="label_ip_address">IP адреса</string>
+    <string name="label_mac_address">MAC адреса</string>
+    <string name="label_vendor">Постачальник</string>
+    <string name="label_latency">Затримка</string>
+    <string name="label_hostname">Ім\'я хоста</string>
+    <string name="label_services">Сервіси</string>
+    <string name="label_discovered_via">Виявлено через</string>
+    <string name="label_detected_os">Виявлена ОС</string>
+    <string name="label_scan_duration">Тривалість сканування</string>
+    <string name="device_info">Інформація про пристрій</string>
+    <string name="label_friendly_name">Зрозуміле ім\'я</string>
+    <string name="label_model">Модель</string>
+
+    <!-- Deep Scan States -->
+    <string name="tap_to_deep_scan">Натисніть, щоб розпочати глибоке сканування</string>
+    <string name="start_deep_scan">Розпочати глибоке сканування</string>
+    <string name="no_open_ports">Відкритих портів не знайдено</string>
+    <string name="scan_failed">Помилка сканування</string>
+    <string name="device_offline">Пристрій не в мережі</string>
+
+    <!-- Actions -->
+    <string name="action_cancel">Скасувати</string>
+    <string name="action_clear">Очистити</string>
+
+    <!-- Status -->
+    <string name="status_online">Онлайн</string>
+    <string name="status_offline">Офлайн</string>
+
+    <!-- Format strings -->
+    <string name="latency_ms">%dms</string>
+    <string name="confidence_percent">%d%% впевненості</string>
+    <string name="duration_seconds">%.1fs</string>
+    <string name="action_retry">Спробувати ще раз</string>
+    <string name="interface_option_format">%1$s (%2$s) - %3$s</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Налаштування</string>
+
+    <!-- Preference Categories -->
+    <string name="pref_category_appearance">Зовнішній вигляд</string>
+    <string name="pref_category_scanning">Сканування</string>
+    <string name="pref_category_data">Дані</string>
+    <string name="pref_category_about">Про</string>
+
+    <!-- Appearance Preferences -->
+    <string name="pref_theme_title">Тема</string>
+    <string name="pref_language_title">Мова</string>
+    <string name="language_system_default">Як в системі</string>
+    <string name="pref_dynamic_colors_title">Динамічні кольори</string>
+    <string name="pref_dynamic_colors_summary">Використовувати кольори з фонового зображення (Android 12+)</string>
+
+    <!-- Scanning Preferences -->
+    <string name="pref_auto_scan_title">Автоматичне сканування при запуску</string>
+    <string name="pref_auto_scan_summary">Автоматично запускати сканування під час відкриття програми</string>
+    <string name="pref_scan_timeout_title">Час очікування сканування</string>
+
+    <!-- Timeout options -->
+    <string name="timeout_fast">Швидко (3 секунди)</string>
+    <string name="timeout_normal">Звичайно (5 секунд)</string>
+    <string name="timeout_thorough">Ретельно (10 секунд)</string>
+
+    <!-- Data Preferences -->
+    <string name="pref_clear_cache_title">Очистити кеш</string>
+    <string name="pref_clear_cache_summary">Очистити тимчасові дані сканування</string>
+    <string name="pref_clear_history_title">Очистити історію пристрою</string>
+    <string name="pref_clear_history_summary">Видалити всю збережену інформацію про пристрій</string>
+
+    <!-- About Preferences -->
+    <string name="pref_version_title">Версія</string>
+    <string name="pref_about_title">Про Network Scanner</string>
+    <string name="pref_about_summary">Інформація про програму та кредити</string>
+    <string name="pref_privacy_title">Політика конфіденційності</string>
+    <string name="pref_privacy_summary">Як обробляються ваші дані</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_clear_cache_title">Очистити кеш?</string>
+    <string name="dialog_clear_cache_message">Це призведе до видалення всіх тимчасових даних сканування. Історія вашого пристрою залишиться незмінною.</string>
+    <string name="dialog_clear_history_title">Очистити історію пристрою?</string>
+    <string name="dialog_clear_history_message">Це призведе до видалення всієї збереженої інформації про пристрої, включаючи власні назви. Цю дію неможливо скасувати.</string>
+    <string name="dialog_about_title">Про Network Scanner</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner — це потужний інструмент для виявлення та аналізу пристроїв у вашій локальній мережі.\n\nРозроблено з турботою про вашу конфіденційність. Усе сканування відбувається локально на вашому пристрої.\n\n⚠️ Примітка: Виявлення пристроїв та сканування портів не є точними на 100%. Результати можуть відрізнятися залежно від стану мережі та налаштувань пристроїв.\n\nВерсія 1.0.0 | Ліцензія GPL-3.0</string>
+    <string name="view_on_github">Переглянути на GitHub</string>
+    <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
+    <string name="deep_scan_disclaimer">Виявлення портів та ОС є приблизними показниками та може бути не зовсім точним</string>
+    <string name="dialog_privacy_title">Політика конфіденційності</string>
+    <string name="dialog_privacy_message">Network Scanner поважає вашу конфіденційність:\n\n• Відсутність збору даних: усі результати сканування залишаються на вашому пристрої\n• Відсутність реклами та відстеження\n• Для сканування не потрібен доступ до Інтернету\n\nДозвіл на доступ до даних про місцезнаходження використовується виключно для отримання інформації про Wi-Fi відповідно до вимог Android, а не для відстеження вашого місцезнаходження.</string>
+    <string name="dialog_theme_restart_title">Тема змінена</string>
+    <string name="dialog_theme_restart_message">Динамічні зміни кольорів набудуть повної чинності після перезапуску програми.</string>
+
+    <!-- Toast Messages -->
+    <string name="cache_cleared">Кеш успішно очищено</string>
+    <string name="history_cleared">Історія пристрою очищена</string>
+
+    <!-- Accessibility - Content Descriptions -->
+    <string name="cd_settings_button">Відкрити налаштування</string>
+    <string name="cd_theme_button">Змінити тему</string>
+    <string name="cd_refresh_button">Оновити список пристроїв</string>
+    <string name="cd_device_online">Пристрій онлайн</string>
+    <string name="cd_device_offline">Пристрій не в мережі</string>
+    <string name="cd_navigate_back">Повернутися назад</string>
+    <string name="cd_start_deep_scan">Розпочати глибоке сканування цього пристрою</string>
+    <string name="cd_cancel_scan">Скасувати поточне сканування</string>
+    <string name="cd_empty_state_icon">Ілюстрація відсутності пристроїв</string>
+    <string name="cd_network_info">Інформація про мережу</string>
+    <string name="cd_interface_selector">Виберіть мережевий інтерфейс</string>
+    <string name="cd_port_status">Порт %1$d це %2$s</string>
+
+    <!-- Device list accessibility -->
+    <string name="cd_device_item">%1$s, %2$s, IP %3$s</string>
+    <string name="cd_device_current">Це ваш поточний пристрій</string>
+    <string name="cd_section_header">Розділ %1$s із %2$d пристроями</string>
+
+    <!-- Deep scan progress -->
+    <string name="deep_scan_port_progress">%1$d/%2$d порти</string>
+    <string name="deep_scan_open_count">%d відкрито</string>
+
+    <!-- Custom Device Names -->
+    <string name="edit_device_name">Редагувати назву пристрою</string>
+    <string name="edit_device_name_hint">Дайте цьому пристрою власну назву, щоб його було легше ідентифікувати</string>
+    <string name="device_name">Назва пристрою</string>
+    <string name="action_save">Зберегти</string>
+
+    <!-- Custom Ports -->
+    <string name="custom_ports">Користувацькі порти</string>
+    <string name="add_port">Додати порт</string>
+    <string name="add_custom_port">Додати користувацький порт</string>
+    <string name="port_number">Номер порту</string>
+    <string name="service_name">Назва служби</string>
+    <string name="action_add">Додати</string>
+    <string name="delete_port">Видалити порт</string>
+    <string name="no_custom_ports">Немає налаштованих користувацьких портів</string>
+    <string name="tap_add_to_create">Натисніть +, щоб додати власні порти для сканування</string>
+
+    <!-- Full Port Scan -->
+    <string name="full_scan">Повне сканування</string>
+    <string name="full_port_scan">Повне сканування портів</string>
+    <string name="full_scan_warning">Це просканує всі 65 535 портів на цьому пристрої. Це може тривати кілька хвилин і створювати значне мережеве навантаження.</string>
+    <string name="full_scan_details">• Час сканування: 1–3 хвилини\n• Інтенсивне використання мережі\n• Може бути виявлено системами безпеки</string>
+    <string name="action_start">Почати</string>
+
+    <!-- Settings - Custom Ports -->
+    <string name="pref_custom_ports_title">Користувацькі порти</string>
+    <string name="pref_custom_ports_summary">Керування портами для сканування під час глибокого сканування</string>
+
+    <!-- Device Icon Selection -->
+    <string name="choose_device_icon">Виберіть іконку пристрою</string>
+</resources>
