@@ -1,6 +1,8 @@
 package com.networkscanner.app.ui.screens.detail
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DesktopMac
+import androidx.compose.material.icons.filled.LaptopMac
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -10,6 +12,8 @@ val DEVICE_ICON_OPTIONS = listOf(
     IconOption("SMARTPHONE",   Icons.Outlined.Smartphone,     "Phone"),
     IconOption("LAPTOP",       Icons.Outlined.Laptop,         "Laptop"),
     IconOption("DESKTOP",      Icons.Outlined.DesktopWindows, "Desktop"),
+    IconOption("MAC_DESKTOP", Icons.Outlined.DesktopMac, "Mac"),
+    IconOption("MAC_LAPTOP", Icons.Outlined.LaptopMac, "Macbook"),
     IconOption("TABLET",       Icons.Outlined.Tablet,         "Tablet"),
     IconOption("ROUTER",       Icons.Outlined.Router,         "Router"),
     IconOption("TV",           Icons.Outlined.Tv,             "TV"),

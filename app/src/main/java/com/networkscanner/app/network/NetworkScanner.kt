@@ -5,6 +5,8 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Build
 import android.net.wifi.WifiManager
+import androidx.compose.ui.res.stringResource
+import com.networkscanner.app.R
 import com.networkscanner.app.data.*
 import com.networkscanner.app.util.ArpReader
 import com.networkscanner.app.util.MacVendorLookup
@@ -108,7 +110,7 @@ class NetworkScanner(private val context: Context) {
                     networkPrefix = 24
                 ),
                 scanStatus = ScanStatus.ERROR,
-                error = "No active network interface"
+                error = context.getString(R.string.no_wifi_message)
             )
 
         // Add current device
@@ -122,44 +124,44 @@ class NetworkScanner(private val context: Context) {
             ArpReader.invalidateCache()
 
             // Phase 0: Ping gateway to ensure network connectivity and populate ARP cache
-            updateProgress(ScanPhase.READING_ARP_CACHE, 0.05f, "Checking network connectivity...")
+            updateProgress(ScanPhase.READING_ARP_CACHE, 0.05f, context.getString(R.string.cheking_network_connectivity))
             pingGateway(networkInfo)
 
             // Phase 1: Read ARP cache
-            updateProgress(ScanPhase.READING_ARP_CACHE, 0.1f, "Reading ARP cache...")
+            updateProgress(ScanPhase.READING_ARP_CACHE, 0.1f, context.getString(R.string.reading_arp_cache))
             readArpCache()
 
             // Phase 2: Parallel ping sweep (with concurrency limit)
-            updateProgress(ScanPhase.PING_SWEEP, 0.2f, "Scanning network...")
+            updateProgress(ScanPhase.PING_SWEEP, 0.2f, context.getString(R.string.scanning_network))
             pingSweep(networkInfo)
 
             // Phase 2.5: Re-read ARP cache to get MAC addresses for discovered devices
             ArpReader.invalidateCache()
-            updateProgress(ScanPhase.PING_SWEEP, 0.55f, "Getting device information...")
+            updateProgress(ScanPhase.PING_SWEEP, 0.55f, context.getString(R.string.getting_device_information))
             enrichDevicesWithArpData()
 
             // Phase 3: mDNS discovery
-            updateProgress(ScanPhase.MDNS_DISCOVERY, 0.6f, "Discovering services...")
+            updateProgress(ScanPhase.MDNS_DISCOVERY, 0.6f, context.getString(R.string.discovering_services))
             discoverMdns()
 
             // Phase 4: SSDP discovery
-            updateProgress(ScanPhase.SSDP_DISCOVERY, 0.8f, "Finding UPnP devices...")
+            updateProgress(ScanPhase.SSDP_DISCOVERY, 0.8f, context.getString(R.string.finding_upnp_devices))
             discoverSsdp()
 
             // Phase 4.5: NetBIOS name resolution
-            updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.85f, "Resolving NetBIOS names...")
+            updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.85f, context.getString(R.string.resolving_netbios_names))
             resolveNetBiosNames()
 
             // Phase 5: Identify devices
-            updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.9f, "Identifying devices...")
+            updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.9f, context.getString(R.string.identifying_devices))
             identifyDevices()
 
             // Phase 5.5: Port heuristics for still-unknown devices
-            updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.95f, "Classifying devices...")
+            updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.95f, context.getString(R.string.classifying_devices))
             probePortHeuristics()
 
             // Phase 6: Finalize
-            updateProgress(ScanPhase.FINALIZING, 1.0f, "Scan complete")
+            updateProgress(ScanPhase.FINALIZING, 1.0f, context.getString(R.string.scan_complete))
 
             // Update cache
             deviceCache.putAll(discoveredDevices)
@@ -210,7 +212,7 @@ class NetworkScanner(private val context: Context) {
             updateDeepScanProgress(
                 DeepScanPhase.PORT_SCANNING,
                 0f,
-                "Scanning ports...",
+                context.getString(R.string.scanning_ports),
                 portsTotal = ports.size
             )
 
@@ -246,7 +248,7 @@ class NetworkScanner(private val context: Context) {
                         updateDeepScanProgress(
                             DeepScanPhase.PORT_SCANNING,
                             progress,
-                            "Scanning port $port...",
+                            context.getString(R.string.scanning_port, port),
                             currentPort = port,
                             portsScanned = count,
                             portsTotal = totalPorts,
@@ -286,7 +288,7 @@ class NetworkScanner(private val context: Context) {
                             updateDeepScanProgress(
                                 DeepScanPhase.BANNER_GRABBING,
                                 progress,
-                                "Analyzing port ${portInfo.port}...",
+                                context.getString(R.string.analyzing_port, portInfo.port),
                                 currentPort = portInfo.port,
                                 portsScanned = ports.size,
                                 portsTotal = ports.size,
@@ -310,7 +312,7 @@ class NetworkScanner(private val context: Context) {
             updateDeepScanProgress(
                 DeepScanPhase.OS_DETECTION,
                 0.8f,
-                "Detecting OS...",
+                context.getString(R.string.detecting_os),
                 portsScanned = ports.size,
                 portsTotal = ports.size,
                 openPortsFound = openPorts.size
@@ -322,7 +324,7 @@ class NetworkScanner(private val context: Context) {
             updateDeepScanProgress(
                 DeepScanPhase.FINALIZING,
                 1.0f,
-                "Scan complete",
+                context.getString(R.string.scan_complete),
                 portsScanned = ports.size,
                 portsTotal = ports.size,
                 openPortsFound = openPorts.size
@@ -775,7 +777,7 @@ class NetworkScanner(private val context: Context) {
                     updateProgress(
                         ScanPhase.PING_SWEEP,
                         percent,
-                        "Scanned $progress/$total addresses",
+                        context.getString(R.string.scanned_addresses_progress, progress, total),
                         ip
                     )
                 }

@@ -223,4 +223,34 @@
 
     <!-- Device Icon Selection -->
     <string name="choose_device_icon">Choose Device Icon</string>
+    
+    <string-array name="language_codes" translatable="false">
+        <item>system</item>
+        <item>en</item>
+        <item>ru</item>
+        <item>es</item>
+    </string-array>
+    <string-array name="language_labels" translatable="false">
+        <item>@string/language_system_default</item>
+        <item>English</item>
+        <item>Русский</item>
+        <item>Español</item>
+    </string-array>
+
+    <!-- Network scanner progress -->
+    <string name="cheking_network_connectivity">Checking network connectivity…</string>
+    <string name="classifying_devices">Classifying devices</string>
+    <string name="identifying_devices">Identifying devices…</string>
+    <string name="resolving_netbios_names">Resolving NetBIOS names</string>
+    <string name="finding_upnp_devices">Finding UPnP devices…</string>
+    <string name="discovering_services">Discovering services…</string>
+    <string name="getting_device_information">Getting device information…</string>
+    <string name="scanning_network">Scanning network…</string>
+    <string name="reading_arp_cache">Reading ARP cache…</string>
+    <string name="analyzing_port">Analyzing port %1$d…</string>
+    <string name="scanning_ports">Scanning ports…</string>
+    <string name="scanning_port">Scanning ports %1$d…</string>
+    <string name="scanned_addresses_progress">Scanned %1$d/%2$d addresses</string>
+    <string name="detecting_os">Detecting OS…</string>
+
 </resources>
