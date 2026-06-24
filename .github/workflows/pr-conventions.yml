@@ -1,20 +1,10 @@
 name: PR Conventions
 
-# Validates that PR titles follow Conventional Commits, and labels each PR by its
-# type so the auto-generated release notes are grouped (see .github/release.yml).
+# Validates that PR titles follow Conventional Commits.
 # With squash-merge set to use the PR title, this keeps main's history clean.
-# Runs on title edits too (not just code pushes).
-#
-# Two triggers on purpose:
-#  - pull_request:        title check runs read-only (safe for fork PRs).
-#  - pull_request_target: labeler needs write access, which fork PRs only get via
-#                         this trigger. It runs the workflow from the BASE branch
-#                         and never checks out PR code — it only reads the title as
-#                         data — so there is no code-execution/injection surface.
+# Uses pull_request (read-only) so it is safe for fork PRs.
 on:
   pull_request:
-    types: [ opened, edited, synchronize, reopened ]
-  pull_request_target:
     types: [ opened, edited, synchronize, reopened ]
 
 permissions:
@@ -23,7 +13,6 @@ permissions:
 jobs:
   title:
     name: Conventional Commit title
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     steps:
       - name: Validate PR title
@@ -39,33 +28,3 @@ jobs:
             exit 1
           fi
           echo "✅ Title follows Conventional Commits"
-
-  label:
-    name: Label by type
-    if: github.event_name == 'pull_request_target'
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - name: Apply type label from title
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TITLE: ${{ github.event.pull_request.title }}
-          NUM: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-        run: |
-          case "$TITLE" in
-            feat*)  LABEL="type: feature";     COLOR="0e8a16" ;;
-            fix*)   LABEL="type: fix";         COLOR="d73a4a" ;;
-            perf*)  LABEL="type: performance"; COLOR="fbca04" ;;
-            docs*)  LABEL="type: docs";        COLOR="0075ca" ;;
-            *)      LABEL="type: maintenance"; COLOR="ededed" ;;
-          esac
-          # Ensure the label exists (idempotent), then make it the only type:* label.
-          gh label create "$LABEL" --repo "$REPO" --color "$COLOR" --force >/dev/null 2>&1 || true
-          for L in "type: feature" "type: fix" "type: performance" "type: docs" "type: maintenance"; do
-            [ "$L" = "$LABEL" ] || gh pr edit "$NUM" --repo "$REPO" --remove-label "$L" >/dev/null 2>&1 || true
-          done
-          gh pr edit "$NUM" --repo "$REPO" --add-label "$LABEL"
-          echo "✅ Applied: $LABEL"

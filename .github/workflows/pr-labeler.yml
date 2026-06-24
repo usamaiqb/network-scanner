@@ -1,0 +1,41 @@
+name: PR Labeler
+
+# Labels each PR by its Conventional Commit type so auto-generated release notes
+# are grouped (see .github/release.yml).
+# Uses pull_request_target so it runs from the base branch and has the write
+# access needed to apply labels — including on fork PRs. It never checks out PR
+# code, only reads the title as data, so there is no injection surface.
+on:
+  pull_request_target:
+    types: [ opened, edited, synchronize, reopened ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    name: Label by type
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Apply type label from title
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ github.event.pull_request.title }}
+          NUM: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          case "$TITLE" in
+            feat*)  LABEL="type: feature";     COLOR="0e8a16" ;;
+            fix*)   LABEL="type: fix";         COLOR="d73a4a" ;;
+            perf*)  LABEL="type: performance"; COLOR="fbca04" ;;
+            docs*)  LABEL="type: docs";        COLOR="0075ca" ;;
+            *)      LABEL="type: maintenance"; COLOR="ededed" ;;
+          esac
+          # Ensure the label exists (idempotent), then make it the only type:* label.
+          gh label create "$LABEL" --repo "$REPO" --color "$COLOR" --force >/dev/null 2>&1 || true
+          for L in "type: feature" "type: fix" "type: performance" "type: docs" "type: maintenance"; do
+            [ "$L" = "$LABEL" ] || gh pr edit "$NUM" --repo "$REPO" --remove-label "$L" >/dev/null 2>&1 || true
+          done
+          gh pr edit "$NUM" --repo "$REPO" --add-label "$LABEL"
+          echo "✅ Applied: $LABEL"
