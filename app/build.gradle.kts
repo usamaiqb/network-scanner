@@ -39,8 +39,8 @@ android {
         applicationId = "com.networkscanner.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 10
-        versionName = "1.1.5"
+        versionCode = 9
+        versionName = "1.1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -88,6 +88,11 @@ android {
 
     lint {
         disable += "NullSafeMutableLiveData"
+        // Translations are contributed by the community in separate PRs, so a
+        // feature PR may add strings ahead of their translations. Android falls
+        // back to the default (en) string at runtime, so treat incomplete
+        // locales as a warning rather than a build-failing error.
+        warning += "MissingTranslation"
     }
 }
 

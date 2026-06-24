@@ -223,7 +223,7 @@
     <string name="choose_device_icon">Elegir icono del dispositivo</string>
 
     <!-- Network scanner progress -->
-    <string name="cheking_network_connectivity">Comprobando la conectividad de red…</string>
+    <string name="checking_network_connectivity">Comprobando la conectividad de red…</string>
     <string name="classifying_devices">Clasificando dispositivos</string>
     <string name="identifying_devices">Identificando dispositivos…</string>
     <string name="resolving_netbios_names">Resolviendo nombres NetBIOS</string>

@@ -5,7 +5,6 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Build
 import android.net.wifi.WifiManager
-import androidx.compose.ui.res.stringResource
 import com.networkscanner.app.R
 import com.networkscanner.app.data.*
 import com.networkscanner.app.util.ArpReader
@@ -124,7 +123,7 @@ class NetworkScanner(private val context: Context) {
             ArpReader.invalidateCache()
 
             // Phase 0: Ping gateway to ensure network connectivity and populate ARP cache
-            updateProgress(ScanPhase.READING_ARP_CACHE, 0.05f, context.getString(R.string.cheking_network_connectivity))
+            updateProgress(ScanPhase.READING_ARP_CACHE, 0.05f, context.getString(R.string.checking_network_connectivity))
             pingGateway(networkInfo)
 
             // Phase 1: Read ARP cache

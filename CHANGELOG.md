@@ -1,12 +1,3 @@
-## [1.1.5] - 2026-06-32
-
-### Added
-- Spanish translation
-- Apple devices icons (MacBook and Mac Desktop)
-
-### Improved
-- Add translation on Network Scanner
-
 ## [1.1.4] - 2026-06-20
 
 ### Added
