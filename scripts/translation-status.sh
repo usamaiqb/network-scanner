@@ -13,7 +13,9 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_XML="$REPO_ROOT/app/src/main/res/values/strings.xml"
 README="$REPO_ROOT/README.md"
 
-# Locale code -> endonym; keep in sync with LanguageDialog.kt
+# Locale code -> endonym for the README table. The app derives endonyms at runtime via
+# Locale.getDisplayName (see LanguageDialog.kt); bash can't, so this map is maintained
+# independently. Add a case here when introducing a new values-<lang> locale.
 display_name() {
     case "$1" in
         en) echo "English"    ;;
