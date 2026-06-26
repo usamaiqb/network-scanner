@@ -25,7 +25,7 @@
     <string name="unknown_manufacturer">Невідомий виробник</string>
     <string name="ip_address">IP: %s</string>
     <string name="mac_address">MAC: %s</string>
-    <string name="hostname">Ім\'я хоста: %s</string>
+    <string name="hostname">Ім'я хоста: %s</string>
     <string name="last_seen">Останній раз: %s</string>
     <string name="this_device">Цей пристрій</string>
 
@@ -79,13 +79,13 @@
     <string name="label_mac_address">MAC адреса</string>
     <string name="label_vendor">Постачальник</string>
     <string name="label_latency">Затримка</string>
-    <string name="label_hostname">Ім\'я хоста</string>
+    <string name="label_hostname">Ім'я хоста</string>
     <string name="label_services">Сервіси</string>
     <string name="label_discovered_via">Виявлено через</string>
     <string name="label_detected_os">Виявлена ОС</string>
     <string name="label_scan_duration">Тривалість сканування</string>
     <string name="device_info">Інформація про пристрій</string>
-    <string name="label_friendly_name">Зрозуміле ім\'я</string>
+    <string name="label_friendly_name">Зрозуміле ім'я</string>
     <string name="label_model">Модель</string>
 
     <!-- Deep Scan States -->
@@ -221,4 +221,20 @@
 
     <!-- Device Icon Selection -->
     <string name="choose_device_icon">Виберіть іконку пристрою</string>
+
+    <!-- Network scanner progress -->
+    <string name="checking_network_connectivity">Перевірка підключення до мережі…</string>
+    <string name="classifying_devices">Класифікація пристроїв</string>
+    <string name="identifying_devices">Ідентифікація пристроїв…</string>
+    <string name="resolving_netbios_names">Розпізнавання імен NetBIOS</string>
+    <string name="finding_upnp_devices">Пошук пристроїв UPnP…</string>
+    <string name="discovering_services">Пошук служб…</string>
+    <string name="getting_device_information">Отримання інформації про пристрій…</string>
+    <string name="scanning_network">Сканування мережі…</string>
+    <string name="reading_arp_cache">Читання кешу ARP…</string>
+    <string name="analyzing_port">Аналіз порту %1$d…</string>
+    <string name="scanning_ports">Сканування портів…</string>
+    <string name="scanning_port">Сканування порту %1$d…</string>
+    <string name="scanned_addresses_progress">Скановано %1$d/%2$d адрес</string>
+    <string name="detecting_os">Визначення ОС…</string>
 </resources>
