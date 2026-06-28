@@ -1,0 +1,7 @@
+• Windows/Samba 设备现可通过 NetBIOS 显示其主机名和工作组
+• 智能设备（电视、路由器、NAS）现可通过 SSDP 显示友好名称、制造商和型号
+• 当 mDNS/SSDP 不可用时，通过端口探测识别支持 Cast 的设备
+• 通过 _androidtvremote2 mDNS 服务检测 Android TV 设备
+• 修复了主机名被较差的 mDNS 名称覆盖的问题
+• 修复了来自格式错误的 DNS/mDNS 响应的乱码主机名
+• 修复了 mDNS 名称显示原始 UUID 后缀的问题

@@ -1,0 +1,6 @@
+使用 Jetpack Compose 重写 UI
+
+• 使用 Jetpack Compose 完全重新设计了界面
+• Material Design 3 富有表现力的组件和动画
+• 改进的设备列表，布局更清晰
+• 更新了应用截图和商店元数据

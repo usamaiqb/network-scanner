@@ -120,6 +120,7 @@ cd network-scanner
 | Español | ████████████ 100% |
 | Русский | ███████████░ 92% |
 | Українська | ████████████ 100% |
+| Simplified Chinese |  |
 <!-- translations:end -->
 
 
