@@ -5,12 +5,12 @@
     <!-- Menu items -->
     <string name="action_settings">الإعدادات</string>
     <string name="action_refresh">تحديث</string>
-    <string name="action_theme">تغيير الثيم</string>
+    <string name="action_theme">تبديل الثيم</string>
 
     <!-- Scan states -->
     <string name="scanning">جارٍ فحص الشبكة…</string>
     <string name="scan_complete">تم الفحص</string>
-    <string name="devices_found">%d أجهزة تم العثور عليها</string>
+    <string name="devices_found">تم العثور على %1$d أجهزة</string>
     <string name="pull_to_refresh">اسحب للتحديث</string>
 
     <!-- Initial state -->
@@ -20,22 +20,22 @@
 
     <!-- Device sections -->
     <string name="section_active">الأجهزة النشطة</string>
-    <string name="section_offline">الأجهزة الغير متصلة</string>
+    <string name="section_offline">الأجهزة غير المتصلة</string>
 
     <!-- Device info -->
     <string name="unknown_device">جهاز غير معروف</string>
-    <string name="unknown_manufacturer">صانع غير معروف</string>
-    <string name="ip_address">IP: %s</string>
-    <string name="mac_address">MAC: %s</string>
-    <string name="hostname">اسم المضيف: %s</string>
-    <string name="last_seen">أخر ظهور: %s</string>
+    <string name="unknown_manufacturer">المُصنِّع غير معروف</string>
+    <string name="ip_address">IP: %1$s</string>
+    <string name="mac_address">MAC: %1$s</string>
+    <string name="hostname">اسم المضيف: %1$s</string>
+    <string name="last_seen">آخر ظهور: %1$s</string>
     <string name="this_device">هذا الجهاز</string>
 
     <!-- Empty states -->
     <string name="no_devices_title">لم يتم العثور على أجهزة</string>
-    <string name="no_devices_message">تأكد من أنك متصل بشبكة WiFi وحاول المسح مرة أخرى.</string>
+    <string name="no_devices_message">تأكد من اتصالك بشبكة WiFi وأعد المحاولة.</string>
     <string name="no_wifi_title">لا يوجد اتصال بالشبكة</string>
-    <string name="no_wifi_message">لم يتم العثور على أي واجهات شبكة نشطة. اتصل بشبكة وحاول مرة أخرى.</string>
+    <string name="no_wifi_message">لم يتم العثور على أي واجهات شبكة نشطة. اتصل بشبكة وأعد المحاولة.</string>
     <string name="no_active_interfaces">لا توجد واجهة نشطة</string>
 
     <!-- Interface Types -->
@@ -46,16 +46,16 @@
     <string name="interface_type_network">شبكة</string>
     
     <!-- Errors -->
-    <string name="error_scan_failed">فشل الفحص: %s</string>
+    <string name="error_scan_failed">فشل الفحص: %1$s</string>
     <string name="error_permission_denied">تم رفض الإذن</string>
     <string name="error_no_network">لا يوجد اتصال بالشبكة</string>
 
     <!-- Permissions -->
     <string name="permission_location_title">تحسين الفحص</string>
-    <string name="permission_location_message">مطلوب إذن الموقع للوصول إلى معلومات WiFi من أجل مسح الشبكة.</string>
-    <string name="permission_optional_message">السماح بالوصول إلى الموقع يمكن أن يساعد في اكتشاف المزيد من الأجهزة وعرض معلومات الشبكة بدقة. هذا اختياري - التطبيق سيعمل بدونه.</string>
-    <string name="permission_nearby_title">إذن الأجهزة القريبة</string>
-    <string name="permission_nearby_message">هذا الإذن يسمح للتطبيق باكتشاف الأجهزة القريبة على شبكتك.</string>
+    <string name="permission_location_message">مطلوب إذن الموقع للوصول إلى معلومات WiFi لمسح الشبكة.</string>
+    <string name="permission_optional_message">يساعد السماح بإذن الموقع في اكتشاف المزيد من الأجهزة وعرض معلومات الشبكة بدقة. هذا اختياري — سيعمل التطبيق بدونه.</string>
+    <string name="permission_nearby_title">إذن الوصول للأجهزة القريبة</string>
+    <string name="permission_nearby_message">يسمح هذا الإذن للتطبيق باكتشاف الأجهزة القريبة منك.</string>
     <string name="grant_permission">منح الإذن</string>
     <string name="skip">تخطي</string>
 
@@ -66,7 +66,7 @@
 
     <!-- Content descriptions -->
     <string name="cd_device_icon">أيقونة نوع الجهاز</string>
-    <string name="cd_scan_button">أبدأ فحص الشبكة</string>
+    <string name="cd_scan_button">ابدأ فحص الشبكة</string>
     <string name="cd_device_status">مؤشر حالة الجهاز</string>
 
     <!-- Device Detail Screen -->
@@ -79,21 +79,21 @@
     <!-- Labels -->
     <string name="label_ip_address">عنوان IP</string>
     <string name="label_mac_address">عنوان MAC</string>
-    <string name="label_vendor">بائع</string>
-    <string name="label_latency">الكمون</string>
+    <string name="label_vendor">المُصنِّع</string>
+    <string name="label_latency">زمن الاستجابة</string>
     <string name="label_hostname">اسم المضيف</string>
     <string name="label_services">الخدمات</string>
     <string name="label_discovered_via">تم اكتشافه عبر</string>
     <string name="label_detected_os">نظام التشغيل المكتشف</string>
     <string name="label_scan_duration">مدة الفحص</string>
     <string name="device_info">معلومات الجهاز</string>
-    <string name="label_friendly_name">اسم ودّي</string>
-    <string name="label_model">نموذج</string>
+    <string name="label_friendly_name">الاسم المُعلن</string>
+    <string name="label_model">الموديل</string>
 
     <!-- Deep Scan States -->
-    <string name="tap_to_deep_scan">اضغط للبدء في الفحص العميق</string>
-    <string name="start_deep_scan">ابدأ المسح العميق</string>
-    <string name="no_open_ports">لم يتم العثور على أي منافذ مفتوحة</string>
+    <string name="tap_to_deep_scan">اضغط لبدء الفحص العميق</string>
+    <string name="start_deep_scan">ابدأ الفحص العميق</string>
+    <string name="no_open_ports">لم يتم العثور على منافذ مفتوحة</string>
     <string name="scan_failed">فشل الفحص</string>
     <string name="device_offline">الجهاز غير متصل</string>
 
@@ -106,9 +106,9 @@
     <string name="status_offline">غير متصل</string>
 
     <!-- Format strings -->
-    <string name="latency_ms">%dمللي ثانية</string>
-    <string name="confidence_percent">%d%% ثقة</string>
-    <string name="duration_seconds">%.1fث</string>
+    <string name="latency_ms">%1$d مللي ثانية</string>
+    <string name="confidence_percent">%1$d%% احتمالية</string>
+    <string name="duration_seconds">%1$.1f ثانية</string>
     <string name="action_retry">أعد المحاولة</string>
     <string name="interface_option_format">%1$s (%2$s) - %3$s</string>
 
@@ -117,58 +117,58 @@
 
     <!-- Preference Categories -->
     <string name="pref_category_appearance">المظهر</string>
-    <string name="pref_category_scanning">جارٍ المسح</string>
+    <string name="pref_category_scanning">الفحص</string>
     <string name="pref_category_data">البيانات</string>
     <string name="pref_category_about">عن البرنامج</string>
 
     <!-- Appearance Preferences -->
     <string name="pref_theme_title">الثيم</string>
     <string name="pref_language_title">اللغة</string>
-    <string name="language_system_default">النظام الإفتراضي</string>
+    <string name="language_system_default">لغة النظام الافتراضية</string>
     <string name="pref_dynamic_colors_title">ألوان ديناميكية</string>
-    <string name="pref_dynamic_colors_summary">استخدم ألوان من خلفيتك (أندرويد 12 +)</string>
+    <string name="pref_dynamic_colors_summary">استخدم ألوان خلفيتك (أندرويد 12+)</string>
 
     <!-- Scanning Preferences -->
     <string name="pref_auto_scan_title">المسح التلقائي عند البدء</string>
-    <string name="pref_auto_scan_summary">ابدأ المسح تلقائيًا عند فتح التطبيق</string>
+    <string name="pref_auto_scan_summary">ابدأ المسح تلقائياً عند فتح التطبيق</string>
     <string name="pref_scan_timeout_title">انتهت مهلة المسح</string>
 
     <!-- Timeout options -->
-    <string name="timeout_fast">سريع (3 ثواني)</string>
-    <string name="timeout_normal">طبيعي (5 ثواني)</string>
-    <string name="timeout_thorough">مدقق (10 ثواني)</string>
+    <string name="timeout_fast">سريع (3 ثوانٍ)</string>
+    <string name="timeout_normal">عادي (5 ثوانٍ)</string>
+    <string name="timeout_thorough">دقيق (10 ثوانٍ)</string>
 
     <!-- Data Preferences -->
     <string name="pref_clear_cache_title">مسح الذاكرة المؤقتة</string>
     <string name="pref_clear_cache_summary">مسح بيانات الفحص المؤقتة</string>
-    <string name="pref_clear_history_title">مسح بيانات الفحص المؤقتة</string>
+    <string name="pref_clear_history_title">مسح سجل الأجهزة</string>
     <string name="pref_clear_history_summary">احذف كل معلومات الأجهزة المحفوظة</string>
 
     <!-- About Preferences -->
     <string name="pref_version_title">الإصدار</string>
     <string name="pref_about_title">عن Network Scanner</string>
-    <string name="pref_about_summary">معلومات التطبيق وتقديراته</string>
+    <string name="pref_about_summary">معلومات التطبيق والمساهمون</string>
     <string name="pref_privacy_title">سياسة الخصوصية</string>
-    <string name="pref_privacy_summary">كيفية التعامل مع بياناتك</string>
+    <string name="pref_privacy_summary">كيف نتعامل مع بياناتك</string>
 
     <!-- Dialogs -->
     <string name="dialog_clear_cache_title">مسح الذاكرة المؤقتة؟</string>
-    <string name="dialog_clear_cache_message">سيؤدي هذا إلى مسح كل بيانات الفحص المؤقتة. سيتم الاحتفاظ بتاريخ جهازك.</string>
-    <string name="dialog_clear_history_title">مسح سجل الجهاز؟</string>
-    <string name="dialog_clear_history_message">سيؤدي هذا إلى إزالة كل معلومات الجهاز المحفوظة بما في ذلك الأسماء المخصصة. لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="dialog_clear_cache_message">سيؤدي هذا إلى مسح كل بيانات الفحص المؤقتة. سيُحتفظ بسجل جهازك.</string>
+    <string name="dialog_clear_history_title">مسح سجل الأجهزة؟</string>
+    <string name="dialog_clear_history_message">سيؤدي هذا إلى إزالة كل معلومات الأجهزة المحفوظة بما في ذلك الأسماء المخصصة. لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="dialog_about_title">عن Network Scanner</string>
-    <string name="dialog_about_message" formatted="false">Network Scanner هو أداة قوية لاكتشاف وتحليل الأجهزة على شبكتك المحلية. \n\nتم تطويره مع مراعاة خصوصيتك. جميع عمليات الفحص تتم محليًا على جهازك. \n\n⚠️ ملاحظة: اكتشاف الأجهزة وفحص المنافذ ليس دقيقًا بنسبة 100%. قد تختلف النتائج حسب ظروف الشبكة وتكوينات الأجهزة. \n\nالإصدار 1.0.0 | رخصة GPL-3.0</string>
-    <string name="view_on_github">إظهار في Github</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner أداة فعّالة لاكتشاف وتحليل الأجهزة على شبكتك المحلية.\n\nطُوِّر مع مراعاة خصوصيتك. جميع عمليات الفحص تتم محلياً على جهازك.\n\n⚠️ ملاحظة: اكتشاف الأجهزة وفحص المنافذ ليس دقيقاً بنسبة 100%. قد تختلف النتائج حسب ظروف الشبكة وتكوينات الأجهزة.\n\nالإصدار 1.0.0 | رخصة GPL-3.0</string>
+    <string name="view_on_github">فتح على GitHub</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
-    <string name="deep_scan_disclaimer">كشف المنفذ ونظام التشغيل تقديرات وقد لا تكون دقيقة تمامًا</string>
+    <string name="deep_scan_disclaimer">تقديرات كشف المنافذ ونظام التشغيل وقد لا تكون دقيقة تماماً</string>
     <string name="dialog_privacy_title">سياسة الخصوصية</string>
-    <string name="dialog_privacy_message">Network Scanner يحترم خصوصيتك:\n\n• لا جمع للبيانات: تبقى جميع نتائج الفحص على جهازك\n\n• لا إعلانات أو تتبع\n\n• لا حاجة لإذن الإنترنت للفحص\n\nيُستخدم إذن الموقع فقط للوصول إلى معلومات WiFi حسب متطلبات أندرويد، وليس لتتبع موقعك.</string>
+    <string name="dialog_privacy_message">يحترم Network Scanner خصوصيتك:\n\n• لا جمع للبيانات: تبقى جميع نتائج الفحص على جهازك\n\n• لا إعلانات أو تتبع\n\n• لا حاجة لإذن الإنترنت للفحص\n\nيُستخدم إذن الموقع فقط للوصول إلى معلومات WiFi حسب متطلبات أندرويد، وليس لتتبع موقعك.</string>
     <string name="dialog_theme_restart_title">تم تغيير الثيم</string>
-    <string name="dialog_theme_restart_message">ستأخذ تغييرات الألوان الديناميكية مفعولها بالكامل بعد إعادة تشغيل التطبيق.</string>
+    <string name="dialog_theme_restart_message">ستظهر تغييرات الألوان الديناميكية بالكامل بعد إعادة تشغيل التطبيق.</string>
 
     <!-- Toast Messages -->
     <string name="cache_cleared">تم مسح الذاكرة المؤقتة بنجاح</string>
-    <string name="history_cleared">تم مسح سجل الجهاز</string>
+    <string name="history_cleared">تم مسح سجل الأجهزة</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">فتح الإعدادات</string>
@@ -176,67 +176,67 @@
     <string name="cd_refresh_button">تحديث قائمة الأجهزة</string>
     <string name="cd_device_online">الجهاز متصل بالإنترنت</string>
     <string name="cd_device_offline">الجهاز غير متصل بالإنترنت</string>
-    <string name="cd_navigate_back">ارجع للخلف</string>
-    <string name="cd_start_deep_scan">ابدأ المسح العميق لهذا الجهاز</string>
-    <string name="cd_cancel_scan">إلغاء المسح الحالي</string>
-    <string name="cd_empty_state_icon">لا توجد رسمة للأجهزة</string>
+    <string name="cd_navigate_back">الرجوع للخلف</string>
+    <string name="cd_start_deep_scan">ابدأ الفحص العميق لهذا الجهاز</string>
+    <string name="cd_cancel_scan">إلغاء الفحص الحالي</string>
+    <string name="cd_empty_state_icon">رسمة توضيحية لعدم وجود أجهزة</string>
     <string name="cd_network_info">معلومات الشبكة</string>
     <string name="cd_interface_selector">اختر واجهة الشبكة</string>
-    <string name="cd_port_status">منفذ %1$d    %2$s</string>
+    <string name="cd_port_status">المنفذ %1$d %2$s</string>
 
     <!-- Device list accessibility -->
     <string name="cd_device_item">%1$s, %2$s, IP %3$s</string>
     <string name="cd_device_current">هذا هو جهازك الحالي</string>
-    <string name="cd_section_header">قسم %1$s مع %2$d أجهزة</string>
+    <string name="cd_section_header">قسم %1$s يضم %2$d أجهزة</string>
 
     <!-- Deep scan progress -->
     <string name="deep_scan_port_progress">%1$d/%2$d منافذ</string>
-    <string name="deep_scan_open_count">%d فتح</string>
+    <string name="deep_scan_open_count">%1$d مفتوح</string>
 
     <!-- Custom Device Names -->
     <string name="edit_device_name">تعديل اسم الجهاز</string>
-    <string name="edit_device_name_hint">اعط هذا الجهاز اسمًا مخصصًا لتسهيل التعرف عليه</string>
+    <string name="edit_device_name_hint">أعطِ هذا الجهاز اسماً مخصصاً لتسهيل التعرف عليه</string>
     <string name="device_name">اسم الجهاز</string>
     <string name="action_save">حفظ</string>
 
     <!-- Custom Ports -->
     <string name="custom_ports">المنافذ المخصصة</string>
-    <string name="add_port">أضف منفذ</string>
-    <string name="add_custom_port">أضف منفذ مخصص</string>
+    <string name="add_port">أضف منفذاً</string>
+    <string name="add_custom_port">إضافة منفذ مخصص</string>
     <string name="port_number">رقم المنفذ</string>
     <string name="service_name">اسم الخدمة</string>
     <string name="action_add">إضافة</string>
     <string name="delete_port">حذف المنفذ</string>
-    <string name="no_custom_ports">لم يتم تكوين أي منافذ مخصصة</string>
+    <string name="no_custom_ports">لم يتم إعداد أي منافذ مخصصة</string>
     <string name="tap_add_to_create">اضغط + لإضافة منافذ مخصصة للفحص</string>
 
     <!-- Full Port Scan -->
     <string name="full_scan">فحص كامل</string>
-    <string name="full_port_scan">مسح كامل لجميع المنافذ</string>
-    <string name="full_scan_warning">سيقوم هذا بفحص جميع المنافذ البالغ عددها 65,535 على هذا الجهاز. قد يستغرق ذلك عدة دقائق وقد يولد حركة مرور كبيرة على الشبكة.</string>
-    <string name="full_scan_details">• وقت المسح: 1–3 دقائق\n• كثيف استخدام الشبكة\n• قد يتم اكتشافه بواسطة أنظمة الأمان</string>
+    <string name="full_port_scan">فحص كامل لجميع المنافذ</string>
+    <string name="full_scan_warning">سيقوم هذا بفحص جميع المنافذ البالغ عددها 65,535 على هذا الجهاز. قد يستغرق ذلك عدة دقائق ويُولِّد حركة مرور كبيرة على الشبكة.</string>
+    <string name="full_scan_details">• وقت المسح: 1–3 دقائق\n• يستهلك الشبكة بكثافة\n• قد تكتشفه أنظمة الأمان</string>
     <string name="action_start">ابدأ</string>
 
     <!-- Settings - Custom Ports -->
     <string name="pref_custom_ports_title">المنافذ المخصصة</string>
-    <string name="pref_custom_ports_summary">إدارة المنافذ للفحص أثناء الفحص العميق</string>
+    <string name="pref_custom_ports_summary">إدارة المنافذ المراد فحصها أثناء الفحص العميق</string>
 
     <!-- Device Icon Selection -->
     <string name="choose_device_icon">اختر أيقونة الجهاز</string>
 
     <!-- Network scanner progress -->
-    <string name="checking_network_connectivity">التحقق من اتصال الشبكة…</string>
-    <string name="classifying_devices">تصنيف الأجهزة</string>
+    <string name="checking_network_connectivity">جارٍ التحقق من اتصال الشبكة…</string>
+    <string name="classifying_devices">جارٍ تصنيف الأجهزة…</string>
     <string name="identifying_devices">جارٍ التعرف على الأجهزة…</string>
-    <string name="resolving_netbios_names">حل اسماء NetBIOS</string>
-    <string name="finding_upnp_devices">جارٍ البحث عن أجهزة UPnP...</string>
+    <string name="resolving_netbios_names">جارٍ حل أسماء NetBIOS…</string>
+    <string name="finding_upnp_devices">جارٍ البحث عن أجهزة UPnP…</string>
     <string name="discovering_services">جارٍ اكتشاف الخدمات…</string>
-    <string name="getting_device_information">جاري الحصول على معلومات الجهاز…</string>
+    <string name="getting_device_information">جارٍ الحصول على معلومات الجهاز…</string>
     <string name="scanning_network">جارٍ مسح الشبكة…</string>
-    <string name="reading_arp_cache">جارٍ قراءة ذاكرة تخزين ARP…</string>
-    <string name="analyzing_port">تحليل المنفذ %1$d…</string>
-    <string name="scanning_ports">جارٍ فحص المنافذ...</string>
-    <string name="scanning_port">فحص المنفذ %1$d…</string>
+    <string name="reading_arp_cache">جارٍ قراءة ذاكرة ARP…</string>
+    <string name="analyzing_port">جارٍ تحليل المنفذ %1$d…</string>
+    <string name="scanning_ports">جارٍ فحص المنافذ…</string>
+    <string name="scanning_port">جارٍ فحص المنفذ %1$d…</string>
     <string name="scanned_addresses_progress">تم مسح %1$d/%2$d من العناوين</string>
     <string name="detecting_os">جارٍ كشف نظام التشغيل…</string>
 
