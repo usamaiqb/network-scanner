@@ -1,0 +1,2 @@
+• New translations: Spanish, Ukrainian, Arabic, and Simplified Chinese
+• Language picker now updates automatically as locales are added

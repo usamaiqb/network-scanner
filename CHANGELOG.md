@@ -1,3 +1,19 @@
+## [1.1.5] - 2026-06-29
+
+### Added
+- Spanish (es) translation (#30)
+- Ukrainian (uk) translation (#29, #37, #40)
+- Arabic (ar) translation (#35, #38)
+- Simplified Chinese (zh) translation (#41)
+
+### Improved
+- Language picker now derived from locales_config, so newly added locales appear automatically (#33)
+
+### Changed
+- Split PR conventions workflow into separate title and labeler files (#32)
+- Bumped actions/setup-java from 5.3.0 to 5.4.0 (#39)
+- Polished README with badges and a translation status table (#28, #31)
+
 ## [1.1.4] - 2026-06-20
 
 ### Added
