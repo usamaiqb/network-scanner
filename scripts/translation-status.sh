@@ -23,6 +23,7 @@ display_name() {
         es) echo "Español"    ;;
         uk) echo "Українська" ;;
         ar) echo "العربية"    ;;
+        zh-rCN) echo "中文 (中国)" ;;
         *)  echo "$1"         ;;
     esac
 }
