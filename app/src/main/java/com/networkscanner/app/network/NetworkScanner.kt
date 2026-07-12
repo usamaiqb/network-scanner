@@ -166,7 +166,7 @@ class NetworkScanner(private val context: Context) {
             deviceCache.putAll(discoveredDevices)
 
             val deviceList = discoveredDevices.values.toList()
-                .sortedWith(compareBy({ !it.isCurrentDevice }, { it.ipAddress }))
+                .sortedWith(compareBy({ !it.isCurrentDevice }, { ipSortKey(it.ipAddress) }))
 
             _devices.value = deviceList
 
@@ -177,6 +177,10 @@ class NetworkScanner(private val context: Context) {
                 networkInfo = networkInfo,
                 scanStatus = ScanStatus.COMPLETED
             )
+        } catch (e: CancellationException) {
+            // User cancelled the scan — propagate cleanly rather than reporting
+            // it as an ERROR result (the multicast lock is freed in finally).
+            throw e
         } catch (e: Exception) {
             ScanResult(
                 devices = discoveredDevices.values.toList(),
@@ -200,7 +204,7 @@ class NetworkScanner(private val context: Context) {
         ports: List<Int> = CommonPorts.TOP_PORTS,
         customServiceNames: Map<Int, String> = emptyMap(),
         fullScan: Boolean = false
-    ): DeepScanResult = withContext(scope.coroutineContext) {
+    ): DeepScanResult = withContext(Dispatchers.IO) {
         val portThreads = if (fullScan) FULL_SCAN_PORT_THREADS else PORT_THREADS
         val portTimeoutMs = if (fullScan) FULL_SCAN_PORT_TIMEOUT_MS else PORT_TIMEOUT_MS
         val startTime = System.currentTimeMillis()
@@ -385,8 +389,10 @@ class NetworkScanner(private val context: Context) {
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 val banner = StringBuilder()
 
-                // For HTTP ports, send a request to trigger response
-                if (port in listOf(80, 8080, 8000, 8008, 8081, 8888, 443, 8443)) {
+                // For plaintext HTTP ports, send a request to trigger a response.
+                // TLS ports (443/8443) are excluded: they expect a TLS handshake,
+                // not cleartext HTTP, so a plaintext request never yields a banner.
+                if (port in listOf(80, 8080, 8000, 8008, 8081, 8888)) {
                     socket.getOutputStream().write("HEAD / HTTP/1.0\r\n\r\n".toByteArray())
                 } else {
                     // For non-HTTP ports, try reading first — many services
@@ -433,10 +439,11 @@ class NetworkScanner(private val context: Context) {
     private fun extractVersion(banner: String?): String? {
         if (banner == null) return null
 
-        // Common version patterns
+        // Common version patterns. Specific server/software signatures are
+        // listed before the generic "Server:" header so we extract the precise
+        // version (e.g. "2.4.1") rather than the whole header value.
         val patterns = listOf(
             Regex("""SSH-[\d.]+-([\w\d._-]+)"""),
-            Regex("""Server:\s*([^\r\n]+)""", RegexOption.IGNORE_CASE),
             Regex("""Apache/([\d.]+)"""),
             Regex("""nginx/([\d.]+)"""),
             Regex("""OpenSSH_([\d.p]+)"""),
@@ -445,7 +452,8 @@ class NetworkScanner(private val context: Context) {
             Regex("""Microsoft-IIS/([\d.]+)"""),
             Regex("""vsftpd\s+([\d.]+)"""),
             Regex("""ProFTPD\s+([\d.]+)"""),
-            Regex("""Dropbear\s+([\d.]+)""")
+            Regex("""Dropbear\s+([\d.]+)"""),
+            Regex("""Server:\s*([^\r\n]+)""", RegexOption.IGNORE_CASE)
         )
 
         for (pattern in patterns) {
@@ -584,13 +592,15 @@ class NetworkScanner(private val context: Context) {
     }
 
     private fun detectWindowsVersion(banners: String): String {
+        // Check the most specific labels first. The old "10.0" catch-all was
+        // dropped — it matched unrelated version strings and mislabeled servers.
         return when {
-            banners.contains("windows 11") || banners.contains("10.0") -> "Windows 11/10"
-            banners.contains("windows 10") -> "Windows 10"
             banners.contains("windows server 2022") -> "Windows Server 2022"
             banners.contains("windows server 2019") -> "Windows Server 2019"
             banners.contains("windows server 2016") -> "Windows Server 2016"
             banners.contains("windows server") -> "Windows Server"
+            banners.contains("windows 11") -> "Windows 11"
+            banners.contains("windows 10") -> "Windows 10"
             else -> "Windows"
         }
     }
@@ -806,7 +816,7 @@ class NetworkScanner(private val context: Context) {
                     val deviceType = DeviceType.identify(
                         hostname = device.hostname,
                         vendor = vendor,
-                        mdnsServiceType = device.mdnsServices.firstOrNull(),
+                        mdnsServices = device.mdnsServices,
                         ssdpDeviceType = device.ssdpInfo?.deviceType
                     )
 
@@ -945,42 +955,48 @@ class NetworkScanner(private val context: Context) {
                         }
                     }
 
-                    ip?.let {
-                        val existing = discoveredDevices[it]
-                        val services = (existing?.mdnsServices ?: emptyList()) + (serviceInfo?.serviceType ?: "")
+                    ip?.let { resolvedIp ->
                         val hostname = serviceInfo?.serviceName
                             ?.takeIf { name -> name.isNotBlank() }
-                            ?.let { sanitizeMdnsName(it) }
+                            ?.let { name -> sanitizeMdnsName(name) }
+                        val newService = serviceInfo?.serviceType ?: ""
 
-                        // Identify device type immediately so UI shows correct icon
-                        val identifiedType = DeviceType.identify(
-                            hostname = hostname ?: existing?.hostname,
-                            vendor = existing?.vendor,
-                            mdnsServiceType = services.firstOrNull(),
-                            ssdpDeviceType = existing?.ssdpInfo?.deviceType
-                        )
-                        val deviceType = when {
-                            existing?.isCurrentDevice == true -> DeviceType.SMARTPHONE
-                            existing != null && existing.deviceType != DeviceType.UNKNOWN -> existing.deviceType
-                            identifiedType != DeviceType.UNKNOWN -> identifiedType
-                            else -> existing?.deviceType ?: DeviceType.UNKNOWN
+                        // mDNS resolve callbacks fire on NsdManager threads and can
+                        // run concurrently for the SAME IP (a device advertising
+                        // multiple service types). A get-then-put would let one
+                        // callback clobber another's services, so merge atomically.
+                        discoveredDevices.compute(resolvedIp) { _, existing ->
+                            val services = ((existing?.mdnsServices ?: emptyList()) + newService).distinct()
+
+                            // Identify device type immediately so UI shows correct icon
+                            val identifiedType = DeviceType.identify(
+                                hostname = hostname ?: existing?.hostname,
+                                vendor = existing?.vendor,
+                                mdnsServices = services,
+                                ssdpDeviceType = existing?.ssdpInfo?.deviceType
+                            )
+                            val deviceType = when {
+                                existing?.isCurrentDevice == true -> DeviceType.SMARTPHONE
+                                existing != null && existing.deviceType != DeviceType.UNKNOWN -> existing.deviceType
+                                identifiedType != DeviceType.UNKNOWN -> identifiedType
+                                else -> existing?.deviceType ?: DeviceType.UNKNOWN
+                            }
+
+                            existing?.copy(
+                                hostname = existing.hostname ?: hostname,
+                                mdnsServices = services,
+                                deviceType = deviceType,
+                                discoveredVia = if (existing.discoveredVia == DiscoveryMethod.MANUAL)
+                                    existing.discoveredVia else DiscoveryMethod.MDNS
+                            ) ?: Device(
+                                ipAddress = resolvedIp,
+                                hostname = hostname,
+                                mdnsServices = services,
+                                deviceType = identifiedType,
+                                isOnline = true,
+                                discoveredVia = DiscoveryMethod.MDNS
+                            )
                         }
-
-                        val device = existing?.copy(
-                            hostname = existing.hostname ?: hostname,
-                            mdnsServices = services.distinct(),
-                            deviceType = deviceType,
-                            discoveredVia = if (existing.discoveredVia == DiscoveryMethod.MANUAL)
-                                existing.discoveredVia else DiscoveryMethod.MDNS
-                        ) ?: Device(
-                            ipAddress = it,
-                            hostname = hostname,
-                            mdnsServices = services,
-                            deviceType = identifiedType,
-                            isOnline = true,
-                            discoveredVia = DiscoveryMethod.MDNS
-                        )
-                        discoveredDevices[it] = device
                         updateDeviceCount()
                     }
                 } finally {
@@ -1125,7 +1141,7 @@ class NetworkScanner(private val context: Context) {
         val identifiedType = DeviceType.identify(
             hostname = existing?.hostname,
             vendor = existing?.vendor,
-            mdnsServiceType = existing?.mdnsServices?.firstOrNull(),
+            mdnsServices = existing?.mdnsServices ?: emptyList(),
             ssdpDeviceType = st
         )
         val deviceType = when {
@@ -1355,7 +1371,7 @@ class NetworkScanner(private val context: Context) {
             val deviceType = DeviceType.identify(
                 hostname = hostname,
                 vendor = updatedDevice.vendor,
-                mdnsServiceType = updatedDevice.mdnsServices.firstOrNull(),
+                mdnsServices = updatedDevice.mdnsServices,
                 ssdpDeviceType = updatedDevice.ssdpInfo?.deviceType
             )
 
@@ -1471,6 +1487,23 @@ class NetworkScanner(private val context: Context) {
     private fun sanitizeMdnsName(name: String): String {
         val stripped = name.replace(Regex("-[0-9a-fA-F]{8,}$"), "")
         return stripped.replace('-', ' ').trim()
+    }
+
+    /**
+     * Build a numerically-orderable key for an IPv4 address so devices sort as
+     * .2 < .10 < .100 instead of lexicographically (.10 < .2). Non-IPv4 or
+     * malformed addresses sort last.
+     */
+    private fun ipSortKey(ip: String): Long {
+        val parts = ip.split(".")
+        if (parts.size != 4) return Long.MAX_VALUE
+        var key = 0L
+        for (part in parts) {
+            val octet = part.toIntOrNull() ?: return Long.MAX_VALUE
+            if (octet !in 0..255) return Long.MAX_VALUE
+            key = (key shl 8) or octet.toLong()
+        }
+        return key
     }
 
     private fun updateProgress(

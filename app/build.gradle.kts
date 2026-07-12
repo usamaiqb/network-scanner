@@ -64,6 +64,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Bundle native debug symbols into the AAB so Play can symbolicate
+            // native crashes/ANRs (fixes the "no debug symbols uploaded" warning).
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
             if (releaseStoreFile != null && releaseStorePassword != null && releaseKeyAlias != null && releaseKeyPassword != null) {
                 signingConfig = signingConfigs.getByName("release")
             }
