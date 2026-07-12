@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Radar
 import androidx.compose.material.icons.rounded.Settings
@@ -48,6 +49,7 @@ import androidx.preference.PreferenceManager
 import com.networkscanner.app.R
 import com.networkscanner.app.data.Device
 import com.networkscanner.app.ui.MainViewModel
+import com.networkscanner.app.ui.components.RadarHero
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -173,10 +175,31 @@ fun HomeScreen(
                             EmptyState(type = EmptyStateType.EMPTY)
                         }
                         hasDevices -> {
+                            // While scanning, a compact radar rides above the list so the
+                            // sweep and blips stay visible even though the current device
+                            // is discovered (and the list shown) immediately.
+                            val scanningHeader: (@Composable () -> Unit)? =
+                                if (state is MainViewModel.UiState.Scanning) {
+                                    {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(bottom = 16.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            RadarHero(
+                                                isScanning = true,
+                                                blipCount = scanProgress.devicesFound,
+                                                modifier = Modifier.size(140.dp)
+                                            )
+                                        }
+                                    }
+                                } else null
                             DeviceList(
                                 onlineDevices = onlineDevices,
                                 offlineDevices = offlineDevices,
                                 onDeviceClick = onDeviceClick,
+                                header = scanningHeader,
                                 getCustomIcon = viewModel::getCustomIcon
                             )
                         }
