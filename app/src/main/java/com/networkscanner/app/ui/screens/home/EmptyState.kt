@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.DevicesOther
-import androidx.compose.material.icons.outlined.Radar
-import androidx.compose.material.icons.outlined.WifiOff
+import androidx.compose.material.icons.rounded.DevicesOther
+import androidx.compose.material.icons.rounded.Radar
+import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,17 +38,17 @@ fun EmptyState(
 ) {
     val (icon, title, message) = when (type) {
         EmptyStateType.IDLE -> Triple(
-            Icons.Outlined.Radar,
+            Icons.Rounded.Radar,
             stringResource(R.string.initial_scan_title),
             stringResource(R.string.initial_scan_message)
         )
         EmptyStateType.NO_WIFI -> Triple(
-            Icons.Outlined.WifiOff,
+            Icons.Rounded.WifiOff,
             stringResource(R.string.no_wifi_title),
             stringResource(R.string.no_wifi_message)
         )
         EmptyStateType.EMPTY -> Triple(
-            Icons.Outlined.DevicesOther,
+            Icons.Rounded.DevicesOther,
             stringResource(R.string.no_devices_title),
             stringResource(R.string.no_devices_message)
         )

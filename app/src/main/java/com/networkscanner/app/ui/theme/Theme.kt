@@ -134,7 +134,7 @@ fun NetworkScannerTheme(
     MaterialExpressiveTheme(
         colorScheme = colorScheme,
     ) {
-        Surface(color = MaterialTheme.colorScheme.background, content = content)
+        Surface(color = MaterialTheme.colorScheme.surfaceContainerLowest, content = content)
     }
 }
 

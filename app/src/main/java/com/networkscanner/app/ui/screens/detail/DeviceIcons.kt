@@ -1,31 +1,31 @@
 package com.networkscanner.app.ui.screens.detail
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DesktopMac
-import androidx.compose.material.icons.filled.LaptopMac
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.rounded.DesktopMac
+import androidx.compose.material.icons.rounded.LaptopMac
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class IconOption(val key: String, val icon: ImageVector, val label: String)
 
 val DEVICE_ICON_OPTIONS = listOf(
-    IconOption("SMARTPHONE",   Icons.Outlined.Smartphone,     "Phone"),
-    IconOption("LAPTOP",       Icons.Outlined.Laptop,         "Laptop"),
-    IconOption("DESKTOP",      Icons.Outlined.DesktopWindows, "Desktop"),
-    IconOption("MAC_DESKTOP",  Icons.Outlined.DesktopMac,     "Mac"),
-    IconOption("MAC_LAPTOP",   Icons.Outlined.LaptopMac,      "Macbook"),
-    IconOption("TABLET",       Icons.Outlined.Tablet,         "Tablet"),
-    IconOption("ROUTER",       Icons.Outlined.Router,         "Router"),
-    IconOption("TV",           Icons.Outlined.Tv,             "TV"),
-    IconOption("PRINTER",      Icons.Outlined.Print,          "Printer"),
-    IconOption("SERVER",       Icons.Outlined.Dns,            "Server"),
-    IconOption("NAS",          Icons.Outlined.Storage,        "NAS"),
-    IconOption("CAMERA",       Icons.Outlined.Videocam,       "Camera"),
-    IconOption("SPEAKER",      Icons.Outlined.Speaker,        "Speaker"),
-    IconOption("GAME_CONSOLE", Icons.Outlined.SportsEsports,  "Console"),
-    IconOption("SMART_HOME",   Icons.Outlined.Home,           "Smart Home"),
-    IconOption("WEARABLE",     Icons.Outlined.Watch,          "Wearable"),
-    IconOption("UNKNOWN",      Icons.Outlined.DevicesOther,   "Other"),
+    IconOption("SMARTPHONE",   Icons.Rounded.Smartphone,     "Phone"),
+    IconOption("LAPTOP",       Icons.Rounded.Laptop,         "Laptop"),
+    IconOption("DESKTOP",      Icons.Rounded.DesktopWindows, "Desktop"),
+    IconOption("MAC_DESKTOP",  Icons.Rounded.DesktopMac,     "Mac"),
+    IconOption("MAC_LAPTOP",   Icons.Rounded.LaptopMac,      "Macbook"),
+    IconOption("TABLET",       Icons.Rounded.Tablet,         "Tablet"),
+    IconOption("ROUTER",       Icons.Rounded.Router,         "Router"),
+    IconOption("TV",           Icons.Rounded.Tv,             "TV"),
+    IconOption("PRINTER",      Icons.Rounded.Print,          "Printer"),
+    IconOption("SERVER",       Icons.Rounded.Dns,            "Server"),
+    IconOption("NAS",          Icons.Rounded.Storage,        "NAS"),
+    IconOption("CAMERA",       Icons.Rounded.Videocam,       "Camera"),
+    IconOption("SPEAKER",      Icons.Rounded.Speaker,        "Speaker"),
+    IconOption("GAME_CONSOLE", Icons.Rounded.SportsEsports,  "Console"),
+    IconOption("SMART_HOME",   Icons.Rounded.Home,           "Smart Home"),
+    IconOption("WEARABLE",     Icons.Rounded.Watch,          "Wearable"),
+    IconOption("UNKNOWN",      Icons.Rounded.DevicesOther,   "Other"),
 )
 
 fun iconKeyToVector(key: String?): ImageVector? =

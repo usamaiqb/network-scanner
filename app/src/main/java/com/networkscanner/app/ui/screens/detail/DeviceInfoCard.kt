@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.OpenInBrowser
+import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
@@ -91,7 +91,7 @@ fun ClickableInfoRow(
                 color = MaterialTheme.colorScheme.primary
             )
             Icon(
-                imageVector = Icons.Outlined.OpenInBrowser,
+                imageVector = Icons.Rounded.OpenInBrowser,
                 contentDescription = "Open in browser",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(start = 4.dp)

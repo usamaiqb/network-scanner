@@ -1,7 +1,7 @@
 package com.networkscanner.app.ui.screens.settings
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +19,7 @@ fun PrivacyDialog(
         onDismissRequest = onDismiss,
         icon = {
             Icon(
-                imageVector = Icons.Outlined.Lock,
+                imageVector = Icons.Rounded.Lock,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )

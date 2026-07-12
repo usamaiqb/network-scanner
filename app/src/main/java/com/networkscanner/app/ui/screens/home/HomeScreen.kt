@@ -13,19 +13,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Radar
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.rounded.Radar
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -63,7 +63,7 @@ fun HomeScreen(
     val selectedInterfaceName by viewModel.selectedInterfaceName.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -103,16 +103,20 @@ fun HomeScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            LargeTopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(onClick = onSettingsClick) {
                         Icon(
-                            imageVector = Icons.Outlined.Settings,
+                            imageVector = Icons.Rounded.Settings,
                             contentDescription = stringResource(R.string.cd_settings_button)
                         )
                     }
                 },
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                ),
                 scrollBehavior = scrollBehavior
             )
         },
@@ -122,7 +126,7 @@ fun HomeScreen(
                     onClick = { viewModel.startScan() },
                     icon = {
                         Icon(
-                            imageVector = Icons.Outlined.Radar,
+                            imageVector = Icons.Rounded.Radar,
                             contentDescription = null
                         )
                     },

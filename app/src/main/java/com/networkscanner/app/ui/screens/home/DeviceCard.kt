@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.data.Device
 import com.networkscanner.app.ui.components.StatusIndicator
+import com.networkscanner.app.ui.components.ValueBadge
 import com.networkscanner.app.ui.screens.detail.iconKeyToVector
 
 @Composable
@@ -128,11 +129,7 @@ fun DeviceCard(
         trailingContent = {
             device.latencyMs?.let { latency ->
                 if (device.isOnline) {
-                    Text(
-                        text = "${latency}ms",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    ValueBadge(text = "${latency}ms")
                 }
             }
         }

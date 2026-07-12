@@ -14,12 +14,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowDropDown
-import androidx.compose.material.icons.outlined.Public
-import androidx.compose.material.icons.outlined.SettingsEthernet
-import androidx.compose.material.icons.outlined.SignalCellular4Bar
-import androidx.compose.material.icons.outlined.VpnKey
-import androidx.compose.material.icons.outlined.Wifi
+import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.Public
+import androidx.compose.material.icons.rounded.SettingsEthernet
+import androidx.compose.material.icons.rounded.SignalCellular4Bar
+import androidx.compose.material.icons.rounded.VpnKey
+import androidx.compose.material.icons.rounded.Wifi
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -65,11 +65,11 @@ fun NetworkInfoBar(
     val selectedNetworkInfo = networkInfo?.takeIf { it.interfaceName == selectedInterfaceName }
 
     val interfaceIcon = when (selectedType) {
-        InterfaceType.WIFI -> Icons.Outlined.Wifi
-        InterfaceType.ETHERNET -> Icons.Outlined.SettingsEthernet
-        InterfaceType.VPN -> Icons.Outlined.VpnKey
-        InterfaceType.CELLULAR -> Icons.Outlined.SignalCellular4Bar
-        InterfaceType.OTHER, null -> Icons.Outlined.Public
+        InterfaceType.WIFI -> Icons.Rounded.Wifi
+        InterfaceType.ETHERNET -> Icons.Rounded.SettingsEthernet
+        InterfaceType.VPN -> Icons.Rounded.VpnKey
+        InterfaceType.CELLULAR -> Icons.Rounded.SignalCellular4Bar
+        InterfaceType.OTHER, null -> Icons.Rounded.Public
     }
 
     val networkName = selectedNetworkInfo?.ssid
@@ -151,7 +151,7 @@ fun NetworkInfoBar(
                         )
                         if (interfaces.size > 1) {
                             Icon(
-                                imageVector = Icons.Outlined.ArrowDropDown,
+                                imageVector = Icons.Rounded.ArrowDropDown,
                                 contentDescription = stringResource(R.string.cd_interface_selector),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -164,11 +164,11 @@ fun NetworkInfoBar(
                     ) {
                         interfaces.forEach { option ->
                             val optionIcon = when (option.type) {
-                                InterfaceType.WIFI -> Icons.Outlined.Wifi
-                                InterfaceType.ETHERNET -> Icons.Outlined.SettingsEthernet
-                                InterfaceType.VPN -> Icons.Outlined.VpnKey
-                                InterfaceType.CELLULAR -> Icons.Outlined.SignalCellular4Bar
-                                InterfaceType.OTHER -> Icons.Outlined.Public
+                                InterfaceType.WIFI -> Icons.Rounded.Wifi
+                                InterfaceType.ETHERNET -> Icons.Rounded.SettingsEthernet
+                                InterfaceType.VPN -> Icons.Rounded.VpnKey
+                                InterfaceType.CELLULAR -> Icons.Rounded.SignalCellular4Bar
+                                InterfaceType.OTHER -> Icons.Rounded.Public
                             }
                             DropdownMenuItem(
                                 leadingIcon = {
