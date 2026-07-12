@@ -21,6 +21,8 @@ Discover and analyze devices on your local network with no ads, no tracking, and
 
 ## Features
 
+
+
 ### Device Discovery
 - 🔍 **Ping Sweep** - Parallel ICMP ping sweep with TCP fallback for devices that block ICMP (e.g. Windows with firewall)
 - 📋 **ARP Cache** - Reads the ARP table to pick up devices without sending any traffic
