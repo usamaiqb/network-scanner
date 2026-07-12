@@ -181,7 +181,11 @@ fun HomeScreen(
                             )
                         }
                         else -> {
-                            EmptyState(type = EmptyStateType.IDLE)
+                            EmptyState(
+                                type = EmptyStateType.IDLE,
+                                isScanning = state is MainViewModel.UiState.Scanning,
+                                blipCount = scanProgress.devicesFound
+                            )
                         }
                     }
                 }

@@ -1,5 +1,8 @@
 package com.networkscanner.app.ui.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DevicesOther
-import androidx.compose.material.icons.rounded.Radar
 import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,12 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
+import com.networkscanner.app.ui.components.RadarHero
 
 enum class EmptyStateType {
     IDLE, NO_WIFI, EMPTY
@@ -34,47 +38,84 @@ enum class EmptyStateType {
 @Composable
 fun EmptyState(
     type: EmptyStateType,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isScanning: Boolean = false,
+    blipCount: Int = 0
 ) {
-    val (icon, title, message) = when (type) {
-        EmptyStateType.IDLE -> Triple(
-            Icons.Rounded.Radar,
-            stringResource(R.string.initial_scan_title),
-            stringResource(R.string.initial_scan_message)
-        )
-        EmptyStateType.NO_WIFI -> Triple(
-            Icons.Rounded.WifiOff,
-            stringResource(R.string.no_wifi_title),
-            stringResource(R.string.no_wifi_message)
-        )
-        EmptyStateType.EMPTY -> Triple(
-            Icons.Rounded.DevicesOther,
-            stringResource(R.string.no_devices_title),
-            stringResource(R.string.no_devices_message)
-        )
-    }
-
     val emptyStateDescription = stringResource(R.string.cd_empty_state_icon)
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Box(
-            modifier = Modifier
-                .size(96.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .semantics { contentDescription = emptyStateDescription },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+        when (type) {
+            EmptyStateType.IDLE -> {
+                RadarHero(
+                    isScanning = isScanning,
+                    blipCount = blipCount,
+                    modifier = Modifier
+                        .size(220.dp)
+                        .semantics { contentDescription = emptyStateDescription }
+                )
+                // While scanning, the floating progress card carries the status text;
+                // the hero copy fades away so the radar takes the stage.
+                AnimatedVisibility(visible = !isScanning, enter = fadeIn(), exit = fadeOut()) {
+                    HeroCopy(
+                        title = stringResource(R.string.initial_scan_title),
+                        message = stringResource(R.string.initial_scan_message)
+                    )
+                }
+            }
+            EmptyStateType.NO_WIFI -> {
+                StaticHeroIcon(
+                    icon = Icons.Rounded.WifiOff,
+                    description = emptyStateDescription
+                )
+                HeroCopy(
+                    title = stringResource(R.string.no_wifi_title),
+                    message = stringResource(R.string.no_wifi_message)
+                )
+            }
+            EmptyStateType.EMPTY -> {
+                StaticHeroIcon(
+                    icon = Icons.Rounded.DevicesOther,
+                    description = emptyStateDescription
+                )
+                HeroCopy(
+                    title = stringResource(R.string.no_devices_title),
+                    message = stringResource(R.string.no_devices_message)
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun StaticHeroIcon(
+    icon: ImageVector,
+    description: String
+) {
+    Box(
+        modifier = Modifier
+            .size(96.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .semantics { contentDescription = description },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(48.dp),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    }
+}
+
+@Composable
+private fun HeroCopy(title: String, message: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(24.dp))
         Text(
             text = title,
