@@ -84,6 +84,9 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
     fun startDeepScan(fullScan: Boolean = false) {
         val currentDevice = _device.value ?: return
 
+        // Cancelling deepScanJob structurally cancels the in-flight performDeepScan
+        // (it runs under this job), so a previous scan can't keep running and
+        // fighting the new one over the shared deepScanProgress flow.
         deepScanJob?.cancel()
         progressJob?.cancel()
 
@@ -144,9 +147,11 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun cancelDeepScan() {
+        // deepScanJob owns the in-flight performDeepScan, so cancelling it stops
+        // the scan. We deliberately don't call scanner.cancel() here — that job is
+        // shared with the main network scan and would abort it too.
         deepScanJob?.cancel()
         progressJob?.cancel()
-        scanner.cancel()
         _deepScanState.value = DeepScanState.Idle
     }
 

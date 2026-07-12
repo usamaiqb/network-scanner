@@ -8,6 +8,7 @@ import com.networkscanner.app.data.*
 import com.networkscanner.app.data.repository.DeviceCustomizationRepository
 import com.networkscanner.app.util.NetworkInterfaceOption
 import com.networkscanner.app.util.NetworkUtils
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -148,6 +149,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         _uiState.value = UiState.Idle
                     }
                 }
+            } catch (e: CancellationException) {
+                // Cancelled by the user via cancelScan(), which already reset the
+                // UI to Idle. Don't surface it as an error; rethrow to honor
+                // structured concurrency.
+                throw e
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "Scan failed")
                 _errorMessage.trySend(e.message ?: "Scan failed")

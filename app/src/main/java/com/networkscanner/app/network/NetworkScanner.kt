@@ -177,6 +177,10 @@ class NetworkScanner(private val context: Context) {
                 networkInfo = networkInfo,
                 scanStatus = ScanStatus.COMPLETED
             )
+        } catch (e: CancellationException) {
+            // User cancelled the scan — propagate cleanly rather than reporting
+            // it as an ERROR result (the multicast lock is freed in finally).
+            throw e
         } catch (e: Exception) {
             ScanResult(
                 devices = discoveredDevices.values.toList(),
@@ -200,7 +204,7 @@ class NetworkScanner(private val context: Context) {
         ports: List<Int> = CommonPorts.TOP_PORTS,
         customServiceNames: Map<Int, String> = emptyMap(),
         fullScan: Boolean = false
-    ): DeepScanResult = withContext(scope.coroutineContext) {
+    ): DeepScanResult = withContext(Dispatchers.IO) {
         val portThreads = if (fullScan) FULL_SCAN_PORT_THREADS else PORT_THREADS
         val portTimeoutMs = if (fullScan) FULL_SCAN_PORT_TIMEOUT_MS else PORT_TIMEOUT_MS
         val startTime = System.currentTimeMillis()
