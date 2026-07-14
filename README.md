@@ -19,13 +19,9 @@
 
 Discover and analyze devices on your local network with no ads, no tracking, and no internet required.
 
-<div align="center">
-
 ### 🧪 Help Test on Google Play
 
 We're working on getting Network Scanner published on Google Play, but Google requires **12 opted-in testers using the app for 14 consecutive days** first.
-
-</div>
 
 1. Join the [Google Group](https://groups.google.com/g/dg-testers) (approval may take a few minutes)
 2. Once approved, [opt in as a tester](https://play.google.com/apps/testing/com.networkscanner.app)
