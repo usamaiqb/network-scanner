@@ -31,11 +31,7 @@ We're working on getting Network Scanner published on Google Play, but Google re
 2. Once approved, [opt in as a tester](https://play.google.com/apps/testing/com.networkscanner.app)
 3. [Install the app](https://play.google.com/store/apps/details?id=com.networkscanner.app) and open it a few times over the next two weeks
 
-<div align="center">
-
-[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="60" alt="Get it on Google Play (testing)">](https://play.google.com/apps/testing/com.networkscanner.app)
-
-</div>
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play (testing)" height="80">](https://play.google.com/apps/testing/com.networkscanner.app)
 
 Thank you! This helps us reach far more users than F-Droid and GitHub alone.
 
