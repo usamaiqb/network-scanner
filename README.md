@@ -19,6 +19,19 @@
 
 Discover and analyze devices on your local network with no ads, no tracking, and no internet required.
 
+<details>
+<summary>🧪 Help Test on Google Play</summary>
+
+We're working on getting Network Scanner published on Google Play, but Google requires 12 opted-in testers to use the app for 14 consecutive days first. If you're up for helping out:
+
+1. Join the [Google Group](https://groups.google.com/g/dg-testers) (approval may take a few minutes)
+2. Once approved, [opt in as a tester](https://play.google.com/apps/testing/com.networkscanner.app)
+3. [Install the app](https://play.google.com/store/apps/details?id=com.networkscanner.app) and open it a few times over the next two weeks
+
+Thank you! This helps us reach far more users than F-Droid and GitHub alone.
+
+</details>
+
 ## Features
 
 ### Device Discovery
@@ -30,7 +43,7 @@ Discover and analyze devices on your local network with no ads, no tracking, and
 - 🔌 **Port Heuristics** - Identifies Cast-enabled TVs and other devices via targeted port probes when other methods come up empty
 
 ### Device Information
-- 🏷️ **MAC Address & Vendor** - Shows MAC address with OUI vendor lookup, including detection of randomized (private) MAC addresses
+- 🏷️ **MAC Address & Vendor** - Shows MAC address with OUI vendor lookup, including detection of randomized (private) MAC addresses¹
 - 🖥️ **OS Fingerprinting** - Detects Windows, Linux, macOS, router firmware, and printer OS from open ports and banners
 - 📱 **Device Type Icons** - Automatically identifies smartphones, laptops, desktops, TVs, routers, printers, NAS, and more
 - 🔓 **Deep Port Scan** - Scans common ports, grabs service banners, and extracts software versions
@@ -126,6 +139,10 @@ cd network-scanner
 
 
 Contributions to translations are welcome!
+
+## Known Limitations
+
+¹ **MAC addresses on Android 10+**: Since Android 10, apps can no longer read other devices' entries from the system's ARP table (SELinux restriction). This means MAC address and vendor lookup reliably works for your own device (and sometimes the router), but shows as "Unknown" for other devices on the network on Android 10 and above. This is an OS-level restriction that affects all network scanner apps, not a bug specific to this app, and can't be worked around without root access.
 
 ## Contributing
 
