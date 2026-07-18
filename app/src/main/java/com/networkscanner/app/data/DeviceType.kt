@@ -1,20 +1,20 @@
 package com.networkscanner.app.data
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.DesktopWindows
-import androidx.compose.material.icons.outlined.DevicesOther
-import androidx.compose.material.icons.outlined.Dns
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Laptop
-import androidx.compose.material.icons.outlined.Print
-import androidx.compose.material.icons.outlined.Router
-import androidx.compose.material.icons.outlined.Smartphone
-import androidx.compose.material.icons.outlined.Speaker
-import androidx.compose.material.icons.outlined.SportsEsports
-import androidx.compose.material.icons.outlined.Storage
-import androidx.compose.material.icons.outlined.Tablet
-import androidx.compose.material.icons.outlined.Tv
-import androidx.compose.material.icons.outlined.Watch
+import androidx.compose.material.icons.rounded.DesktopWindows
+import androidx.compose.material.icons.rounded.DevicesOther
+import androidx.compose.material.icons.rounded.Dns
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Laptop
+import androidx.compose.material.icons.rounded.Print
+import androidx.compose.material.icons.rounded.Router
+import androidx.compose.material.icons.rounded.Smartphone
+import androidx.compose.material.icons.rounded.Speaker
+import androidx.compose.material.icons.rounded.SportsEsports
+import androidx.compose.material.icons.rounded.Storage
+import androidx.compose.material.icons.rounded.Tablet
+import androidx.compose.material.icons.rounded.Tv
+import androidx.compose.material.icons.rounded.Watch
 import androidx.compose.ui.graphics.vector.ImageVector
 import java.util.concurrent.ConcurrentHashMap
 
@@ -28,22 +28,22 @@ enum class DeviceType(
 ) {
     ROUTER(
         displayName = "Router",
-        icon = Icons.Outlined.Router,
+        icon = Icons.Rounded.Router,
         keywords = listOf("router", "gateway", "netgear", "linksys", "asus", "tp-link", "d-link", "cisco")
     ),
     SMARTPHONE(
         displayName = "Smartphone",
-        icon = Icons.Outlined.Smartphone,
+        icon = Icons.Rounded.Smartphone,
         keywords = listOf("iphone", "android", "pixel", "samsung", "oneplus", "xiaomi", "huawei", "mobile", "oppo", "vivo", "redmi", "poco", "motorola", "nokia", "zte", "meizu", "realme", "galaxy")
     ),
     TABLET(
         displayName = "Tablet",
-        icon = Icons.Outlined.Tablet,
+        icon = Icons.Rounded.Tablet,
         keywords = listOf("ipad", "tablet", "galaxy tab", "surface")
     ),
     LAPTOP(
         displayName = "Laptop",
-        icon = Icons.Outlined.Laptop,
+        icon = Icons.Rounded.Laptop,
         // Note: NIC-vendor names (intel, realtek) and the too-generic "hp" are
         // deliberately excluded — they appear on desktops, servers and printers
         // just as often as laptops and caused systematic misclassification.
@@ -51,52 +51,52 @@ enum class DeviceType(
     ),
     DESKTOP(
         displayName = "Desktop",
-        icon = Icons.Outlined.DesktopWindows,
+        icon = Icons.Rounded.DesktopWindows,
         keywords = listOf("desktop", "pc", "imac", "workstation", "microsoft")
     ),
     TV(
         displayName = "Smart TV",
-        icon = Icons.Outlined.Tv,
+        icon = Icons.Rounded.Tv,
         keywords = listOf("tv", "television", "roku", "firetv", "chromecast", "appletv", "samsung tv", "lg tv", "sony tv")
     ),
     GAME_CONSOLE(
         displayName = "Game Console",
-        icon = Icons.Outlined.SportsEsports,
+        icon = Icons.Rounded.SportsEsports,
         keywords = listOf("playstation", "xbox", "nintendo", "switch", "ps4", "ps5")
     ),
     SMART_SPEAKER(
         displayName = "Smart Speaker",
-        icon = Icons.Outlined.Speaker,
+        icon = Icons.Rounded.Speaker,
         keywords = listOf("alexa", "echo", "google home", "homepod", "sonos")
     ),
     SMART_HOME(
         displayName = "Smart Home Device",
-        icon = Icons.Outlined.Home,
+        icon = Icons.Rounded.Home,
         keywords = listOf("nest", "hue", "smart", "iot", "thermostat", "camera", "ring", "wyze")
     ),
     PRINTER(
         displayName = "Printer",
-        icon = Icons.Outlined.Print,
+        icon = Icons.Rounded.Print,
         keywords = listOf("printer", "epson", "hp", "canon", "brother")
     ),
     NAS(
         displayName = "NAS/Storage",
-        icon = Icons.Outlined.Storage,
+        icon = Icons.Rounded.Storage,
         keywords = listOf("nas", "synology", "qnap", "storage", "diskstation")
     ),
     SERVER(
         displayName = "Server",
-        icon = Icons.Outlined.Dns,
+        icon = Icons.Rounded.Dns,
         keywords = listOf("server", "linux", "ubuntu", "debian", "centos", "raspberry")
     ),
     WEARABLE(
         displayName = "Wearable",
-        icon = Icons.Outlined.Watch,
+        icon = Icons.Rounded.Watch,
         keywords = listOf("watch", "fitbit", "garmin", "wearable")
     ),
     UNKNOWN(
         displayName = "Unknown Device",
-        icon = Icons.Outlined.DevicesOther,
+        icon = Icons.Rounded.DevicesOther,
         keywords = emptyList()
     );
 

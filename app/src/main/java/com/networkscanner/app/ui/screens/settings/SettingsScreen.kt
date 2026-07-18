@@ -3,19 +3,30 @@ package com.networkscanner.app.ui.screens.settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.Autorenew
+import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material.icons.rounded.Description
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Language
+import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.rounded.Shield
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -53,22 +65,26 @@ fun SettingsScreen(
     var showLanguageDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val supportsDynamic = remember { viewModel.supportsDynamicColors() }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            LargeTopAppBar(
                 title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = stringResource(R.string.cd_navigate_back)
                         )
                     }
                 },
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                ),
                 scrollBehavior = scrollBehavior
             )
         }
@@ -93,10 +109,21 @@ fun SettingsScreen(
                 ) {
                     SegmentSurface(index = 0, count = appearanceCount) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                text = stringResource(R.string.pref_theme_title),
-                                style = MaterialTheme.typography.bodyLarge
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Palette,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Text(
+                                    text = stringResource(R.string.pref_theme_title),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
                             ThemeSegmentedButtons(
                                 selectedMode = themeMode,
                                 onModeSelected = { viewModel.setThemeMode(it) },
@@ -111,6 +138,7 @@ fun SettingsScreen(
                             SwitchSettingItem(
                                 title = stringResource(R.string.pref_dynamic_colors_title),
                                 summary = stringResource(R.string.pref_dynamic_colors_summary),
+                                icon = Icons.Rounded.AutoAwesome,
                                 checked = dynamicColors,
                                 onCheckedChange = { viewModel.setDynamicColors(it) }
                             )
@@ -119,7 +147,8 @@ fun SettingsScreen(
                     SegmentSurface(index = appearanceCount - 1, count = appearanceCount) {
                         ClickableSettingItem(
                             title = stringResource(R.string.pref_language_title),
-                            summary = currentLanguageLabel(language),
+                            icon = Icons.Rounded.Language,
+                            value = currentLanguageLabel(language),
                             onClick = { showLanguageDialog = true }
                         )
                     }
@@ -139,6 +168,7 @@ fun SettingsScreen(
                         SwitchSettingItem(
                             title = stringResource(R.string.pref_auto_scan_title),
                             summary = stringResource(R.string.pref_auto_scan_summary),
+                            icon = Icons.Rounded.Autorenew,
                             checked = autoScan,
                             onCheckedChange = { viewModel.setAutoScan(it) }
                         )
@@ -147,6 +177,7 @@ fun SettingsScreen(
                         ClickableSettingItem(
                             title = stringResource(R.string.pref_custom_ports_title),
                             summary = stringResource(R.string.pref_custom_ports_summary),
+                            icon = Icons.Rounded.Tune,
                             onClick = onNavigateToCustomPorts
                         )
                     }
@@ -172,6 +203,7 @@ fun SettingsScreen(
                         ClickableSettingItem(
                             title = stringResource(R.string.pref_version_title),
                             summary = versionSummary,
+                            icon = Icons.Rounded.Info,
                             onClick = {}
                         )
                     }
@@ -179,6 +211,7 @@ fun SettingsScreen(
                         ClickableSettingItem(
                             title = stringResource(R.string.pref_about_title),
                             summary = stringResource(R.string.pref_about_summary),
+                            icon = Icons.Rounded.Description,
                             onClick = { showAboutDialog = true }
                         )
                     }
@@ -187,6 +220,7 @@ fun SettingsScreen(
                         ClickableSettingItem(
                             title = stringResource(R.string.view_on_github),
                             summary = githubUrl,
+                            icon = Icons.Rounded.Code,
                             onClick = {
                                 try {
                                     val intent = Intent(Intent.ACTION_VIEW, githubUrl.toUri())
@@ -201,6 +235,7 @@ fun SettingsScreen(
                         ClickableSettingItem(
                             title = stringResource(R.string.pref_privacy_title),
                             summary = stringResource(R.string.pref_privacy_summary),
+                            icon = Icons.Rounded.Shield,
                             onClick = { showPrivacyDialog = true }
                         )
                     }
