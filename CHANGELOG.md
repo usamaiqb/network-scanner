@@ -1,3 +1,17 @@
+## [1.1.6] - 2026-07-14
+
+### Added
+- Italian translation
+
+### Improved
+- Device type icon rows now align to columns for a cleaner grid layout
+
+### Fixed
+- Corrected device identification: Android/Samsung TVs and UPnP MediaServers no longer misclassified as phones/servers; desktops and printers no longer mislabeled as laptops
+- Fixed a race condition that could lose device data during concurrent network discovery
+- Cancelling a scan or deep scan no longer shows a spurious error and reliably stops in-flight work
+- Devices are now sorted by numeric IP address order instead of alphabetically
+
 ## [1.1.5] - 2026-06-29
 
 ### Added

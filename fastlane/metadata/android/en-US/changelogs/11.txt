@@ -1,0 +1,4 @@
+• Fixed device type misidentification (TVs, media servers, printers, desktops)
+• Fixed scan cancellation showing a spurious error instead of stopping cleanly
+• Fixed a race condition that could lose devices during a scan
+• Added Italian translation
