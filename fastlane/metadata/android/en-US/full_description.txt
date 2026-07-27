@@ -32,6 +32,7 @@ Network Scanner is a fast, lightweight, and privacy-focused tool for discovering
 Network Scanner only requests permissions essential for network scanning:
 • Network access - To communicate with devices on your network
 • WiFi state - To check if you're connected to WiFi
-• Location (not used for tracking) - Required by Android for WiFi scanning
+• Nearby WiFi devices - To find devices on your local network. On Android 16 and later, Android requires this permission for all local network communication, so scanning cannot work without it
+• Location (optional, never used for tracking) - Only to read your WiFi network name (SSID). Scanning works without it
 
 Network Scanner is completely ad-free, tracker-free, and respects your privacy. All code is open source and auditable.

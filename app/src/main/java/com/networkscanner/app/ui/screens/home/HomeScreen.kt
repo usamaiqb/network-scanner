@@ -1,5 +1,7 @@
 package com.networkscanner.app.ui.screens.home
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -25,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -33,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -46,6 +50,8 @@ import androidx.preference.PreferenceManager
 import com.networkscanner.app.R
 import com.networkscanner.app.data.Device
 import com.networkscanner.app.ui.MainViewModel
+import com.networkscanner.app.util.ScanPermissions
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -69,6 +75,46 @@ fun HomeScreen(
 
     val motionScheme = MaterialTheme.motionScheme
 
+    val scope = rememberCoroutineScope()
+    val permissionDeniedMessage = stringResource(R.string.permission_local_network_denied)
+    val openSettingsLabel = stringResource(R.string.action_open_settings)
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { _ ->
+        // The optional permissions are asked for at most once, whatever the answer.
+        ScanPermissions.markOptionalRequested(context)
+
+        if (ScanPermissions.isLocalNetworkGranted(context)) {
+            viewModel.startScan()
+        } else {
+            // Once the permission is permanently denied the system stops showing the
+            // dialog, so point the user at app settings instead of silently scanning
+            // into a wall of EPERM failures.
+            scope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = permissionDeniedMessage,
+                    actionLabel = openSettingsLabel
+                )
+                if (result == SnackbarResult.ActionPerformed) {
+                    ScanPermissions.openAppSettings(context)
+                }
+            }
+        }
+    }
+
+    // Android 16+ gates local network access, so re-check the grant on every scan
+    // rather than assuming an earlier request succeeded. Below 16 nothing is gated and
+    // pendingForScan only asks for the optional permissions, once.
+    val startScan: () -> Unit = {
+        val pending = ScanPermissions.pendingForScan(context)
+        if (pending.isEmpty()) {
+            viewModel.startScan()
+        } else {
+            permissionLauncher.launch(pending)
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.errorMessage.collect { message ->
             snackbarHostState.showSnackbar(message)
@@ -79,7 +125,7 @@ fun HomeScreen(
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val autoScan = prefs.getBoolean("auto_scan_on_start", true)
         if (autoScan && uiState is MainViewModel.UiState.Idle) {
-            viewModel.startScan()
+            startScan()
         }
     }
 
@@ -123,7 +169,7 @@ fun HomeScreen(
         floatingActionButton = {
             if (showFab) {
                 ExtendedFloatingActionButton(
-                    onClick = { viewModel.startScan() },
+                    onClick = startScan,
                     icon = {
                         Icon(
                             imageVector = Icons.Rounded.Radar,

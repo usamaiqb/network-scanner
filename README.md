@@ -90,8 +90,8 @@ Network Scanner requests only essential permissions:
 - **ACCESS_NETWORK_STATE** - To check network connectivity
 - **ACCESS_WIFI_STATE** - To get WiFi information
 - **CHANGE_WIFI_MULTICAST_STATE** - For network device discovery
-- **NEARBY_WIFI_DEVICES** (Android 13+) - To discover nearby WiFi devices
-- **ACCESS_FINE_LOCATION** / **ACCESS_COARSE_LOCATION** - Required by Android for WiFi scanning (not used for location tracking)
+- **NEARBY_WIFI_DEVICES** (Android 13+) - To discover nearby WiFi devices. On Android 16+ this permission also gates local network access (sockets to local addresses, mDNS, SSDP), so scanning cannot work without it
+- **ACCESS_FINE_LOCATION** / **ACCESS_COARSE_LOCATION** - Optional. Used only to read WiFi network details such as the SSID, and never for location tracking; scanning works without it
 
 </details>
 
@@ -101,7 +101,7 @@ Network Scanner requests only essential permissions:
 ### Prerequisites
 - Android Studio Hedgehog (2023.1.1) or later
 - JDK 17
-- Android SDK with API level 35
+- Android SDK with API level 36
 
 ### Build Steps
 
@@ -134,12 +134,12 @@ cd network-scanner
 | Language | Progress |
 | --- | --- |
 | English | ████████████ 100% (source) |
-| العربية | ████████████ 100% |
-| Español | ████████████ 100% |
-| Italiano | ████████████ 100% |
-| Русский | ███████████░ 92% |
-| Українська | ████████████ 100% |
-| 中文 (中国) | ████████████ 100% |
+| العربية | ████████████ 99% |
+| Español | ████████████ 99% |
+| Italiano | ████████████ 99% |
+| Русский | ███████████░ 91% |
+| Українська | ████████████ 99% |
+| 中文 (中国) | ████████████ 99% |
 <!-- translations:end -->
 
 
