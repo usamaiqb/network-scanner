@@ -1,7 +1,7 @@
 # Privacy Policy
 
 **Network Scanner**
-**Last updated: March 24, 2026**
+**Last updated: July 27, 2026**
 
 ## Overview
 
@@ -16,9 +16,13 @@ All network scanning data is processed and stored **locally on your device**. Th
 - **Device network information** — IP addresses, MAC addresses, hostnames, and device names of devices found on your local network.
 - **Wi-Fi network details** — Your network's SSID, subnet, and gateway address, used to perform the scan.
 
-### Permissions are optional
+### Which permissions you can decline
 
-**The App is fully functional without granting any permissions.** All permissions are optional and only enhance the scanning experience. If you choose not to grant permissions, the App will still scan your network — some details like your network name (SSID) may simply be unavailable.
+**On Android 15 and below, the App is fully functional without granting any permissions.** Every permission is optional there and only enhances the scanning experience; if you decline them, the App will still scan your network — some details like your network name (SSID) may simply be unavailable.
+
+**On Android 16 and above, the Nearby Wi-Fi Devices permission is required in order to scan.** Android 16 restricts all local network communication — the pings, mDNS and SSDP queries, and port probes the App uses to find devices — behind this permission. Without it the App can still show your own network details, but it cannot discover any devices. This is an Android platform requirement, not a choice the App makes, and the permission is used only to reach devices on your own network.
+
+Location remains optional on every Android version.
 
 ### Permissions and why they are requested
 
@@ -28,10 +32,10 @@ All network scanning data is processed and stored **locally on your device**. Th
 | **Access Network State** | To determine whether you are connected to a network. |
 | **Access Wi-Fi State** | To read Wi-Fi network details (SSID, gateway, subnet) to enhance scan results. |
 | **Change Wi-Fi Multicast State** | To enable mDNS (multicast DNS) discovery on the local network. |
-| **Nearby Wi-Fi Devices** (Android 13+) | To access Wi-Fi network information without requiring location permission on newer Android versions. |
-| **Access Fine/Coarse Location** (Android 12 and below) | On older Android versions, location permission is required by the OS to access Wi-Fi network information. The App does not use your GPS location for any other purpose. |
+| **Nearby Wi-Fi Devices** (Android 13+) | On Android 16 and above, to communicate with devices on your local network — this is what makes scanning possible. On Android 13 to 15, to read Wi-Fi network information without requiring location permission. |
+| **Access Fine/Coarse Location** | Optional. Android requires location permission to read Wi-Fi network details such as the SSID; on Android 13 and above, Nearby Wi-Fi Devices can serve that purpose instead. The App does not use your GPS location for any purpose, and scanning works without this permission. |
 
-You can deny or revoke any of these permissions at any time through your device's Settings without losing access to the App's core functionality.
+You can deny or revoke any of these permissions at any time through your device's Settings. On Android 15 and below this does not affect the App's core functionality. On Android 16 and above, declining or revoking Nearby Wi-Fi Devices stops device discovery; the App will ask again the next time you scan, and you can restore the permission from Settings at any point.
 
 ### Data the App does NOT collect
 
