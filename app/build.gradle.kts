@@ -26,7 +26,7 @@ val releaseKeyPassword: String? = keystoreProperties["keyPassword"] as? String ?
 
 android {
     namespace = "com.networkscanner.app"
-    compileSdk = 35
+    compileSdk = 36
 
     dependenciesInfo {
         // Disables dependency metadata when building APKs.
@@ -38,9 +38,9 @@ android {
     defaultConfig {
         applicationId = "com.networkscanner.app"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 10
-        versionName = "1.1.5"
+        targetSdk = 36
+        versionCode = 12
+        versionName = "1.1.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

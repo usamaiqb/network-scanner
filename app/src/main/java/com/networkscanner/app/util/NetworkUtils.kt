@@ -263,36 +263,72 @@ object NetworkUtils {
     }
 
     /**
-     * Generate list of IP addresses in the subnet to scan.
-     * Respects the actual subnet size instead of always scanning /24.
+     * Largest subnet, measured in usable host addresses, that a scan will sweep
+     * in full automatically. A /22 (1022 hosts) fits within this cap; anything
+     * wider (/21 and up) falls back to the device's local /24, because sweeping
+     * tens of thousands to millions of addresses is infeasible on a phone.
+     *
+     * NOTE: letting the user opt into scanning a larger range (whole subnet or a
+     * custom range) on wide networks is planned separately — see
+     * docs/large-subnet-handling.md.
+     */
+    const val MAX_SCAN_HOSTS = 1024
+
+    /**
+     * Generate the list of IP addresses to ping-sweep, based on the interface's
+     * actual network prefix rather than assuming a /24.
+     *
+     * - Subnets with up to [MAX_SCAN_HOSTS] usable hosts (through /22) are swept
+     *   in full, so /23 and /22 networks are covered — including the gateway,
+     *   which may sit in a different /24 than the device.
+     * - Wider subnets (/21 and up, e.g. a public-Wi-Fi /8) fall back to the /24
+     *   the device is in, to keep the sweep feasible.
      */
     fun getIpRange(networkInfo: NetworkInfo): List<String> {
-        val baseIp = networkInfo.networkAddress
-        val parts = baseIp.split(".")
-        if (parts.size != 4) return emptyList()
+        val prefix = networkInfo.networkPrefix.coerceIn(0, 32)
 
-        val prefix = networkInfo.networkPrefix
+        // /31 (point-to-point) and /32 (single host) have no conventional host range.
+        if (prefix >= 31) return listOf(networkInfo.ipAddress)
 
-        // For /24 or smaller subnets, scan the exact range
-        if (prefix >= 24) {
-            val ipPrefix = parts.take(3).joinToString(".")
-            val hostBits = 32 - prefix
-            val numHosts = (1 shl hostBits) - 2 // Exclude network and broadcast
-            val startHost = 1
-            val endHost = startHost + numHosts - 1
+        val deviceInt = ipv4ToLong(networkInfo.ipAddress)
+        val networkInt = ipv4ToLong(networkInfo.networkAddress) ?: deviceInt ?: return emptyList()
 
-            return (startHost..endHost).map { "$ipPrefix.$it" }
+        val totalAddresses = 1L shl (32 - prefix)
+        // Usable host range excludes the network address and the broadcast address.
+        val firstHost = networkInt + 1
+        val lastHost = networkInt + totalAddresses - 2
+        val totalHosts = lastHost - firstHost + 1
+
+        if (totalHosts <= MAX_SCAN_HOSTS) {
+            return (firstHost..lastHost).map { longToIpv4(it) }
         }
 
-        // For larger subnets (< /24), scan the /24 segment the device is actually in
-        val deviceParts = networkInfo.ipAddress.split(".")
-        val localPrefix = if (deviceParts.size == 4) {
-            deviceParts.take(3).joinToString(".")
-        } else {
-            parts.take(3).joinToString(".")
-        }
-        return (1..254).map { "$localPrefix.$it" }
+        // Subnet too large to sweep in full — scan the /24 the device sits in.
+        val base = (deviceInt ?: networkInt) and 0xFFFFFF00L
+        return (1L..254L).map { longToIpv4(base + it) }
     }
+
+    /**
+     * Convert a dotted-quad IPv4 string to its big-endian numeric value
+     * (0..2^32-1), or null if malformed. Unlike [ipAddressToInt] this preserves
+     * octet order, so the result is safe to use for range arithmetic.
+     */
+    private fun ipv4ToLong(ip: String): Long? {
+        val parts = ip.split(".")
+        if (parts.size != 4) return null
+        var result = 0L
+        for (part in parts) {
+            val octet = part.toIntOrNull() ?: return null
+            if (octet !in 0..255) return null
+            result = (result shl 8) or octet.toLong()
+        }
+        return result
+    }
+
+    /** Convert a big-endian numeric IPv4 value back to dotted-quad form. */
+    private fun longToIpv4(value: Long): String =
+        "${(value ushr 24) and 0xFF}.${(value ushr 16) and 0xFF}." +
+            "${(value ushr 8) and 0xFF}.${value and 0xFF}"
 
     /**
      * Convert integer IP address to string format.

@@ -19,6 +19,18 @@
 
 Discover and analyze devices on your local network with no ads, no tracking, and no internet required.
 
+### 🧪 Help Test on Google Play
+
+We're working on getting Network Scanner published on Google Play. The app is already available there in **closed testing**, and we need real users trying it out to get it fully published.
+
+1. Join the [Google Group](https://groups.google.com/g/dg-testers) (approval may take a few minutes)
+2. Once approved, [opt in as a tester](https://play.google.com/apps/testing/com.networkscanner.app)
+3. [Install the app](https://play.google.com/store/apps/details?id=com.networkscanner.app) and open it a few times over the next two weeks
+
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play (testing)" height="80">](https://play.google.com/apps/testing/com.networkscanner.app)
+
+Thank you! This helps us reach far more users than F-Droid and GitHub alone.
+
 ## Features
 
 ### Device Discovery
@@ -30,7 +42,7 @@ Discover and analyze devices on your local network with no ads, no tracking, and
 - 🔌 **Port Heuristics** - Identifies Cast-enabled TVs and other devices via targeted port probes when other methods come up empty
 
 ### Device Information
-- 🏷️ **MAC Address & Vendor** - Shows MAC address with OUI vendor lookup, including detection of randomized (private) MAC addresses
+- 🏷️ **MAC Address & Vendor** - Shows MAC address with OUI vendor lookup, including detection of randomized (private) MAC addresses¹
 - 🖥️ **OS Fingerprinting** - Detects Windows, Linux, macOS, router firmware, and printer OS from open ports and banners
 - 📱 **Device Type Icons** - Automatically identifies smartphones, laptops, desktops, TVs, routers, printers, NAS, and more
 - 🔓 **Deep Port Scan** - Scans common ports, grabs service banners, and extracts software versions
@@ -69,7 +81,8 @@ Download the latest APK from the [Releases](https://github.com/usamaiqb/network-
 - Android 8.0 (Oreo) or higher
 - WiFi connection to scan local network
 
-## Permissions
+<details>
+<summary><h2>Permissions</h2></summary>
 
 Network Scanner requests only essential permissions:
 
@@ -77,15 +90,18 @@ Network Scanner requests only essential permissions:
 - **ACCESS_NETWORK_STATE** - To check network connectivity
 - **ACCESS_WIFI_STATE** - To get WiFi information
 - **CHANGE_WIFI_MULTICAST_STATE** - For network device discovery
-- **NEARBY_WIFI_DEVICES** (Android 13+) - To discover nearby WiFi devices
-- **ACCESS_FINE_LOCATION** / **ACCESS_COARSE_LOCATION** - Required by Android for WiFi scanning (not used for location tracking)
+- **NEARBY_WIFI_DEVICES** (Android 13+) - To discover nearby WiFi devices. On Android 16+ this permission also gates local network access (sockets to local addresses, mDNS, SSDP), so scanning cannot work without it
+- **ACCESS_FINE_LOCATION** / **ACCESS_COARSE_LOCATION** - Optional. Used only to read WiFi network details such as the SSID, and never for location tracking; scanning works without it
 
-## Building from Source
+</details>
+
+<details>
+<summary><h2>Building from Source</h2></summary>
 
 ### Prerequisites
 - Android Studio Hedgehog (2023.1.1) or later
 - JDK 17
-- Android SDK with API level 35
+- Android SDK with API level 36
 
 ### Build Steps
 
@@ -102,6 +118,8 @@ cd network-scanner
 
 3. The APK will be in `app/build/outputs/apk/release/`
 
+</details>
+
 ## Usage
 
 1. Open the app and grant necessary permissions
@@ -116,16 +134,23 @@ cd network-scanner
 | Language | Progress |
 | --- | --- |
 | English | ████████████ 100% (source) |
-| العربية | ████████████ 100% |
-| Español | ████████████ 100% |
-| Italiano | ████████████ 100% |
-| Русский | ███████████░ 92% |
-| Українська | ████████████ 100% |
+| العربية | ████████████ 99% |
+| Español | ████████████ 99% |
+| Italiano | ████████████ 99% |
+| Русский | ███████████░ 91% |
+| Українська | ████████████ 99% |
 | 中文 (中国) | ████████████ 100% |
 <!-- translations:end -->
 
 
 Contributions to translations are welcome!
+
+<details>
+<summary><h2>Known Limitations</h2></summary>
+
+¹ **MAC addresses on Android 10+**: Since Android 10, apps can no longer read other devices' entries from the system's ARP table (SELinux restriction). This means MAC address and vendor lookup reliably works for your own device (and sometimes the router), but shows as "Unknown" for other devices on the network on Android 10 and above. This is an OS-level restriction that affects all network scanner apps, not a bug specific to this app, and can't be worked around without root access.
+
+</details>
 
 ## Contributing
 
@@ -151,13 +176,16 @@ For full details, see the [Privacy Policy](PRIVACY_POLICY.md).
 - **Issues**: [GitHub Issues](https://github.com/usamaiqb/network-scanner/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/usamaiqb/network-scanner/discussions)
 
-## Acknowledgments
+<details>
+<summary><h2>Acknowledgments</h2></summary>
 
 Built with:
 - [Kotlin](https://kotlinlang.org/) - Modern programming language for Android
 - [AndroidX](https://developer.android.com/jetpack/androidx) - Android Jetpack libraries
 - [Material Design 3](https://m3.material.io/) - Modern design system
 - [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) - Asynchronous programming
+
+</details>
 
 ## Changelog
 
