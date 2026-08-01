@@ -1,3 +1,15 @@
+## [1.1.7] - 2026-08-01
+
+### Added
+- Simplified Chinese (zh-CN) translation (#52, #61)
+
+### Improved
+- Adopted Material 3 Expressive app frame with large collapsing top bars, rounded icons, and status badges (#53)
+- Targeted Android 16 (API 36) with runtime local network permission handling (#60)
+
+### Fixed
+- Fixed network scanner to sweep full subnet range (up to /22) instead of assuming /24 (#58)
+
 ## [1.1.6] - 2026-07-14
 
 ### Added

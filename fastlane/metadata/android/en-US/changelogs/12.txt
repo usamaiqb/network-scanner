@@ -1,0 +1,4 @@
+• Adopted Material 3 Expressive app frame with large top bars and rounded icons
+• Targeted Android 16 (API 36) with runtime local network permission prompts
+• Fixed scanner to sweep full subnet range (up to /22) instead of assuming /24
+• Added Simplified Chinese translation
