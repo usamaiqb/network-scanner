@@ -58,6 +58,8 @@
     <string name="permission_nearby_message">此权限允许应用发现您网络上的附近设备。</string>
     <string name="grant_permission">授予权限</string>
     <string name="skip">跳过</string>
+    <string name="permission_local_network_denied">需要“附近设备”权限才能扫描您的本地网络。</string>
+    <string name="action_open_settings">打开设置</string>
 
     <!-- Theme -->
     <string name="theme_light">浅色</string>
