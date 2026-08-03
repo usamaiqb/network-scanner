@@ -252,7 +252,7 @@ fun SettingsScreen(
         PrivacyDialog(onDismiss = { showPrivacyDialog = false })
     }
     if (showLanguageDialog) {
-        LanguageDialog(
+        LanguagePickerSheet(
             selectedLanguage = language,
             onLanguageSelected = { newLanguage ->
                 showLanguageDialog = false

@@ -11,11 +11,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.data.repository.CustomPortData
+import com.networkscanner.app.ui.components.ExpressiveSwitch
 import com.networkscanner.app.ui.components.SegmentSurface
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,8 +54,12 @@ fun CustomPortsScreen(
             )
         },
         floatingActionButton = {
+            val haptics = LocalHapticFeedback.current
             ExtendedFloatingActionButton(
-                onClick = { showAddDialog = true },
+                onClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                    showAddDialog = true
+                },
                 icon = { Icon(Icons.Rounded.Add, contentDescription = null) },
                 text = { Text(stringResource(R.string.add_port)) }
             )
@@ -144,9 +151,15 @@ private fun CustomPortItem(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Switch(
+            val haptics = LocalHapticFeedback.current
+            ExpressiveSwitch(
                 checked = port.isEnabled,
-                onCheckedChange = { onToggle() }
+                onCheckedChange = { enabled ->
+                    haptics.performHapticFeedback(
+                        if (enabled) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                    )
+                    onToggle()
+                }
             )
             IconButton(onClick = onDelete) {
                 Icon(

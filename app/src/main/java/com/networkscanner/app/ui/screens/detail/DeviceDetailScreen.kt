@@ -43,8 +43,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -84,6 +86,7 @@ fun DeviceDetailScreen(
     }
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val haptics = LocalHapticFeedback.current
     val isScanning = deepScanState is DeviceDetailViewModel.DeepScanState.Scanning
     val isOnline = device?.isOnline == true
 
@@ -116,7 +119,10 @@ fun DeviceDetailScreen(
                 floatingActionButton = {
             if (!isScanning && isOnline) {
                 ExtendedFloatingActionButton(
-                    onClick = { viewModel.startDeepScan() },
+                    onClick = {
+                        haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                        viewModel.startDeepScan()
+                    },
                     icon = {
                         Icon(
                             imageVector = Icons.Rounded.Radar,

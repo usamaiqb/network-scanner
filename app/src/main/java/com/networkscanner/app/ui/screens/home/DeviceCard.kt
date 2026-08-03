@@ -20,6 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.stringResource
@@ -50,9 +52,13 @@ fun DeviceCard(
         if (device.isCurrentDevice) append(", This is your current device")
     }
 
+    val haptics = LocalHapticFeedback.current
     ListItem(
         modifier = modifier
-            .clickable(role = Role.Button, onClick = onClick)
+            .clickable(role = Role.Button) {
+                haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                onClick()
+            }
             .semantics(mergeDescendants = true) { contentDescription = description },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         headlineContent = {

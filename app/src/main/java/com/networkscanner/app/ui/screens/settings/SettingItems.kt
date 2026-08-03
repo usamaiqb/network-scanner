@@ -8,15 +8,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.networkscanner.app.ui.components.ExpressiveSwitch
 import com.networkscanner.app.ui.components.ValueBadge
 
 @Composable
@@ -49,13 +51,14 @@ fun SwitchSettingItem(
     onCheckedChange: (Boolean) -> Unit,
     enabled: Boolean = true
 ) {
+    val haptics = LocalHapticFeedback.current
     ListItem(
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         headlineContent = { Text(title) },
         supportingContent = summary?.let { { Text(it) } },
         leadingContent = icon?.let { { SettingLeadingIcon(it) } },
         trailingContent = {
-            Switch(
+            ExpressiveSwitch(
                 checked = checked,
                 onCheckedChange = null,
                 enabled = enabled
@@ -63,7 +66,12 @@ fun SwitchSettingItem(
         },
         modifier = Modifier.toggleable(
             value = checked,
-            onValueChange = onCheckedChange,
+            onValueChange = { newValue ->
+                haptics.performHapticFeedback(
+                    if (newValue) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
+                )
+                onCheckedChange(newValue)
+            },
             role = Role.Switch,
             enabled = enabled
         )
@@ -78,12 +86,16 @@ fun ClickableSettingItem(
     value: String? = null,
     onClick: () -> Unit
 ) {
+    val haptics = LocalHapticFeedback.current
     ListItem(
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         headlineContent = { Text(title) },
         supportingContent = summary?.let { { Text(it) } },
         leadingContent = icon?.let { { SettingLeadingIcon(it) } },
         trailingContent = value?.let { { ValueBadge(text = it) } },
-        modifier = Modifier.clickable(role = Role.Button, onClick = onClick)
+        modifier = Modifier.clickable(role = Role.Button) {
+            haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+            onClick()
+        }
     )
 }
