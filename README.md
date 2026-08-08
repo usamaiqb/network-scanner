@@ -19,17 +19,12 @@
 
 Discover and analyze devices on your local network with no ads, no tracking, and no internet required.
 
-### 🧪 Help Test on Google Play
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.networkscanner.app"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80" /></a>
+  <a href="https://f-droid.org/packages/com.networkscanner.app/"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80" /></a>
+</p>
 
-We're working on getting Network Scanner published on Google Play. The app is already available there in **closed testing**, and we need real users trying it out to get it fully published.
-
-1. Join the [Google Group](https://groups.google.com/g/dg-testers) (approval may take a few minutes)
-2. Once approved, [opt in as a tester](https://play.google.com/apps/testing/com.networkscanner.app)
-3. [Install the app](https://play.google.com/store/apps/details?id=com.networkscanner.app) and open it a few times over the next two weeks
-
-[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play (testing)" height="80">](https://play.google.com/apps/testing/com.networkscanner.app)
-
-Thank you! This helps us reach far more users than F-Droid and GitHub alone.
+Download the latest APK from the [Releases](https://github.com/usamaiqb/network-scanner/releases) page.
 
 ## Features
 
@@ -67,14 +62,6 @@ Thank you! This helps us reach far more users than F-Droid and GitHub alone.
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="200" alt="Settings Screen" />
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="200" alt="Main Screen Dark" />
 </p>
-
-## Download
-
-### F-Droid
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.networkscanner.app/)
-
-### GitHub Releases
-Download the latest APK from the [Releases](https://github.com/usamaiqb/network-scanner/releases) page.
 
 ## Requirements
 
