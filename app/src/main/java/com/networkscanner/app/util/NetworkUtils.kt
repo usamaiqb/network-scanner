@@ -47,6 +47,10 @@ object NetworkUtils {
     private val PING_RTT_PATTERN = Regex("""time[=<]([\d.]+)\s*ms""")
     private val PING_TTL_PATTERN = Regex("""ttl=(\d+)""", RegexOption.IGNORE_CASE)
 
+    // WifiInfo.getBSSID() returns this placeholder when the app lacks the
+    // nearby-devices/location permission, instead of the real AP MAC.
+    private const val REDACTED_BSSID = "02:00:00:00:00:00"
+
     /**
      * Check if device is connected to WiFi.
      */
@@ -107,7 +111,7 @@ object NetworkUtils {
             val dhcpInfo = wifiManager.dhcpInfo
 
             ssid = getSSID(context)
-            bssid = wifiInfo?.bssid
+            bssid = wifiInfo?.bssid?.takeUnless { it == REDACTED_BSSID }
             frequency = wifiInfo?.frequency
             linkSpeed = wifiInfo?.linkSpeed
             signalStrength = wifiInfo?.rssi

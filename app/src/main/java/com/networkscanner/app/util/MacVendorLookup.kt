@@ -1,10 +1,55 @@
 package com.networkscanner.app.util
 
+import android.content.Context
+
 /**
- * MAC address vendor lookup using embedded OUI (Organizationally Unique Identifier) database.
- * Contains common device manufacturers for fast offline lookup.
+ * MAC address vendor lookup using an embedded OUI (Organizationally Unique Identifier) database.
+ *
+ * The full IEEE OUI list (asset `oui_vendors.txt`, ~29k entries, one `OO:UU:II|Vendor` per line)
+ * is loaded lazily into memory on first use. A small curated map remains as a fallback for
+ * environments where the asset isn't available (e.g. JVM unit tests).
  */
 object MacVendorLookup {
+
+    private const val ASSET_FILE = "oui_vendors.txt"
+
+    @Volatile
+    private var appContext: Context? = null
+
+    @Volatile
+    private var fullOuiDb: Map<String, String>? = null
+
+    /**
+     * Must be called once (e.g. from Application.onCreate) so the full OUI
+     * database can be loaded from assets on first lookup.
+     */
+    fun initialize(context: Context) {
+        appContext = context.applicationContext
+    }
+
+    private fun loadFullOuiDb(): Map<String, String> {
+        fullOuiDb?.let { return it }
+        val context = appContext ?: return emptyMap()
+        synchronized(this) {
+            fullOuiDb?.let { return it }
+            val loaded = try {
+                context.assets.open(ASSET_FILE).bufferedReader(Charsets.UTF_8).useLines { lines ->
+                    lines.mapNotNull { line ->
+                        val idx = line.indexOf('|')
+                        if (idx > 0) {
+                            line.substring(0, idx) to line.substring(idx + 1).trim()
+                        } else {
+                            null
+                        }
+                    }.toMap()
+                }
+            } catch (e: Exception) {
+                emptyMap()
+            }
+            fullOuiDb = loaded
+            return loaded
+        }
+    }
 
     /**
      * Embedded OUI database with common manufacturers.
@@ -534,7 +579,7 @@ object MacVendorLookup {
 
         // Get OUI (first 3 bytes)
         val oui = normalized.substring(0, 8)
-        return ouiDatabase[oui]
+        return loadFullOuiDb()[oui] ?: ouiDatabase[oui]
     }
 
     /**
