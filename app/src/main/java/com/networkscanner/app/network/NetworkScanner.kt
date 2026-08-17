@@ -8,6 +8,7 @@ import android.net.wifi.WifiManager
 import com.networkscanner.app.R
 import com.networkscanner.app.data.*
 import com.networkscanner.app.util.ArpReader
+import com.networkscanner.app.util.DnsLookup
 import com.networkscanner.app.util.MacVendorLookup
 import com.networkscanner.app.util.NetworkUtils
 import kotlinx.coroutines.*
@@ -154,6 +155,9 @@ class NetworkScanner(private val context: Context) {
             // Phase 5: Identify devices
             updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.9f, context.getString(R.string.identifying_devices))
             identifyDevices()
+
+            // Phase 5.25: Resolve remaining names via the gateway's own DNS
+            resolveViaGatewayDns(networkInfo)
 
             // Phase 5.5: Port heuristics for still-unknown devices
             updateProgress(ScanPhase.IDENTIFYING_DEVICES, 0.95f, context.getString(R.string.classifying_devices))
@@ -690,6 +694,14 @@ class NetworkScanner(private val context: Context) {
         val gateway = networkInfo.gateway ?: return@withContext
         if (!NetworkUtils.isValidIpAddress(gateway)) return@withContext
 
+        // Prefer the ARP table for the gateway MAC. On Android 13+ it is empty,
+        // so fall back to the access point's BSSID (the router's Wi-Fi MAC),
+        // which shares the same OUI and is exposed via WifiInfo.
+        ArpReader.invalidateCache()
+        val macAddress = ArpReader.getMacForIp(gateway) ?: networkInfo.bssid
+        val vendor = MacVendorLookup.lookup(macAddress)
+
+        var latency: Int? = null
         try {
             val process = Runtime.getRuntime().exec(
                 arrayOf("/system/bin/ping", "-c", "1", "-W", "1", gateway)
@@ -699,29 +711,25 @@ class NetworkScanner(private val context: Context) {
             process.destroyForcibly()
 
             if (completed) {
-                val latency = PING_RTT_PATTERN.find(output)
+                latency = PING_RTT_PATTERN.find(output)
                     ?.groupValues?.get(1)?.toFloatOrNull()?.toInt()
-                    ?: return@withContext // No real echo reply
-                ArpReader.invalidateCache()
-                val macAddress = ArpReader.getMacForIp(gateway)
-                val vendor = MacVendorLookup.lookup(macAddress)
-
-                val device = Device(
-                    ipAddress = gateway,
-                    macAddress = macAddress,
-                    vendor = vendor,
-                    deviceType = DeviceType.ROUTER,
-                    isOnline = true,
-                    latencyMs = latency,
-                    hostname = "Gateway",
-                    discoveredVia = DiscoveryMethod.PING
-                )
-                discoveredDevices[gateway] = device
-                updateDeviceCount()
             }
         } catch (e: Exception) {
             // Gateway ping failed, continue anyway
         }
+
+        // Hostname defaults to "Gateway"; SSDP/mDNS/reverse-DNS may refine it later.
+        discoveredDevices[gateway] = Device(
+            ipAddress = gateway,
+            macAddress = macAddress,
+            vendor = vendor,
+            deviceType = DeviceType.ROUTER,
+            isOnline = true,
+            latencyMs = latency,
+            hostname = "Gateway",
+            discoveredVia = DiscoveryMethod.PING
+        )
+        updateDeviceCount()
     }
 
     private fun readArpCache() {
@@ -831,6 +839,25 @@ class NetworkScanner(private val context: Context) {
                 }
             }
         }
+
+        // Add devices that responded to ARP but not to ping. A live host answers
+        // ARP even when its firewall blocks ICMP and every TCP port (e.g. Windows
+        // with the firewall enabled), so these entries surface machines the ping
+        // sweep alone can't detect. Later phases (NetBIOS, identifyDevices,
+        // probePortHeuristics) still run against them for name/type.
+        for ((ip, entry) in arpMap) {
+            if (discoveredDevices.containsKey(ip)) continue
+            val mac = entry.normalizedMac
+            val vendor = MacVendorLookup.lookup(mac)
+            discoveredDevices[ip] = Device(
+                ipAddress = ip,
+                macAddress = mac,
+                vendor = vendor,
+                isOnline = true,
+                discoveredVia = DiscoveryMethod.ARP_CACHE
+            )
+        }
+
         updateDeviceCount()
     }
 
@@ -1069,6 +1096,7 @@ class NetworkScanner(private val context: Context) {
                         val existingSsdp = existing.ssdpInfo ?: return@async
                         discoveredDevices[device.ipAddress] = existing.copy(
                             hostname = existing.hostname ?: description.friendlyName,
+                            vendor = existing.vendor ?: description.manufacturer,
                             ssdpInfo = existingSsdp.copy(
                                 friendlyName = description.friendlyName ?: existingSsdp.friendlyName,
                                 manufacturer = description.manufacturer ?: existingSsdp.manufacturer,
@@ -1388,6 +1416,56 @@ class NetworkScanner(private val context: Context) {
         }
         updateDeviceCount()
     }
+
+    /**
+     * Resolve hostnames via the gateway's own DNS server (reverse PTR lookups).
+     *
+     * The router's built-in resolver knows the DHCP-registered names for LAN
+     * devices, which the system resolver misses when the network hands out a
+     * public DNS server. We first probe the gateway itself: if it doesn't answer
+     * DNS at all, the sweep is skipped to avoid pointlessly timing out.
+     */
+    private suspend fun resolveViaGatewayDns(networkInfo: NetworkInfo) = coroutineScope {
+        val gateway = networkInfo.gateway ?: return@coroutineScope
+        if (!NetworkUtils.isValidIpAddress(gateway)) return@coroutineScope
+
+        val gatewayName = withContext(Dispatchers.IO) {
+            DnsLookup.queryPtr(gateway, gateway, timeoutMs = 1000)
+        }
+        // null = no DNS response from the gateway — not a DNS server, skip.
+        if (gatewayName == null) return@coroutineScope
+
+        if (gatewayName.isNotBlank()) {
+            val existing = discoveredDevices[gateway]
+            if (existing != null && (existing.hostname == null || existing.hostname == "Gateway")) {
+                discoveredDevices[gateway] = existing.copy(hostname = gatewayName)
+                updateDeviceCount()
+            }
+        }
+
+        val targets = discoveredDevices.values
+            .filter { !it.isCurrentDevice && it.hostname == null }
+            .map { it.ipAddress }
+            .toList()
+
+        val semaphore = Semaphore(20)
+        targets.map { ip ->
+            async(Dispatchers.IO) {
+                semaphore.withPermit {
+                    val name = DnsLookup.queryPtr(gateway, ip) ?: return@withPermit
+                    if (!isPlausibleHostname(name, ip)) return@withPermit
+                    val existing = discoveredDevices[ip] ?: return@withPermit
+                    discoveredDevices[ip] = existing.copy(hostname = name)
+                    updateDeviceCount()
+                }
+            }
+        }.awaitAll()
+    }
+
+    private fun isPlausibleHostname(name: String, ip: String): Boolean =
+        name.isNotBlank() &&
+            name != ip &&
+            name.all { it.isLetterOrDigit() || it == '-' || it == '.' || it == '_' }
 
     /**
      * Port probes + TTL-based heuristics for still-unknown devices.

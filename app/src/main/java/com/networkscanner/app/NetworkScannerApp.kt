@@ -5,6 +5,7 @@ import com.networkscanner.app.data.repository.CustomPortRepository
 import com.networkscanner.app.data.repository.DeviceCustomizationRepository
 import com.networkscanner.app.network.NetworkScanner
 import com.networkscanner.app.theme.ThemeManager
+import com.networkscanner.app.util.MacVendorLookup
 
 /**
  * Application class for NetworkScanner app.
@@ -33,5 +34,8 @@ class NetworkScannerApp : Application() {
 
         // Initialize theme manager
         ThemeManager.initialize(this)
+
+        // Allow vendor lookups to use the full IEEE OUI database from assets
+        MacVendorLookup.initialize(this)
     }
 }
