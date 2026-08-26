@@ -26,6 +26,17 @@ Discover and analyze devices on your local network with no ads, no tracking, and
 
 Download the latest APK from the [Releases](https://github.com/usamaiqb/network-scanner/releases) page.
 
+## Screenshots
+
+<p align="center">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="200" alt="Main Screen" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="200" alt="Devices List" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="200" alt="Device Details" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="200" alt="Device Open Ports" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="200" alt="Custom Icon" />
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" width="200" alt="Settings Screen" />
+</p>
+
 ## Features
 
 ### Device Discovery
@@ -52,16 +63,6 @@ Download the latest APK from the [Releases](https://github.com/usamaiqb/network-
 - 🔒 **Privacy First** - No ads, no tracking, no analytics
 - 🚀 **Lightweight** - Minimal permissions, efficient battery usage
 - 📡 **Offline** - Works completely offline, no internet required
-
-## Screenshots
-
-<p align="center">
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="200" alt="Main Screen" />
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="200" alt="Device List" />
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="200" alt="Device Details" />
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="200" alt="Settings Screen" />
-  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="200" alt="Main Screen Dark" />
-</p>
 
 ## Requirements
 
