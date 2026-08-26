@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="fastlane/metadata/android/en-US/images/icon_readme.svg" width="160" height="160">
+<img src="assets/icon_readme.png" width="160" height="160">
 
 # Network Scanner
 
