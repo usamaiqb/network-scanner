@@ -1,1 +1,1 @@
-Network Scanner
+网络扫描仪 - WiFi 扫描仪
