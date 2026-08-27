@@ -1,1 +1,1 @@
-Network Scanner
+Network Scanner - WiFi Scanner

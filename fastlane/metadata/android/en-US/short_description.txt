@@ -1,1 +1,1 @@
-Fast, privacy-focused network scanner to discover devices on your local network
+Network and WiFi scanner to find devices, IPs, MACs & ports. Free, private.

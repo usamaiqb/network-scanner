@@ -4,27 +4,46 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Background circle - network globe concept -->
     <group
+        android:scaleX="0.3"
+        android:scaleY="0.3"
         android:translateX="24"
         android:translateY="24">
-        <!-- Main network/scanner icon -->
+        <!-- Background circles -->
         <path
-            android:fillColor="#FFFFFF"
-            android:pathData="M30,10C18.95,10 10,18.95 10,30s8.95,20 20,20 20,-8.95 20,-20S41.05,10 30,10zM30,46c-8.84,0 -16,-7.16 -16,-16s7.16,-16 16,-16 16,7.16 16,16 -7.16,16 -16,16z" />
-        <!-- WiFi waves -->
+            android:fillColor="#97F0FF"
+            android:fillAlpha="0.12"
+            android:strokeColor="#4FD8EB"
+            android:strokeWidth="2"
+            android:strokeAlpha="0.3"
+            android:pathData="M100,10 a90,90 0 1,0 0,180 a90,90 0 1,0 0,-180" />
         <path
-            android:fillColor="#FFFFFF"
-            android:pathData="M30,18c-6.63,0 -12,5.37 -12,12s5.37,12 12,12 12,-5.37 12,-12 -5.37,-12 -12,-12zM30,38c-4.42,0 -8,-3.58 -8,-8s3.58,-8 8,-8 8,3.58 8,8 -3.58,8 -8,8z" />
+            android:fillColor="#97F0FF"
+            android:fillAlpha="0.08"
+            android:strokeColor="#4FD8EB"
+            android:strokeWidth="1.5"
+            android:strokeAlpha="0.2"
+            android:pathData="M100,30 a70,70 0 1,0 0,140 a70,70 0 1,0 0,-140" />
+        <!-- Outer ring -->
+        <path
+            android:fillColor="#97F0FF"
+            android:fillAlpha="0.9"
+            android:pathData="M100,30 C61.34,30 30,61.34 30,100 s31.34,70 70,70 70,-31.34 70,-70 S138.66,30 100,30z M100,156 c-30.93,0 -56,-25.07 -56,-56 s25.07,-56 56,-56 56,25.07 56,56 -25.07,56 -56,56z" />
+        <!-- Middle ring -->
+        <path
+            android:fillColor="#4FD8EB"
+            android:pathData="M100,58 c-23.2,0 -42,18.8 -42,42 s18.8,42 42,42 42,-18.8 42,-42 -18.8,-42 -42,-42z M100,128 c-15.46,0 -28,-12.54 -28,-28 s12.54,-28 28,-28 28,12.54 28,28 -12.54,28 -28,28z" />
         <!-- Center dot -->
         <path
             android:fillColor="#FFFFFF"
-            android:pathData="M30,26c-2.21,0 -4,1.79 -4,4s1.79,4 4,4 4,-1.79 4,-4 -1.79,-4 -4,-4z" />
-        <!-- Scan lines -->
+            android:pathData="M100,86 a14,14 0 1,0 0,28 a14,14 0 1,0 0,-28" />
+        <!-- Crosshair lines -->
         <path
-            android:fillColor="#FFFFFF"
-            android:pathData="M30,14v4M30,42v4M14,30h4M42,30h4"
-            android:strokeWidth="2"
-            android:strokeColor="#FFFFFF" />
+            android:fillColor="#00000000"
+            android:strokeColor="#97F0FF"
+            android:strokeWidth="3"
+            android:strokeAlpha="0.7"
+            android:strokeLineCap="round"
+            android:pathData="M100,20 L100,44 M100,156 L100,180 M20,100 L44,100 M156,100 L180,100" />
     </group>
 </vector>

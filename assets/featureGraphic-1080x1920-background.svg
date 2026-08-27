@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004F58"/>
+      <stop offset="50%" stop-color="#006874"/>
+      <stop offset="100%" stop-color="#00363D"/>
+    </linearGradient>
+    <!-- Accent glow -->
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4FD8EB" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#4FD8EB" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Subtle grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#4FD8EB" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+  <rect width="1080" height="1920" fill="url(#grid)"/>
+  <ellipse cx="540" cy="820" rx="480" ry="520" fill="url(#glow)"/>
+
+  <!-- Decorative network nodes (upper area) -->
+  <line x1="140" y1="180" x2="260" y2="290" stroke="#4FD8EB" stroke-opacity="0.2" stroke-width="1.5"/>
+  <line x1="260" y1="290" x2="180" y2="420" stroke="#4FD8EB" stroke-opacity="0.2" stroke-width="1.5"/>
+  <line x1="260" y1="290" x2="420" y2="340" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="100" y1="470" x2="180" y2="420" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="180" y1="420" x2="330" y2="490" stroke="#4FD8EB" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <circle cx="140" cy="180" r="6" fill="#4FD8EB" fill-opacity="0.3"/>
+  <circle cx="260" cy="290" r="7" fill="#4FD8EB" fill-opacity="0.25"/>
+  <circle cx="180" cy="420" r="6" fill="#4FD8EB" fill-opacity="0.3"/>
+  <circle cx="100" cy="470" r="5" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="420" cy="340" r="5" fill="#4FD8EB" fill-opacity="0.15"/>
+  <circle cx="330" cy="490" r="5" fill="#4FD8EB" fill-opacity="0.2"/>
+
+  <line x1="860" y1="170" x2="930" y2="270" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="930" y1="270" x2="1000" y2="400" stroke="#4FD8EB" stroke-opacity="0.12" stroke-width="1.5"/>
+  <line x1="930" y1="270" x2="820" y2="370" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="820" y1="370" x2="900" y2="500" stroke="#4FD8EB" stroke-opacity="0.12" stroke-width="1.5"/>
+  <line x1="1000" y1="400" x2="900" y2="500" stroke="#4FD8EB" stroke-opacity="0.1" stroke-width="1.5"/>
+
+  <circle cx="860" cy="170" r="5" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="930" cy="270" r="6" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="1000" cy="400" r="5" fill="#4FD8EB" fill-opacity="0.15"/>
+  <circle cx="820" cy="370" r="5" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="900" cy="500" r="6" fill="#4FD8EB" fill-opacity="0.15"/>
+
+  <!-- Decorative network nodes (lower area, mirrored) -->
+  <line x1="150" y1="1650" x2="270" y2="1550" stroke="#4FD8EB" stroke-opacity="0.2" stroke-width="1.5"/>
+  <line x1="270" y1="1550" x2="190" y2="1450" stroke="#4FD8EB" stroke-opacity="0.2" stroke-width="1.5"/>
+  <line x1="270" y1="1550" x2="410" y2="1500" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="110" y1="1400" x2="190" y2="1450" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+
+  <circle cx="150" cy="1650" r="6" fill="#4FD8EB" fill-opacity="0.3"/>
+  <circle cx="270" cy="1550" r="7" fill="#4FD8EB" fill-opacity="0.25"/>
+  <circle cx="190" cy="1450" r="6" fill="#4FD8EB" fill-opacity="0.3"/>
+  <circle cx="110" cy="1400" r="5" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="410" cy="1500" r="5" fill="#4FD8EB" fill-opacity="0.15"/>
+
+  <line x1="870" y1="1660" x2="940" y2="1560" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="940" y1="1560" x2="1010" y2="1430" stroke="#4FD8EB" stroke-opacity="0.12" stroke-width="1.5"/>
+  <line x1="940" y1="1560" x2="830" y2="1460" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+
+  <circle cx="870" cy="1660" r="5" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="940" cy="1560" r="6" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="1010" cy="1430" r="5" fill="#4FD8EB" fill-opacity="0.15"/>
+  <circle cx="830" cy="1460" r="5" fill="#4FD8EB" fill-opacity="0.2"/>
+
+</svg>
