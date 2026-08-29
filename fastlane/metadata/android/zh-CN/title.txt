@@ -1,1 +1,1 @@
-Network Scanner - WiFi 扫描器
+Network Scanner - WiFi & IP

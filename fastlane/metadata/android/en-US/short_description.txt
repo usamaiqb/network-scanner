@@ -1,1 +1,1 @@
-Network and WiFi scanner to find devices, IPs, MACs & ports. Free, private.
+Who's on your WiFi? Find every device, with IP address, hostname & open ports.
