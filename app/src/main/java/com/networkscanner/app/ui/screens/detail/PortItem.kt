@@ -16,6 +16,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.data.PortInfo
@@ -50,19 +51,33 @@ fun PortItem(
             )
         }
 
-        // Service name and version
+        // Service name, version and raw banner
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = portInfo.displayName,
+                text = portInfo.serviceNameOrNull
+                    ?: stringResource(R.string.port_service_unknown),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium
             )
-            if (portInfo.version != null || portInfo.banner != null) {
+            portInfo.version?.let { version ->
                 Text(
-                    text = portInfo.version ?: portInfo.banner ?: "",
+                    text = version,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            // The banner is the raw fingerprint; previously it was dropped whenever a
+            // version had been parsed out of it.
+            portInfo.banner?.takeIf { it != portInfo.version }?.let { banner ->
+                Text(
+                    text = banner,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontFamily = FontFamily.Monospace,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

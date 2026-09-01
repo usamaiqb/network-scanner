@@ -92,7 +92,7 @@ fun ClickableInfoRow(
             )
             Icon(
                 imageVector = Icons.Rounded.OpenInBrowser,
-                contentDescription = "Open in browser",
+                contentDescription = stringResource(R.string.cd_open_in_browser),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(start = 4.dp)
             )

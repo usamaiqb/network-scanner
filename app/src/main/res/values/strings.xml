@@ -73,24 +73,39 @@
 
     <!-- Device Detail Screen -->
     <string name="device_details">Device Details</string>
-    <string name="basic_info">Basic Information</string>
-    <string name="network_info">Network Information</string>
+    <string name="section_identity">Identity</string>
+    <string name="section_network">Network</string>
     <string name="deep_scan_results">Deep Scan Results</string>
     <string name="open_ports">Open Ports</string>
 
     <!-- Labels -->
     <string name="label_ip_address">IP Address</string>
     <string name="label_mac_address">MAC Address</string>
+    <string name="label_mac_address_randomized">MAC Address (randomized)</string>
     <string name="label_vendor">Vendor</string>
     <string name="label_latency">Latency</string>
     <string name="label_hostname">Hostname</string>
+    <string name="label_netbios_name">NetBIOS Name</string>
     <string name="label_services">Services</string>
     <string name="label_discovered_via">Discovered via</string>
     <string name="label_detected_os">Detected OS</string>
     <string name="label_scan_duration">Scan Duration</string>
-    <string name="device_info">Device Info</string>
     <string name="label_friendly_name">Friendly Name</string>
     <string name="label_model">Model</string>
+    <string name="label_serial_number">Serial Number</string>
+    <string name="label_os_hint">OS Hint (TTL)</string>
+    <string name="label_workgroup">Workgroup</string>
+    <string name="label_upnp_type">UPnP Type</string>
+    <string name="label_web_interface">Web Interface</string>
+
+    <!-- TTL-based OS hints -->
+    <string name="ttl_hint_unix">%d (Linux/Android/iOS)</string>
+    <string name="ttl_hint_windows">%d (Windows)</string>
+    <string name="ttl_hint_network">%d (Router/Switch)</string>
+
+    <!-- Fallbacks -->
+    <string name="port_service_unknown">Unknown</string>
+    <string name="cd_open_in_browser">Open in browser</string>
 
     <!-- Deep Scan States -->
     <string name="tap_to_deep_scan">Tap to start a deep scan</string>

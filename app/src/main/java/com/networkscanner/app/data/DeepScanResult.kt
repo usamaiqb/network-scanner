@@ -63,8 +63,12 @@ data class PortInfo(
     val state: PortState = PortState.OPEN
 ) : Parcelable {
 
+    /** Banner-derived service name, else the well-known name for the port, else null. */
+    val serviceNameOrNull: String?
+        get() = serviceName ?: CommonPorts.getServiceName(port)
+
     val displayName: String
-        get() = serviceName ?: CommonPorts.getServiceName(port) ?: "Unknown"
+        get() = serviceNameOrNull ?: "Unknown"
 
     constructor(parcel: Parcel) : this(
         port = parcel.readInt(),

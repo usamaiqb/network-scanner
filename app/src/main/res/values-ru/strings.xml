@@ -69,8 +69,6 @@
 
     <!-- Device Detail Screen -->
     <string name="device_details">Детали устройства</string>
-    <string name="basic_info">Основная информация</string>
-    <string name="network_info">Сетевая информация</string>
     <string name="deep_scan_results">Результаты глубокого сканирования</string>
     <string name="open_ports">Открытые порты</string>
 
@@ -84,7 +82,6 @@
     <string name="label_discovered_via">Обнаружено через</string>
     <string name="label_detected_os">Обнаруженная ОС</string>
     <string name="label_scan_duration">Длительность сканирования</string>
-    <string name="device_info">Информация об устройстве</string>
     <string name="label_friendly_name">Дружественное имя</string>
     <string name="label_model">Модель</string>
 
@@ -221,4 +218,20 @@
 
     <!-- Device Icon Selection -->
     <string name="choose_device_icon">Выбрать иконку устройства</string>
+
+    <!-- Device detail sections -->
+    <string name="section_identity">Идентификация</string>
+    <string name="label_mac_address_randomized">MAC-адрес (случайный)</string>
+    <string name="label_netbios_name">Имя NetBIOS</string>
+    <string name="label_serial_number">Серийный номер</string>
+    <string name="label_os_hint">Подсказка ОС (TTL)</string>
+    <string name="label_workgroup">Рабочая группа</string>
+    <string name="label_upnp_type">Тип UPnP</string>
+    <string name="label_web_interface">Веб-интерфейс</string>
+    <string name="ttl_hint_unix">%d (Linux/Android/iOS)</string>
+    <string name="ttl_hint_windows">%d (Windows)</string>
+    <string name="ttl_hint_network">%d (Маршрутизатор/Коммутатор)</string>
+    <string name="port_service_unknown">Неизвестно</string>
+    <string name="cd_open_in_browser">Открыть в браузере</string>
+    <string name="section_network">Сеть</string>
 </resources>

@@ -73,8 +73,6 @@
 
     <!-- Device Detail Screen -->
     <string name="device_details">设备详情</string>
-    <string name="basic_info">基本信息</string>
-    <string name="network_info">网络信息</string>
     <string name="deep_scan_results">深度扫描结果</string>
     <string name="open_ports">开放端口</string>
 
@@ -88,7 +86,6 @@
     <string name="label_discovered_via">发现方式</string>
     <string name="label_detected_os">检测到的操作系统</string>
     <string name="label_scan_duration">扫描耗时</string>
-    <string name="device_info">设备信息</string>
     <string name="label_friendly_name">友好名称</string>
     <string name="label_model">型号</string>
 
@@ -242,4 +239,20 @@
     <string name="scanned_addresses_progress">已扫描 %1$d/%2$d 个地址</string>
     <string name="detecting_os">正在检测操作系统…</string>
 
+
+    <!-- Device detail sections -->
+    <string name="section_identity">身份信息</string>
+    <string name="label_mac_address_randomized">MAC 地址（随机）</string>
+    <string name="label_netbios_name">NetBIOS 名称</string>
+    <string name="label_serial_number">序列号</string>
+    <string name="label_os_hint">系统提示 (TTL)</string>
+    <string name="label_workgroup">工作组</string>
+    <string name="label_upnp_type">UPnP 类型</string>
+    <string name="label_web_interface">网页界面</string>
+    <string name="ttl_hint_unix">%d (Linux/Android/iOS)</string>
+    <string name="ttl_hint_windows">%d (Windows)</string>
+    <string name="ttl_hint_network">%d (路由器/交换机)</string>
+    <string name="port_service_unknown">未知</string>
+    <string name="cd_open_in_browser">在浏览器中打开</string>
+    <string name="section_network">网络</string>
 </resources>
