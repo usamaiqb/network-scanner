@@ -201,7 +201,7 @@ private fun DeepScanResults(
             }
         } else {
             result.openPorts.forEach { port ->
-                custom { PortItem(portInfo = port) }
+                custom { PortItem(portInfo = port, ipAddress = result.ipAddress) }
             }
         }
     }

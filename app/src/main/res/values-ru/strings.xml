@@ -234,4 +234,6 @@
     <string name="port_service_unknown">Неизвестно</string>
     <string name="cd_open_in_browser">Открыть в браузере</string>
     <string name="section_network">Сеть</string>
+    <string name="action_copy">Копировать</string>
+    <string name="copied_to_clipboard">Скопировано в буфер обмена</string>
 </resources>

@@ -463,7 +463,7 @@ private fun DeviceHeaderCard(
 /**
  * Opens [url] in the user's browser, ignoring the case where no browser is installed.
  */
-private fun openUrl(context: Context, url: String) {
+internal fun openUrl(context: Context, url: String) {
     try {
         context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
     } catch (_: ActivityNotFoundException) {

@@ -116,6 +116,8 @@
 
     <!-- Actions -->
     <string name="action_cancel">Cancel</string>
+    <string name="action_copy">Copy</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="action_clear">Clear</string>
 
     <!-- Status -->
