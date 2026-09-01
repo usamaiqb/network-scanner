@@ -253,4 +253,5 @@
     <string name="section_network">Rete</string>
     <string name="action_copy">Copia</string>
     <string name="copied_to_clipboard">Copiato negli appunti</string>
+    <string name="network_name_unknown">Sconosciuta</string>
 </resources>
