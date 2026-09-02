@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import com.networkscanner.app.R
 
@@ -22,18 +23,18 @@ import com.networkscanner.app.R
 fun rememberCopyAction(): (String, String) -> Unit {
     val context = LocalContext.current
     val haptics = LocalHapticFeedback.current
-    return remember(context, haptics) {
+    // Resolved in composition rather than inside the lambda: a Context read is not
+    // invalidated when the configuration changes, so after the in-app language switch the
+    // toast would keep reporting the copy in the previous locale.
+    val copiedMessage = stringResource(R.string.copied_to_clipboard)
+    return remember(context, haptics, copiedMessage) {
         { label: String, value: String ->
             val clipboard = ContextCompat.getSystemService(context, ClipboardManager::class.java)
             if (clipboard != null) {
                 clipboard.setPrimaryClip(ClipData.newPlainText(label, value))
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.copied_to_clipboard),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(context, copiedMessage, Toast.LENGTH_SHORT).show()
                 }
             }
         }
