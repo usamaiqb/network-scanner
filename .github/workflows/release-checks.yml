@@ -5,6 +5,9 @@ on:
     branches:
       - 'release/v*'
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     name: Validate release PR
