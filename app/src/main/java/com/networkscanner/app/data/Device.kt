@@ -60,15 +60,22 @@ data class Device(
         get() = hostname != null || vendor != null || mdnsServices.isNotEmpty() || ssdpInfo != null || netBiosInfo != null
 
     /**
-     * Unique identifier combining IP and MAC.
+     * Stable identity for the physical device behind this entry: the MAC when
+     * known, otherwise the IP. Persisted customizations are keyed by it so a
+     * renamed device keeps its name after DHCP moves it to another address.
+     *
+     * Not unique within a single scan: several addresses can answer with the
+     * same MAC (a router doing proxy ARP replies for every probed address), so
+     * never use it as a list key. Use [ipAddress] for that — the scanner keys
+     * its device map by IP, so it is unique across the devices of one scan.
      */
-    val uniqueId: String
+    val identityKey: String
         get() = macAddress ?: ipAddress
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Device) return false
-        return uniqueId == other.uniqueId
+        return identityKey == other.identityKey
             && ipAddress == other.ipAddress
             && hostname == other.hostname
             && deviceType == other.deviceType
@@ -85,7 +92,7 @@ data class Device(
     }
 
     override fun hashCode(): Int {
-        var result = uniqueId.hashCode()
+        var result = identityKey.hashCode()
         result = 31 * result + ipAddress.hashCode()
         result = 31 * result + (hostname?.hashCode() ?: 0)
         result = 31 * result + deviceType.hashCode()

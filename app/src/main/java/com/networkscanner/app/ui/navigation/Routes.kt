@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 object Home
 
 @Serializable
-data class DeviceDetail(val deviceId: String)
+data class DeviceDetail(val deviceIp: String)
 
 @Serializable
 object Settings

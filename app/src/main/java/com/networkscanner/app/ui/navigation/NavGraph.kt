@@ -61,7 +61,7 @@ fun NavGraph() {
             HomeScreen(
                 viewModel = mainViewModel,
                 onDeviceClick = { device ->
-                    navController.navigate(DeviceDetail(deviceId = device.uniqueId))
+                    navController.navigate(DeviceDetail(deviceIp = device.ipAddress))
                 },
                 onSettingsClick = {
                     navController.navigate(Settings)
@@ -73,7 +73,7 @@ fun NavGraph() {
             val route = backStackEntry.toRoute<DeviceDetail>()
             val detailViewModel: DeviceDetailViewModel = viewModel()
             DeviceDetailScreen(
-                deviceId = route.deviceId,
+                deviceIp = route.deviceIp,
                 mainViewModel = mainViewModel,
                 viewModel = detailViewModel,
                 onNavigateBack = { navController.popBackStack() }

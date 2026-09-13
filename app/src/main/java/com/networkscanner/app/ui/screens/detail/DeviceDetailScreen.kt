@@ -62,7 +62,7 @@ import com.networkscanner.app.ui.theme.StatusColors
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceDetailScreen(
-    deviceId: String,
+    deviceIp: String,
     mainViewModel: MainViewModel,
     viewModel: DeviceDetailViewModel,
     onNavigateBack: () -> Unit
@@ -79,9 +79,9 @@ fun DeviceDetailScreen(
     var showEditIconDialog by remember { mutableStateOf(false) }
     var showFullScanConfirmation by remember { mutableStateOf(false) }
 
-    LaunchedEffect(deviceId, devices) {
+    LaunchedEffect(deviceIp, devices) {
         if (devices.isNotEmpty()) {
-            viewModel.loadDevice(deviceId, devices)
+            viewModel.loadDevice(deviceIp, devices)
         }
     }
 
