@@ -69,6 +69,15 @@ Download the latest APK from the [Releases](https://github.com/usamaiqb/network-
 - Android 8.0 (Oreo) or higher
 - WiFi connection to scan local network
 
+## Verification
+
+Builds from this repository, Google Play and F-Droid are all signed with the same key. Verify the signing certificate rather than the APK file hash — each store repackages the APK, so file hashes differ while the certificate stays the same.
+
+- **Package:** `com.networkscanner.app`
+- **Certificate SHA-256:** `CF:89:91:3C:18:DC:8E:F3:0C:88:F0:95:7C:C4:92:EA:EA:04:20:20:44:FD:D4:26:0D:9C:CB:CA:97:9E:0F:FA`
+
+Check it with an on-device verifier app, or `apksigner verify --print-certs <apk>`, which prints the same value in lower case without colons.
+
 <details>
 <summary><h2>Permissions</h2></summary>
 
