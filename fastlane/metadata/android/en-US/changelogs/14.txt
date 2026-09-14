@@ -1,0 +1,4 @@
+• Fixed device list entries colliding by keying them on IP address
+• Device identity is now clearer and more stable
+• Ignored back and forward taps during screen transitions
+• Documented the APK signing certificate in the README

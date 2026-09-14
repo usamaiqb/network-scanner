@@ -1,3 +1,14 @@
+## [1.1.9] - 2026-09-14
+
+### Fixed
+- Device list is now keyed by IP address, so entries stay stable and no longer collide when device identities overlap (#74, #76, #78)
+- Back and forward taps are ignored during screen transitions, preventing accidental double navigation (#80, #81)
+
+### Changed
+- Documented the release signing certificate fingerprint in the README for APK verification (#79)
+- Bumped actions/setup-java from 6.0.0 to 6.0.1 and softprops/action-gh-release from 3.0.2 to 3.0.3 (#72, #77)
+- Constrained the release-checks workflow token to `contents: read`
+
 ## [1.1.8] - 2026-09-11
 
 ### Added
