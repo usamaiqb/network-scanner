@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.Autorenew
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Shield
@@ -47,6 +48,7 @@ import com.networkscanner.app.BuildConfig
 import com.networkscanner.app.R
 import com.networkscanner.app.ui.SettingsViewModel
 import com.networkscanner.app.ui.components.SegmentSurface
+import com.networkscanner.app.util.PrivilegedNeighborSource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +61,7 @@ fun SettingsScreen(
     val dynamicColors by viewModel.dynamicColors.collectAsState()
     val autoScan by viewModel.autoScan.collectAsState()
     val language by viewModel.language.collectAsState()
+    val neighborSource by viewModel.neighborSource.collectAsState()
 
     var showAboutDialog by remember { mutableStateOf(false) }
     var showPrivacyDialog by remember { mutableStateOf(false) }
@@ -164,7 +167,7 @@ fun SettingsScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
-                    SegmentSurface(index = 0, count = 2) {
+                    SegmentSurface(index = 0, count = 3) {
                         SwitchSettingItem(
                             title = stringResource(R.string.pref_auto_scan_title),
                             summary = stringResource(R.string.pref_auto_scan_summary),
@@ -173,7 +176,21 @@ fun SettingsScreen(
                             onCheckedChange = { viewModel.setAutoScan(it) }
                         )
                     }
-                    SegmentSurface(index = 1, count = 2) {
+                    SegmentSurface(index = 1, count = 3) {
+                        SegmentedSettingItem(
+                            title = stringResource(R.string.pref_neighbor_source_title),
+                            summary = stringResource(R.string.pref_neighbor_source_summary),
+                            icon = Icons.Rounded.Key,
+                            options = listOf(
+                                PrivilegedNeighborSource.Mode.NONE to stringResource(R.string.neighbor_source_none),
+                                PrivilegedNeighborSource.Mode.SHIZUKU to stringResource(R.string.neighbor_source_shizuku),
+                                PrivilegedNeighborSource.Mode.ROOT to stringResource(R.string.neighbor_source_root)
+                            ),
+                            selected = neighborSource,
+                            onSelected = { viewModel.setNeighborSource(it) }
+                        )
+                    }
+                    SegmentSurface(index = 2, count = 3) {
                         ClickableSettingItem(
                             title = stringResource(R.string.pref_custom_ports_title),
                             summary = stringResource(R.string.pref_custom_ports_summary),

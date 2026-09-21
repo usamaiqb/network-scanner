@@ -79,6 +79,7 @@
     <!-- Labels -->
     <string name="label_ip_address">عنوان IP</string>
     <string name="label_mac_address">عنوان MAC</string>
+    <string name="label_mac_address_randomized">عنوان MAC (عشوائي)</string>
     <string name="label_vendor">المُصنِّع</string>
     <string name="label_latency">زمن الاستجابة</string>
     <string name="label_hostname">اسم المضيف</string>
@@ -132,11 +133,17 @@
     <string name="pref_auto_scan_title">المسح التلقائي عند البدء</string>
     <string name="pref_auto_scan_summary">ابدأ المسح تلقائياً عند فتح التطبيق</string>
     <string name="pref_scan_timeout_title">انتهت مهلة المسح</string>
+    <string name="pref_neighbor_source_title">الوصول إلى عناوين MAC</string>
+    <string name="pref_neighbor_source_summary">يخفي Android 10+ عناوين MAC للأجهزة الأخرى عن التطبيقات. اقرأها عبر Shizuku أو صلاحيات الروت.</string>
 
     <!-- Timeout options -->
     <string name="timeout_fast">سريع (3 ثوانٍ)</string>
     <string name="timeout_normal">عادي (5 ثوانٍ)</string>
     <string name="timeout_thorough">دقيق (10 ثوانٍ)</string>
+
+    <!-- MAC address access options -->
+    <string name="neighbor_source_none">إيقاف</string>
+    <string name="neighbor_source_root">روت</string>
 
     <!-- Data Preferences -->
     <string name="pref_clear_cache_title">مسح الذاكرة المؤقتة</string>
@@ -169,6 +176,8 @@
     <!-- Toast Messages -->
     <string name="cache_cleared">تم مسح الذاكرة المؤقتة بنجاح</string>
     <string name="history_cleared">تم مسح سجل الأجهزة</string>
+    <string name="neighbor_source_shizuku_unavailable">Shizuku غير قيد التشغيل أو تم رفض الإذن</string>
+    <string name="neighbor_source_root_unavailable">تم رفض صلاحيات الروت</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">فتح الإعدادات</string>

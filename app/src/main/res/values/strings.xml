@@ -81,6 +81,7 @@
     <!-- Labels -->
     <string name="label_ip_address">IP Address</string>
     <string name="label_mac_address">MAC Address</string>
+    <string name="label_mac_address_randomized">MAC Address (randomized)</string>
     <string name="label_vendor">Vendor</string>
     <string name="label_latency">Latency</string>
     <string name="label_hostname">Hostname</string>
@@ -134,11 +135,18 @@
     <string name="pref_auto_scan_title">Auto-scan on Start</string>
     <string name="pref_auto_scan_summary">Automatically start scanning when app opens</string>
     <string name="pref_scan_timeout_title">Scan Timeout</string>
+    <string name="pref_neighbor_source_title">MAC address access</string>
+    <string name="pref_neighbor_source_summary">Android 10+ hides other devices\' MAC addresses from apps. Read them through Shizuku or root instead.</string>
 
     <!-- Timeout options -->
     <string name="timeout_fast">Fast (3 seconds)</string>
     <string name="timeout_normal">Normal (5 seconds)</string>
     <string name="timeout_thorough">Thorough (10 seconds)</string>
+
+    <!-- MAC address access options -->
+    <string name="neighbor_source_none">Off</string>
+    <string name="neighbor_source_shizuku" translatable="false">Shizuku</string>
+    <string name="neighbor_source_root">Root</string>
 
     <!-- Data Preferences -->
     <string name="pref_clear_cache_title">Clear Cache</string>
@@ -171,6 +179,8 @@
     <!-- Toast Messages -->
     <string name="cache_cleared">Cache cleared successfully</string>
     <string name="history_cleared">Device history cleared</string>
+    <string name="neighbor_source_shizuku_unavailable">Shizuku is not running or permission was denied</string>
+    <string name="neighbor_source_root_unavailable">Root access was denied</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">Open settings</string>

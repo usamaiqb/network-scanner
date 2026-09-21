@@ -77,6 +77,7 @@
     <!-- Labels -->
     <string name="label_ip_address">Direccion IP</string>
     <string name="label_mac_address">Dirección MAC</string>
+    <string name="label_mac_address_randomized">Dirección MAC (aleatoria)</string>
     <string name="label_vendor">Fabricante</string>
     <string name="label_latency">Latencia</string>
     <string name="label_hostname">Nombre de host</string>
@@ -130,11 +131,17 @@
     <string name="pref_auto_scan_title">Escaneo automático al iniciar</string>
     <string name="pref_auto_scan_summary">Iniciar escaneo automáticamente al abrir la aplicación</string>
     <string name="pref_scan_timeout_title">Tiempo de espera de escaneo</string>
+    <string name="pref_neighbor_source_title">Acceso a direcciones MAC</string>
+    <string name="pref_neighbor_source_summary">Android 10+ oculta a las aplicaciones las direcciones MAC de otros dispositivos. Léelas mediante Shizuku o root.</string>
 
     <!-- Timeout options -->
     <string name="timeout_fast">Rápido (3 sgundos)</string>
     <string name="timeout_normal">Normal (5 segundos)</string>
     <string name="timeout_thorough">Profundo (10 seconds)</string>
+
+    <!-- MAC address access options -->
+    <string name="neighbor_source_none">Desactivado</string>
+    <string name="neighbor_source_root">Root</string>
 
     <!-- Data Preferences -->
     <string name="pref_clear_cache_title">Borrar caché</string>
@@ -167,6 +174,8 @@
     <!-- Toast Messages -->
     <string name="cache_cleared">Caché borrada con éxito</string>
     <string name="history_cleared">Historial de dispositivos borrado</string>
+    <string name="neighbor_source_shizuku_unavailable">Shizuku no está en ejecución o se denegó el permiso</string>
+    <string name="neighbor_source_root_unavailable">Se denegó el acceso root</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">Abrir configuración</string>

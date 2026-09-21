@@ -178,10 +178,12 @@ fun DeviceDetailScreen(
 
                         // Always show MAC address row (even if unknown)
                         val macValue = dev.macAddress?.let { mac ->
-                            val macLabel = if (com.networkscanner.app.util.NetworkUtils.isLocallyAdministeredMac(mac))
-                                "${stringResource(R.string.label_mac_address)} (randomized)"
-                            else
-                                stringResource(R.string.label_mac_address)
+                            val macLabel = stringResource(
+                                if (com.networkscanner.app.util.NetworkUtils.isLocallyAdministeredMac(mac))
+                                    R.string.label_mac_address_randomized
+                                else
+                                    R.string.label_mac_address
+                            )
                             Triple(macLabel, mac.uppercase(), false)
                         } ?: Triple(stringResource(R.string.label_mac_address), "Unknown", false)
                         add(macValue)

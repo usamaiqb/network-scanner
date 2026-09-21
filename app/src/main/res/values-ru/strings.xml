@@ -77,6 +77,7 @@
     <!-- Labels -->
     <string name="label_ip_address">IP адрес</string>
     <string name="label_mac_address">MAC адрес</string>
+    <string name="label_mac_address_randomized">MAC адрес (рандомизированный)</string>
     <string name="label_vendor">Производитель</string>
     <string name="label_latency">Задержка</string>
     <string name="label_hostname">Имя хоста</string>
@@ -130,11 +131,17 @@
     <string name="pref_auto_scan_title">Автосканирование при запуске</string>
     <string name="pref_auto_scan_summary">Автоматически начинать сканирование при открытии приложения</string>
     <string name="pref_scan_timeout_title">Тайм-аут сканирования</string>
+    <string name="pref_neighbor_source_title">Доступ к MAC адресам</string>
+    <string name="pref_neighbor_source_summary">Android 10+ скрывает от приложений MAC адреса других устройств. Читать их через Shizuku или root.</string>
 
     <!-- Timeout options -->
     <string name="timeout_fast">Быстро (3 секунды)</string>
     <string name="timeout_normal">Нормально (5 секунд)</string>
     <string name="timeout_thorough">Тщательно (10 секунд)</string>
+
+    <!-- MAC address access options -->
+    <string name="neighbor_source_none">Выкл.</string>
+    <string name="neighbor_source_root">Root</string>
 
     <!-- Data Preferences -->
     <string name="pref_clear_cache_title">Очистить кэш</string>
@@ -167,6 +174,8 @@
     <!-- Toast Messages -->
     <string name="cache_cleared">Кэш успешно очищен</string>
     <string name="history_cleared">История устройств очищена</string>
+    <string name="neighbor_source_shizuku_unavailable">Shizuku не запущен или в разрешении отказано</string>
+    <string name="neighbor_source_root_unavailable">В root-доступе отказано</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">Открыть настройки</string>

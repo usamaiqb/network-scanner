@@ -81,6 +81,7 @@
     <!-- Labels -->
     <string name="label_ip_address">IP 地址</string>
     <string name="label_mac_address">MAC 地址</string>
+    <string name="label_mac_address_randomized">MAC 地址（随机）</string>
     <string name="label_vendor">厂商</string>
     <string name="label_latency">延迟</string>
     <string name="label_hostname">主机名</string>
@@ -134,11 +135,17 @@
     <string name="pref_auto_scan_title">启动时自动扫描</string>
     <string name="pref_auto_scan_summary">应用打开时自动开始扫描</string>
     <string name="pref_scan_timeout_title">扫描超时</string>
+    <string name="pref_neighbor_source_title">MAC 地址访问</string>
+    <string name="pref_neighbor_source_summary">Android 10 及以上版本对应用隐藏其他设备的 MAC 地址。可改为通过 Shizuku 或 Root 读取。</string>
 
     <!-- Timeout options -->
     <string name="timeout_fast">快速 (3 秒)</string>
     <string name="timeout_normal">正常 (5 秒)</string>
     <string name="timeout_thorough">彻底 (10 秒)</string>
+
+    <!-- MAC address access options -->
+    <string name="neighbor_source_none">关闭</string>
+    <string name="neighbor_source_root">Root</string>
 
     <!-- Data Preferences -->
     <string name="pref_clear_cache_title">清除缓存</string>
@@ -171,6 +178,8 @@
     <!-- Toast Messages -->
     <string name="cache_cleared">缓存已清除</string>
     <string name="history_cleared">设备历史已清除</string>
+    <string name="neighbor_source_shizuku_unavailable">Shizuku 未运行或权限被拒绝</string>
+    <string name="neighbor_source_root_unavailable">Root 权限被拒绝</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">打开设置</string>

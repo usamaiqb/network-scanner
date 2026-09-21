@@ -77,6 +77,7 @@
     <!-- Labels -->
     <string name="label_ip_address">IP адреса</string>
     <string name="label_mac_address">MAC адреса</string>
+    <string name="label_mac_address_randomized">MAC адреса (рандомізована)</string>
     <string name="label_vendor">Постачальник</string>
     <string name="label_latency">Затримка</string>
     <string name="label_hostname">Ім\'я хоста</string>
@@ -130,11 +131,17 @@
     <string name="pref_auto_scan_title">Автоматичне сканування при запуску</string>
     <string name="pref_auto_scan_summary">Автоматично запускати сканування під час відкриття програми</string>
     <string name="pref_scan_timeout_title">Час очікування сканування</string>
+    <string name="pref_neighbor_source_title">Доступ до MAC адрес</string>
+    <string name="pref_neighbor_source_summary">Android 10+ приховує від програм MAC адреси інших пристроїв. Читати їх через Shizuku або root.</string>
 
     <!-- Timeout options -->
     <string name="timeout_fast">Швидко (3 секунди)</string>
     <string name="timeout_normal">Звичайно (5 секунд)</string>
     <string name="timeout_thorough">Ретельно (10 секунд)</string>
+
+    <!-- MAC address access options -->
+    <string name="neighbor_source_none">Вимк.</string>
+    <string name="neighbor_source_root">Root</string>
 
     <!-- Data Preferences -->
     <string name="pref_clear_cache_title">Очистити кеш</string>
@@ -167,6 +174,8 @@
     <!-- Toast Messages -->
     <string name="cache_cleared">Кеш успішно очищено</string>
     <string name="history_cleared">Історія пристрою очищена</string>
+    <string name="neighbor_source_shizuku_unavailable">Shizuku не запущено або в дозволі відмовлено</string>
+    <string name="neighbor_source_root_unavailable">У root-доступі відмовлено</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">Відкрити налаштування</string>

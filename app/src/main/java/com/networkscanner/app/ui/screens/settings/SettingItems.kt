@@ -1,6 +1,8 @@
 package com.networkscanner.app.ui.screens.settings
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
@@ -8,6 +10,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -97,5 +102,45 @@ fun ClickableSettingItem(
             haptics.performHapticFeedback(HapticFeedbackType.Confirm)
             onClick()
         }
+    )
+}
+
+@Composable
+fun <T> SegmentedSettingItem(
+    title: String,
+    summary: String? = null,
+    icon: ImageVector? = null,
+    options: List<Pair<T, String>>,
+    selected: T,
+    onSelected: (T) -> Unit
+) {
+    val haptics = LocalHapticFeedback.current
+    ListItem(
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+        headlineContent = { Text(title) },
+        supportingContent = {
+            Column {
+                summary?.let { Text(it) }
+                SingleChoiceSegmentedButtonRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp)
+                ) {
+                    options.forEachIndexed { index, (value, label) ->
+                        SegmentedButton(
+                            selected = selected == value,
+                            onClick = {
+                                haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                                onSelected(value)
+                            },
+                            shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size)
+                        ) {
+                            Text(label)
+                        }
+                    }
+                }
+            }
+        },
+        leadingContent = icon?.let { { SettingLeadingIcon(it) } }
     )
 }

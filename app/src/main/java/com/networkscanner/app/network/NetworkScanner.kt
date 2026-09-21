@@ -11,6 +11,7 @@ import com.networkscanner.app.util.ArpReader
 import com.networkscanner.app.util.DnsLookup
 import com.networkscanner.app.util.MacVendorLookup
 import com.networkscanner.app.util.NetworkUtils
+import com.networkscanner.app.util.PrivilegedNeighborSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -809,9 +810,11 @@ class NetworkScanner(private val context: Context) {
      * Enrich discovered devices with MAC addresses and vendor info from ARP cache.
      * Called after ping sweep to get MAC addresses that were populated during pinging.
      */
-    private fun enrichDevicesWithArpData() {
-        // Re-read ARP cache - it should now have entries for devices we pinged
-        val arpEntries = ArpReader.readValidEntries()
+    private suspend fun enrichDevicesWithArpData() {
+        // Re-read ARP cache - it should now have entries for devices we pinged.
+        // Privileged entries come last so they win over the app's restricted view.
+        val arpEntries = ArpReader.readValidEntries() +
+            PrivilegedNeighborSource.read(PrivilegedNeighborSource.mode(context))
         val arpMap = arpEntries.associateBy { it.ipAddress }
 
         // Update devices with MAC and vendor info

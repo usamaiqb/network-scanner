@@ -49,6 +49,7 @@ Download the latest APK from the [Releases](https://github.com/usamaiqb/network-
 
 ### Device Information
 - 🏷️ **MAC Address & Vendor** - Shows MAC address with OUI vendor lookup, including detection of randomized (private) MAC addresses¹
+- 🔑 **Shizuku / Root** - Optional: reads the ARP table with shell or root privileges so MAC addresses also show on Android 10+
 - 🖥️ **OS Fingerprinting** - Detects Windows, Linux, macOS, router firmware, and printer OS from open ports and banners
 - 📱 **Device Type Icons** - Automatically identifies smartphones, laptops, desktops, TVs, routers, printers, NAS, and more
 - 🔓 **Deep Port Scan** - Scans common ports, grabs service banners, and extracts software versions
@@ -145,7 +146,7 @@ Contributions to translations are welcome!
 <details>
 <summary><h2>Known Limitations</h2></summary>
 
-¹ **MAC addresses on Android 10+**: Since Android 10, apps can no longer read other devices' entries from the system's ARP table (SELinux restriction). This means MAC address and vendor lookup reliably works for your own device (and sometimes the router), but shows as "Unknown" for other devices on the network on Android 10 and above. This is an OS-level restriction that affects all network scanner apps, not a bug specific to this app, and can't be worked around without root access.
+¹ **MAC addresses on Android 10+**: Since Android 10, apps can no longer read other devices' entries from the system's ARP table (SELinux restriction). This means MAC address and vendor lookup reliably works for your own device (and sometimes the router), but shows as "Unknown" for other devices on the network on Android 10 and above. This is an OS-level restriction that affects all network scanner apps, not a bug specific to this app. The **MAC address access** setting works around it by reading the table through [Shizuku](https://shizuku.rikka.app/) or root.
 
 </details>
 
