@@ -53,13 +53,13 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
         data class Error(val message: String) : DeepScanState()
     }
 
-    fun loadDevice(deviceId: String, devices: List<Device>) {
-        val device = devices.find { it.uniqueId == deviceId }
+    fun loadDevice(deviceIp: String, devices: List<Device>) {
+        val device = devices.find { it.ipAddress == deviceIp }
         _device.value = device
 
         // Load custom name synchronously from repository
         if (device != null) {
-            val custom = customizationRepository.getCustomization(device.uniqueId)
+            val custom = customizationRepository.getCustomization(device.identityKey)
             _customName.value = custom?.customName
             _customIconKey.value = custom?.customIcon
         }
@@ -71,13 +71,13 @@ class DeviceDetailViewModel(application: Application) : AndroidViewModel(applica
 
     fun saveCustomName(name: String?) {
         val currentDevice = _device.value ?: return
-        customizationRepository.saveCustomization(currentDevice.uniqueId, name)
+        customizationRepository.saveCustomization(currentDevice.identityKey, name)
         _customName.value = name?.takeIf { it.isNotBlank() }
     }
 
     fun saveCustomIcon(iconKey: String?) {
         val currentDevice = _device.value ?: return
-        customizationRepository.saveCustomIcon(currentDevice.uniqueId, iconKey)
+        customizationRepository.saveCustomIcon(currentDevice.identityKey, iconKey)
         _customIconKey.value = iconKey
     }
 

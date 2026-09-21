@@ -170,16 +170,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     * Get device by unique ID (MAC or IP).
+     * Get device by IP address, the per-scan unique identifier of a list entry.
      */
-    fun getDeviceById(id: String): Device? {
-        return _devices.value.find { it.uniqueId == id }
+    fun getDeviceByIp(ip: String): Device? {
+        return _devices.value.find { it.ipAddress == ip }
     }
 
     private fun updateDeviceLists(deviceList: List<Device>) {
         // Apply custom names from repository
         val customized = deviceList.map { device ->
-            val custom = customizationRepository.getCustomization(device.uniqueId)
+            val custom = customizationRepository.getCustomization(device.identityKey)
             if (custom != null) device.copy(customName = custom.customName) else device
         }
 

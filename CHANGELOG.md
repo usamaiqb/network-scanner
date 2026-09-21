@@ -1,3 +1,28 @@
+## [1.1.9] - 2026-09-14
+
+### Fixed
+- Device list is now keyed by IP address, so entries stay stable and no longer collide when device identities overlap (#74, #76, #78)
+- Back and forward taps are ignored during screen transitions, preventing accidental double navigation (#80, #81)
+
+### Changed
+- Documented the release signing certificate fingerprint in the README for APK verification (#79)
+- Bumped actions/setup-java from 6.0.0 to 6.0.1 and softprops/action-gh-release from 3.0.2 to 3.0.3 (#72, #77)
+- Constrained the release-checks workflow token to `contents: read`
+
+## [1.1.8] - 2026-09-11
+
+### Added
+- Full IEEE OUI vendor database and reverse-DNS (PTR) lookups for richer device identification (#68)
+- Haptic feedback, expressive switches, and animated per-device list transitions (#64)
+
+### Improved
+- Refreshed app icon, feature graphic, and store screenshots (#69)
+- Updated English and Simplified Chinese store listing titles and descriptions (#69, #70)
+- Updated Simplified Chinese translations (#70)
+
+### Changed
+- Bumped actions/setup-java from 5.6.0 to 6.0.0 and gradle/actions/setup-gradle from 6.2.0 to 6.3.0 (#66, #67, #71)
+
 ## [1.1.7] - 2026-08-01
 
 ### Added

@@ -90,7 +90,11 @@ private fun LazyListScope.deviceSection(
     }
     itemsIndexed(
         items = devices,
-        key = { _, device -> device.uniqueId },
+        // Keyed by IP alone: the scanner keys its device map by IP, so it is
+        // unique per scan, and unlike the MAC it never changes once an entry
+        // exists — a key that changed when the MAC arrived mid-scan would make
+        // the list drop and re-animate the item.
+        key = { _, device -> device.ipAddress },
         contentType = { _, _ -> "device" }
     ) { index, device ->
         Surface(
@@ -108,7 +112,7 @@ private fun LazyListScope.deviceSection(
             DeviceCard(
                 device = device,
                 onClick = { onDeviceClick(device) },
-                customIconKey = getCustomIcon(device.uniqueId)
+                customIconKey = getCustomIcon(device.identityKey)
             )
         }
     }

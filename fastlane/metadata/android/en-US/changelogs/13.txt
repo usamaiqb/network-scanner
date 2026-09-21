@@ -1,0 +1,4 @@
+• Added full MAC vendor database and reverse-DNS lookups for better device identification
+• Added haptic feedback, expressive switches, and an animated device list
+• Refreshed app icon, feature graphic, and store screenshots
+• Updated English and Simplified Chinese store listings
