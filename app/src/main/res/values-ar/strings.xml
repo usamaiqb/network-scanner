@@ -71,8 +71,6 @@
 
     <!-- Device Detail Screen -->
     <string name="device_details">تفاصيل الجهاز</string>
-    <string name="basic_info">معلومات أساسية</string>
-    <string name="network_info">معلومات الشبكة</string>
     <string name="deep_scan_results">نتائج الفحص العميق</string>
     <string name="open_ports">المنافذ المفتوحة</string>
 
@@ -86,7 +84,6 @@
     <string name="label_discovered_via">تم اكتشافه عبر</string>
     <string name="label_detected_os">نظام التشغيل المكتشف</string>
     <string name="label_scan_duration">مدة الفحص</string>
-    <string name="device_info">معلومات الجهاز</string>
     <string name="label_friendly_name">الاسم المُعلن</string>
     <string name="label_model">الموديل</string>
 
@@ -240,4 +237,20 @@
     <string name="scanned_addresses_progress">تم مسح %1$d/%2$d من العناوين</string>
     <string name="detecting_os">جارٍ كشف نظام التشغيل…</string>
 
+
+    <!-- Device detail sections -->
+    <string name="section_identity">الهوية</string>
+    <string name="label_mac_address_randomized">عنوان MAC (عشوائي)</string>
+    <string name="label_netbios_name">اسم NetBIOS</string>
+    <string name="label_serial_number">الرقم التسلسلي</string>
+    <string name="label_os_hint">تلميح نظام التشغيل (TTL)</string>
+    <string name="label_workgroup">مجموعة العمل</string>
+    <string name="label_upnp_type">نوع UPnP</string>
+    <string name="label_web_interface">واجهة الويب</string>
+    <string name="ttl_hint_unix">%d (لينكس/أندرويد/iOS)</string>
+    <string name="ttl_hint_windows">%d (ويندوز)</string>
+    <string name="ttl_hint_network">%d (موجّه/مبدّل)</string>
+    <string name="port_service_unknown">غير معروف</string>
+    <string name="cd_open_in_browser">فتح في المتصفح</string>
+    <string name="section_network">الشبكة</string>
 </resources>

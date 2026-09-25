@@ -69,8 +69,6 @@
 
     <!-- Device Detail Screen -->
     <string name="device_details">Detalles del dispositivo</string>
-    <string name="basic_info">Información básica</string>
-    <string name="network_info">Información de red</string>
     <string name="deep_scan_results">Resultados de escaneo profundo</string>
     <string name="open_ports">Puertos abiertos</string>
 
@@ -84,7 +82,6 @@
     <string name="label_discovered_via">Descubierto mediante</string>
     <string name="label_detected_os">SO Detectado</string>
     <string name="label_scan_duration">Duración del escaneo</string>
-    <string name="device_info">Información del dispositivo</string>
     <string name="label_friendly_name">Nombre descriptivo</string>
     <string name="label_model">Modelo</string>
 
@@ -237,4 +234,20 @@
     <string name="scanning_port">Escaneando puerto %1$d…</string>
     <string name="scanned_addresses_progress">Escaneando %1$d/%2$d de direcciones</string>
     <string name="detecting_os">Detectando SO…</string>
+
+    <!-- Device detail sections -->
+    <string name="section_identity">Identidad</string>
+    <string name="label_mac_address_randomized">Dirección MAC (aleatoria)</string>
+    <string name="label_netbios_name">Nombre NetBIOS</string>
+    <string name="label_serial_number">Número de serie</string>
+    <string name="label_os_hint">Pista del SO (TTL)</string>
+    <string name="label_workgroup">Grupo de trabajo</string>
+    <string name="label_upnp_type">Tipo UPnP</string>
+    <string name="label_web_interface">Interfaz web</string>
+    <string name="ttl_hint_unix">%d (Linux/Android/iOS)</string>
+    <string name="ttl_hint_windows">%d (Windows)</string>
+    <string name="ttl_hint_network">%d (Router/Conmutador)</string>
+    <string name="port_service_unknown">Desconocido</string>
+    <string name="cd_open_in_browser">Abrir en el navegador</string>
+    <string name="section_network">Red</string>
 </resources>

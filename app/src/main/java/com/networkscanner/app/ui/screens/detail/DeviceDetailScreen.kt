@@ -1,5 +1,7 @@
 package com.networkscanner.app.ui.screens.detail
 
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
 import androidx.compose.foundation.background
@@ -9,9 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -55,9 +55,8 @@ import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.ui.DeviceDetailViewModel
 import com.networkscanner.app.ui.MainViewModel
-import com.networkscanner.app.ui.components.SectionHeader
-import com.networkscanner.app.ui.components.SegmentSurface
 import com.networkscanner.app.ui.theme.StatusColors
+import com.networkscanner.app.util.NetworkUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -169,148 +168,101 @@ fun DeviceDetailScreen(
                     )
                 }
 
-                // Device identity info
+                // Identity - who this device is
                 item(key = "identity") {
                     val context = LocalContext.current
-                    val identityRows = buildList {
-                        // IP Address is special - it's clickable
-                        add(Triple(stringResource(R.string.label_ip_address), dev.ipAddress, true))
+                    val ssdp = dev.ssdpInfo
+                    // SSDP usually carries the fuller manufacturer string ("NETGEAR, Inc." vs
+                    // "Netgear"), so prefer it and render a single vendor row either way.
+                    val vendor = ssdp?.manufacturer?.takeIf { it.isNotBlank() } ?: dev.vendor
+                    val model = listOfNotNull(ssdp?.modelName, ssdp?.modelNumber)
+                        .joinToString(" ")
+                        .takeIf { it.isNotBlank() }
 
-                        // Always show MAC address row (even if unknown)
-                        val macValue = dev.macAddress?.let { mac ->
-                            val macLabel = if (com.networkscanner.app.util.NetworkUtils.isLocallyAdministeredMac(mac))
-                                "${stringResource(R.string.label_mac_address)} (randomized)"
-                            else
+                    DetailSection(title = stringResource(R.string.section_identity)) {
+                        // IP leads: it is the only always-present field, so the first row
+                        // never shifts, and it is the one users act on. The device's name is
+                        // already the screen header.
+                        custom {
+                            ClickableInfoRow(
+                                label = stringResource(R.string.label_ip_address),
+                                value = dev.ipAddress,
+                                onClick = { openUrl(context, "http://${dev.ipAddress}") }
+                            )
+                        }
+                        // Omitted entirely when unknown, like every other optional field.
+                        // Android restricts ARP access, so this is null for most devices.
+                        dev.macAddress?.let { mac ->
+                            val label = if (NetworkUtils.isLocallyAdministeredMac(mac)) {
+                                stringResource(R.string.label_mac_address_randomized)
+                            } else {
                                 stringResource(R.string.label_mac_address)
-                            Triple(macLabel, mac.uppercase(), false)
-                        } ?: Triple(stringResource(R.string.label_mac_address), "Unknown", false)
-                        add(macValue)
-
-                        dev.vendor?.let {
-                            add(Triple(stringResource(R.string.label_vendor), it, false))
-                        }
-                        if (dev.latencyMs != null && dev.isOnline) {
-                            add(Triple(stringResource(R.string.label_latency), "${dev.latencyMs}ms", false))
-                        }
-                        dev.ttl?.let {
-                            val osHint = when (it) {
-                                64 -> Triple("TTL", "$it (Linux/Android/iOS)", false)
-                                128 -> Triple("TTL", "$it (Windows)", false)
-                                255 -> Triple("TTL", "$it (Router/Switch)", false)
-                                else -> Triple("TTL", "$it", false)
                             }
-                            add(osHint)
+                            row(label, mac.uppercase())
                         }
-                    }
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        SectionHeader(
-                            title = stringResource(R.string.basic_info),
-                            count = identityRows.size
+                        rowIfPresent(stringResource(R.string.label_hostname), dev.hostname)
+                        rowIfPresent(
+                            stringResource(R.string.label_friendly_name),
+                            ssdp?.friendlyName?.takeIf {
+                                it != dev.hostname && it != dev.displayName
+                            }
                         )
-                        Spacer(Modifier.height(8.dp))
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            identityRows.forEachIndexed { index, (label, value, isClickable) ->
-                                SegmentSurface(index = index, count = identityRows.size) {
-                                    if (isClickable) {
-                                        ClickableInfoRow(
-                                            label = label,
-                                            value = value,
-                                            onClick = {
-                                                val intent = Intent(Intent.ACTION_VIEW, "http://$value".toUri())
-                                                try {
-                                                    context.startActivity(intent)
-                                                } catch (e: Exception) {
-                                                    // Browser not available
-                                                }
-                                            }
-                                        )
-                                    } else {
-                                        InfoRow(label = label, value = value)
-                                    }
-                                }
-                            }
-                        }
+                        rowIfPresent(
+                            stringResource(R.string.label_netbios_name),
+                            dev.netBiosInfo?.hostname?.takeIf { it != dev.hostname }
+                        )
+                        rowIfPresent(stringResource(R.string.label_vendor), vendor)
+                        rowIfPresent(stringResource(R.string.label_model), model)
+                        rowIfPresent(
+                            stringResource(R.string.label_serial_number),
+                            ssdp?.serialNumber
+                        )
                     }
                 }
 
-                // Network info
+                // Network - reachability, how we found it, and what it advertises.
+                // Online/offline is already the header badge, so it isn't repeated here.
                 item(key = "network") {
-                    val networkRows = buildList {
-                        dev.hostname?.let {
-                            add(stringResource(R.string.label_hostname) to it)
+                    val context = LocalContext.current
+                    val ssdp = dev.ssdpInfo
+                    DetailSection(title = stringResource(R.string.section_network)) {
+                        if (dev.latencyMs != null && dev.isOnline) {
+                            row(
+                                stringResource(R.string.label_latency),
+                                stringResource(R.string.latency_ms, dev.latencyMs)
+                            )
                         }
-                        add(
-                            stringResource(R.string.label_discovered_via) to
-                                    dev.discoveredVia.name.replace("_", " ")
-                                        .lowercase()
-                                        .replaceFirstChar { it.uppercase() }
+                        // A cheap guess from any ping. The deep scan's "Detected OS" is the
+                        // authoritative answer once a scan has been run.
+                        dev.ttl?.let { ttl ->
+                            row(stringResource(R.string.label_os_hint), ttlHint(ttl))
+                        }
+                        row(
+                            stringResource(R.string.label_discovered_via),
+                            dev.discoveredVia.name.replace("_", " ")
+                                .lowercase()
+                                .replaceFirstChar { it.uppercase() }
                         )
-                    }
-                    val hasServices = dev.mdnsServices.isNotEmpty()
-                    val totalCount = networkRows.size + (if (hasServices) 1 else 0)
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        SectionHeader(
-                            title = stringResource(R.string.network_info),
-                            count = totalCount
+                        rowIfPresent(
+                            stringResource(R.string.label_upnp_type),
+                            ssdp?.deviceType?.let { shortUpnpType(it) }
                         )
-                        Spacer(Modifier.height(8.dp))
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            networkRows.forEachIndexed { index, (label, value) ->
-                                SegmentSurface(index = index, count = totalCount) {
-                                    InfoRow(label = label, value = value)
-                                }
-                            }
-                            if (hasServices) {
-                                SegmentSurface(index = totalCount - 1, count = totalCount) {
-                                    ServicesRow(services = dev.mdnsServices)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // SSDP / UPnP device info section
-                val ssdp = dev.ssdpInfo
-                if (ssdp != null) {
-                    item(key = "device_info") {
-                        val deviceInfoRows = buildList {
-                            ssdp.friendlyName
-                                ?.takeIf { it != dev.hostname }
-                                ?.let { add(stringResource(R.string.label_friendly_name) to it) }
-                            ssdp.manufacturer
-                                ?.takeIf { it != dev.vendor }
-                                ?.let { add(stringResource(R.string.label_vendor) to it) }
-                            val model = listOfNotNull(ssdp.modelName, ssdp.modelNumber)
-                                .joinToString(" ")
-                                .takeIf { it.isNotBlank() }
-                            model?.let { add(stringResource(R.string.label_model) to it) }
-                        }
-                        if (deviceInfoRows.isNotEmpty()) {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                SectionHeader(
-                                    title = stringResource(R.string.device_info),
-                                    count = deviceInfoRows.size
+                        rowIfPresent(
+                            stringResource(R.string.label_workgroup),
+                            dev.netBiosInfo?.workgroup
+                        )
+                        ssdp?.locationUrl?.takeIf { it.isNotBlank() }?.let { url ->
+                            custom {
+                                ClickableInfoRow(
+                                    label = stringResource(R.string.label_web_interface),
+                                    value = url,
+                                    onClick = { openUrl(context, url) }
                                 )
-                                Spacer(Modifier.height(8.dp))
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                                ) {
-                                    deviceInfoRows.forEachIndexed { index, (label, value) ->
-                                        SegmentSurface(index = index, count = deviceInfoRows.size) {
-                                            InfoRow(label = label, value = value)
-                                        }
-                                    }
-                                }
                             }
+                        }
+                        // Services last - the only variable-length row in this section.
+                        if (dev.mdnsServices.isNotEmpty()) {
+                            custom { ServicesRow(services = dev.mdnsServices) }
                         }
                     }
                 }
@@ -506,4 +458,37 @@ private fun DeviceHeaderCard(
             }
         }
     }
+}
+
+/**
+ * Opens [url] in the user's browser, ignoring the case where no browser is installed.
+ */
+private fun openUrl(context: Context, url: String) {
+    try {
+        context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+    } catch (_: ActivityNotFoundException) {
+        // No browser available - nothing useful to fall back to.
+    }
+}
+
+/**
+ * Renders a ping TTL as an OS hint. This is a cheap guess available from any ping; the
+ * deep scan's "Detected OS" row is the authoritative answer when a scan has been run.
+ */
+@Composable
+private fun ttlHint(ttl: Int): String = when (ttl) {
+    64 -> stringResource(R.string.ttl_hint_unix, ttl)
+    128 -> stringResource(R.string.ttl_hint_windows, ttl)
+    255 -> stringResource(R.string.ttl_hint_network, ttl)
+    else -> ttl.toString()
+}
+
+/**
+ * Shortens a UPnP device URN ("urn:schemas-upnp-org:device:MediaRenderer:1") to its
+ * device-type segment ("MediaRenderer"). Returns the input unchanged if it isn't a URN.
+ */
+private fun shortUpnpType(urn: String): String? {
+    val parts = urn.split(":")
+    val short = if (parts.size >= 4) parts[parts.size - 2] else urn
+    return short.takeIf { it.isNotBlank() }
 }

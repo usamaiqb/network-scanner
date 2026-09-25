@@ -157,19 +157,11 @@ private fun DeepScanResults(
 ) {
     if (result == null) return
 
-    val hasOs = result.detectedOs != null
-    val osOffset = if (hasOs) 1 else 0
-    val totalCount = osOffset + 1 +
-        (if (result.openPorts.isNotEmpty()) result.openPorts.size else 1)
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        // OS Detection
-        if (hasOs) {
-            val os = result.detectedOs!!
-            SegmentSurface(index = 0, count = totalCount) {
+    DetailRows {
+        // Fixed-size rows first: open ports are unbounded (a full scan can return dozens),
+        // so anything placed after them is pushed off-screen.
+        result.detectedOs?.let { os ->
+            custom {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -193,30 +185,13 @@ private fun DeepScanResults(
             }
         }
 
-        // Scan duration
-        SegmentSurface(index = osOffset, count = totalCount) {
-            val durationSec = result.scanDurationMs / 1000.0
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = stringResource(R.string.label_scan_duration),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = stringResource(R.string.duration_seconds, durationSec),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
+        row(
+            stringResource(R.string.label_scan_duration),
+            stringResource(R.string.duration_seconds, result.scanDurationMs / 1000.0)
+        )
 
-        // Open ports or "no ports" message
         if (result.openPorts.isEmpty()) {
-            SegmentSurface(index = osOffset + 1, count = totalCount) {
+            custom {
                 Text(
                     text = stringResource(R.string.no_open_ports),
                     style = MaterialTheme.typography.bodyMedium,
@@ -225,10 +200,8 @@ private fun DeepScanResults(
                 )
             }
         } else {
-            result.openPorts.forEachIndexed { portIndex, port ->
-                SegmentSurface(index = osOffset + 1 + portIndex, count = totalCount) {
-                    PortItem(portInfo = port)
-                }
+            result.openPorts.forEach { port ->
+                custom { PortItem(portInfo = port) }
             }
         }
     }
