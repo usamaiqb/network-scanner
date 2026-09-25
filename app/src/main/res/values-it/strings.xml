@@ -251,4 +251,6 @@
     <string name="port_service_unknown">Sconosciuto</string>
     <string name="cd_open_in_browser">Apri nel browser</string>
     <string name="section_network">Rete</string>
+    <string name="action_copy">Copia</string>
+    <string name="copied_to_clipboard">Copiato negli appunti</string>
 </resources>

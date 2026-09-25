@@ -250,4 +250,6 @@
     <string name="port_service_unknown">Desconocido</string>
     <string name="cd_open_in_browser">Abrir en el navegador</string>
     <string name="section_network">Red</string>
+    <string name="action_copy">Copiar</string>
+    <string name="copied_to_clipboard">Copiado al portapapeles</string>
 </resources>

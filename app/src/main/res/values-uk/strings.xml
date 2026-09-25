@@ -250,4 +250,6 @@
     <string name="port_service_unknown">Невідомо</string>
     <string name="cd_open_in_browser">Відкрити у браузері</string>
     <string name="section_network">Мережа</string>
+    <string name="action_copy">Копіювати</string>
+    <string name="copied_to_clipboard">Скопійовано до буфера обміну</string>
 </resources>

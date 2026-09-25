@@ -338,6 +338,33 @@ object CommonPorts {
 
     fun getServiceName(port: Int): String? = PORT_SERVICES[port]
 
+    /**
+     * Ports a browser can usefully open, and the scheme to use. Keyed by port rather than
+     * matched against the service name, which would sweep in entries like "Kubernetes API"
+     * on 6443 while missing others.
+     */
+    private val WEB_PORT_SCHEMES = mapOf(
+        80 to "http",
+        8000 to "http",
+        8008 to "http",
+        8080 to "http",
+        8081 to "http",
+        8888 to "http",
+        443 to "https",
+        8443 to "https"
+    )
+
+    /**
+     * Browser URL for an open web port on [ipAddress], or null if the port isn't one a
+     * browser can do anything with. The port is left off when it's the scheme default.
+     */
+    fun webUrlFor(ipAddress: String, port: Int): String? {
+        val scheme = WEB_PORT_SCHEMES[port] ?: return null
+        val isDefaultPort = (scheme == "http" && port == 80) ||
+            (scheme == "https" && port == 443)
+        return if (isDefaultPort) "$scheme://$ipAddress" else "$scheme://$ipAddress:$port"
+    }
+
     fun getServiceDescription(port: Int): String {
         return PORT_SERVICES[port] ?: "Port $port"
     }

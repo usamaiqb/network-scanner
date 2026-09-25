@@ -255,4 +255,6 @@
     <string name="port_service_unknown">未知</string>
     <string name="cd_open_in_browser">在浏览器中打开</string>
     <string name="section_network">网络</string>
+    <string name="action_copy">复制</string>
+    <string name="copied_to_clipboard">已复制到剪贴板</string>
 </resources>

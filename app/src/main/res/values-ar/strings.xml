@@ -253,4 +253,6 @@
     <string name="port_service_unknown">غير معروف</string>
     <string name="cd_open_in_browser">فتح في المتصفح</string>
     <string name="section_network">الشبكة</string>
+    <string name="action_copy">نسخ</string>
+    <string name="copied_to_clipboard">تم النسخ إلى الحافظة</string>
 </resources>
