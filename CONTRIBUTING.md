@@ -41,7 +41,6 @@ Feature suggestions are welcome! Please:
 ## Development Setup
 
 ### Prerequisites
-- Android Studio Hedgehog or later
 - JDK 17
 - Git
 

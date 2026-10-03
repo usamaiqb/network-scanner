@@ -1,3 +1,18 @@
+## [1.1.10] - 2026-10-02
+
+### Added
+- Long press any Identity, Network, or port row to copy its value. Port rows copy `ip:port`, and every copyable row also has a TalkBack action (#62, #85)
+- Open web ports in the browser by tapping them, the same way the IP row works (#85)
+- The detail screen now shows the NetBIOS name and workgroup, SSDP serial number, UPnP device type, and location URL, which the scanner already collected (#83)
+
+### Improved
+- Device detail is now split into three sections: Identity, Network, and Deep Scan (#83)
+- Merged the duplicate vendor row and kept the raw port banner next to the parsed version (#83)
+- Localized the MAC "(randomized)" suffix, TTL OS hints, the fallback name for unknown port services, and the browser content description in all six supported locales (#83)
+
+### Fixed
+- Removed the MAC "Unknown" placeholder row, which was blank for most devices because Android restricts ARP access (#83)
+
 ## [1.1.9] - 2026-09-14
 
 ### Fixed
