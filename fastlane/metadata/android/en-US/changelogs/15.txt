@@ -1,0 +1,4 @@
+• Long press any detail row to copy its value
+• Tap open web ports to open them in the browser
+• Device details regrouped into Identity, Network and Deep Scan sections
+• Shows NetBIOS name, workgroup, serial number and UPnP device type

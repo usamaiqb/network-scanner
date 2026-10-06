@@ -1,47 +1,18 @@
-Network Scanner is a fast WiFi and IP scanner that shows every device on your local network — with IP address, hostname, open ports, and device type. No ads, no tracking, no root required.
+Network Scanner is a fast WiFi and IP scanner that finds every device on your local network and shows its IP address, hostname, open ports, and device type. No ads, no tracking, no root required.
 
-Whether you're troubleshooting a connection, auditing your network's security, or just want to know who's on your router, Network Scanner works entirely offline. All scanning happens on your device, and the app is fully open source under GPL-3.0.
+See who's on your WiFi, spot unknown devices, find the IP address of a printer, camera, or smart home device, and check your router and LAN for open ports. Everything runs offline on your phone, and the app is fully open source (GPL-3.0).
 
-<b>Key Features:</b>
+<b>Features</b>
 
-• Fast Wi-Fi network scanning to discover all devices on your local network
-• Ping sweep with TCP fallback to detect devices that block ICMP
-• Device details including IP address, hostname, and device type
-• Port scanner to identify open ports and running services
-• Full port scan of all 65,535 ports for deeper analysis
-• mDNS / Bonjour discovery for AirPlay, Chromecast, printers, SSH, SMB, and more
-• OS fingerprinting to identify Windows, Linux, macOS, routers, and printers
-• MAC address and vendor lookup, where Android permits it — modern Android versions restrict MAC visibility for privacy, and randomized (private) addresses are flagged when detected
-• Vendor lookup runs against a database bundled inside the app, so nothing is sent to a remote server
-• Clean Material Design 3 interface
-• Custom devices: rename devices and assign your own icons
-• Interface selection (WiFi, Ethernet, VPN) and customizable scan settings
+• Network scanner: ping sweep with TCP fallback, ARP, mDNS / Bonjour, SSDP / UPnP, and NetBIOS discovery
+• Port scanner: scan common ports with service and version detection, or all 65,535 ports
+• Device identification: hostname, vendor, model, OS fingerprint, and device type (phone, laptop, TV, router, printer, NAS)
+• MAC address and vendor lookup from a bundled offline database, where Android allows it
+• Rename devices and assign custom icons
+• Long press to copy any detail, or tap a web port to open it in your browser
+• Scan over WiFi, Ethernet, or VPN, with customizable ports
 
-<b>Who Is on My WiFi?</b>
+<b>Permissions</b>
 
-• Find the IP address of every device connected to your network
-• Spot unknown or unauthorized devices
-• Identify device types — smartphones, laptops, TVs, routers, printers, NAS, and more
-• Check open ports to find weak points in your network security
-• Troubleshoot connectivity issues
-• Monitor your home or office network
-
-<b>Privacy First:</b>
-
-• No ads, no trackers, no analytics
-• All scanning happens locally on your device
-• Nothing is uploaded, and no scan results ever leave your phone
-• Minimal permissions requested
-• 100% open source (GPL-3.0) and fully auditable
-
-<b>Permissions Explained:</b>
-
-Network Scanner only requests the permissions it needs to scan:
-
-• <b>Network access</b> — To communicate with devices on your network.
-
-• <b>WiFi state</b> — To check whether you're connected and identify the network to scan.
-
-• <b>Nearby WiFi devices</b> — Required to discover devices on your local network. Android is progressively tightening local network access: on Android 17 and later, apps must hold a local network permission to reach devices on your LAN at all. Scanning cannot work without it.
-
-• <b>Location (optional, never used for tracking)</b> — Only to read your WiFi network name (SSID) for display. Scanning works fine without it.
+• <b>Nearby WiFi devices</b>: required on Android 16 and later to reach devices on your LAN
+• <b>Location (optional)</b>: only to show your WiFi network name (SSID), never for tracking
