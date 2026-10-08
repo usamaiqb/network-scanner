@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.SettingsEthernet
 import androidx.compose.material.icons.rounded.SignalCellular4Bar
@@ -72,9 +73,18 @@ fun NetworkInfoBar(
         InterfaceType.OTHER, null -> Icons.Rounded.Public
     }
 
-    val networkName = selectedNetworkInfo?.ssid
-        ?: selectedType?.let { interfaceTypeLabel(it) }
-        ?: stringResource(R.string.unknown_device)
+    // A Wi-Fi network always has a name; we just cannot always read it, since the
+    // SSID needs location permission. Falling back to "Wi-Fi" put a type label in
+    // the slot that holds the network name, where it reads as the answer rather
+    // than as the absence of one. Other interface types have no SSID to begin
+    // with, so for those the type name is the correct answer, not a fallback.
+    val ssid = selectedNetworkInfo?.ssid?.takeIf { it.isNotBlank() }
+    val networkName = when {
+        ssid != null -> ssid
+        selectedType == InterfaceType.WIFI -> stringResource(R.string.network_name_unknown)
+        selectedType != null -> interfaceTypeLabel(selectedType)
+        else -> stringResource(R.string.unknown_device)
+    }
 
     val cidrText = selectedNetworkInfo?.cidrNotation
         ?: selectedInterface?.ipAddress
@@ -129,11 +139,14 @@ fun NetworkInfoBar(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f, fill = false)
                     )
-                    // Dropdown arrow to indicate clickability
-                    Text(
-                        text = "▼",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    // Signals that the bar is tappable, which the caret did too - but
+                    // it opens the system Wi-Fi settings rather than the dropdown a
+                    // caret promises. The interface picker's own caret is on the right.
+                    Icon(
+                        imageVector = Icons.Rounded.OpenInNew,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 Box {

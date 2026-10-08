@@ -40,6 +40,7 @@
 
     <!-- Interface Types -->
     <string name="interface_type_wifi">Wi-Fi</string>
+    <string name="network_name_unknown">Unknown</string>
     <string name="interface_type_ethernet">Ethernet</string>
     <string name="interface_type_vpn">VPN</string>
     <string name="interface_type_cellular">Cellular</string>
