@@ -25,6 +25,7 @@ display_name() {
         ar) echo "العربية"    ;;
         zh-rCN) echo "中文 (中国)" ;;
         it) echo "Italiano"   ;;
+        de) echo "Deutsch"    ;;
         *)  echo "$1"         ;;
     esac
 }
