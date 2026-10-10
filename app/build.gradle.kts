@@ -89,6 +89,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        aidl = true
     }
 
     lint {
@@ -135,6 +136,10 @@ dependencies {
 
     // Preferences (still needed for SharedPreferences access)
     implementation("androidx.preference:preference-ktx:1.2.1")
+
+    // Shizuku (privileged ARP table access)
+    implementation("dev.rikka.shizuku:api:13.1.5")
+    implementation("dev.rikka.shizuku:provider:13.1.5")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

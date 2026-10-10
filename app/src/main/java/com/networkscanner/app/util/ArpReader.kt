@@ -162,7 +162,7 @@ object ArpReader {
      * 192.168.1.2 dev wlan0 lladdr aa:bb:cc:dd:ee:ff STALE
      * 192.168.1.3 dev wlan0  FAILED
      */
-    private fun parseIpNeighLine(line: String): ArpEntry? {
+    internal fun parseIpNeighLine(line: String): ArpEntry? {
         try {
             val parts = line.trim().split(Regex("\\s+"))
             if (parts.size < 4) return null

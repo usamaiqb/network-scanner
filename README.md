@@ -45,6 +45,7 @@ Download the latest APK from the [Releases](https://github.com/usamaiqb/network-
 - **SSDP / UPnP** - Fetches friendly name, manufacturer, and model number
 - **NetBIOS** - Resolves hostnames and workgroups for Windows and Samba devices
 - **Port heuristics** - Identifies Cast-enabled TVs and similar devices when other methods come up empty
+- **Shizuku / root** - Optionally reads the ARP table with shell or root privileges, so MAC addresses also show on Android 10+
 
 ### Device details
 
@@ -103,7 +104,7 @@ The APK is written to `app/build/outputs/apk/debug/`. See [CONTRIBUTING.md](CONT
 | Deutsch | ████████████ 100% |
 | Español | ████████████ 99% |
 | Italiano | ████████████ 99% |
-| Русский | ███████████░ 91% |
+| Русский | ███████████░ 92% |
 | Українська | ████████████ 99% |
 | 中文 (中国) | ████████████ 100% |
 <!-- translations:end -->
@@ -112,7 +113,7 @@ To add or improve a translation, edit `app/src/main/res/values-<locale>/strings.
 
 ## Known limitations
 
-Since Android 10, apps can't read other devices' entries from the system ARP table, so MAC address and vendor only appear for your own device and sometimes the router. This affects every network scanner app and can't be bypassed without root.
+Since Android 10, apps can't read other devices' entries from the system ARP table, so MAC address and vendor only appear for your own device and sometimes the router. This affects every network scanner app. The **MAC address access** setting works around it through [Shizuku](https://shizuku.rikka.app/) or root.
 
 ## Contributing
 

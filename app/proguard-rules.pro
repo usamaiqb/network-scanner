@@ -40,6 +40,11 @@
     public <init>(android.content.Context, android.util.AttributeSet, int);
 }
 
+# Shizuku instantiates the user service by reflection in its own process
+-keepclassmembers class com.networkscanner.app.util.PrivilegedNeighborSource$ShizukuService {
+    public <init>(...);
+}
+
 # ============================================================================
 # SERIALIZATION (For Parcelable)
 # ============================================================================

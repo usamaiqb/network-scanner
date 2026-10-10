@@ -7,7 +7,7 @@ See who's on your WiFi, spot unknown devices, find the IP address of a printer, 
 • Network scanner: ping sweep with TCP fallback, ARP, mDNS / Bonjour, SSDP / UPnP, and NetBIOS discovery
 • Port scanner: scan common ports with service and version detection, or all 65,535 ports
 • Device identification: hostname, vendor, model, OS fingerprint, and device type (phone, laptop, TV, router, printer, NAS)
-• MAC address and vendor lookup from a bundled offline database, where Android allows it
+• MAC address and vendor lookup from a bundled offline database, with optional Shizuku or root access to show MAC addresses on Android 10 and later
 • Rename devices and assign custom icons
 • Long press to copy any detail, or tap a web port to open it in your browser
 • Scan over WiFi, Ethernet, or VPN, with customizable ports
@@ -16,3 +16,4 @@ See who's on your WiFi, spot unknown devices, find the IP address of a printer, 
 
 • <b>Nearby WiFi devices</b>: required on Android 16 and later to reach devices on your LAN
 • <b>Location (optional)</b>: only to show your WiFi network name (SSID), never for tracking
+• <b>Shizuku or root (optional)</b>: off by default; used only if you turn on MAC address access in Settings, to read the network's ARP table
