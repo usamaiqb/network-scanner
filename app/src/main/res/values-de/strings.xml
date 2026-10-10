@@ -150,11 +150,17 @@
     <string name="pref_auto_scan_title">Automatische Analyse beim Start</string>
     <string name="pref_auto_scan_summary">Analyse automatisch starten, wenn die App geöffnet wird</string>
     <string name="pref_scan_timeout_title">Analyse-Zeitüberschreitung</string>
+    <string name="pref_neighbor_source_title">Zugriff auf MAC-Adressen</string>
+    <string name="pref_neighbor_source_summary">Android 10+ verbirgt die MAC-Adressen anderer Geräte vor Apps. Lesen Sie sie stattdessen über Shizuku oder Root aus.</string>
 
     <!-- Zeitlimit-Optionen -->
     <string name="timeout_fast">Schnell (3 Sekunden)</string>
     <string name="timeout_normal">Normal (5 Sekunden)</string>
     <string name="timeout_thorough">Gründlich (10 Sekunden)</string>
+
+    <!-- Optionen für den Zugriff auf MAC-Adressen -->
+    <string name="neighbor_source_none">Aus</string>
+    <string name="neighbor_source_root">Root</string>
 
     <!-- Dateneinstellungen -->
     <string name="pref_clear_cache_title">Zwischenspeicher leeren</string>
@@ -187,6 +193,8 @@
     <!-- Hinweismeldungen -->
     <string name="cache_cleared">Zwischenspeicher erfolgreich geleert</string>
     <string name="history_cleared">Geräteverlauf gelöscht</string>
+    <string name="neighbor_source_shizuku_unavailable">Shizuku läuft nicht oder die Berechtigung wurde verweigert</string>
+    <string name="neighbor_source_root_unavailable">Root-Zugriff wurde verweigert</string>
 
     <!-- Barrierefreiheit – Inhaltsbeschreibungen -->
     <string name="cd_settings_button">Einstellungen öffnen</string>
