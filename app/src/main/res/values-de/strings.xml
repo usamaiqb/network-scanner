@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Menüelemente -->
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_refresh">Aktualisieren</string>
+    <string name="action_theme">Design wechseln</string>
+
+    <!-- Scan-Zustände -->
+    <string name="scanning">Netzwerk wird analysiert…</string>
+    <string name="scan_complete">Analyse abgeschlossen</string>
+    <string name="devices_found">%d Geräte gefunden</string>
+    <string name="pull_to_refresh">Zum Aktualisieren nach unten ziehen</string>
+
+    <!-- Anfangszustand -->
+    <string name="initial_scan_title">Netzwerk analysieren</string>
+    <string name="initial_scan_message">Alle mit Ihrem WLAN verbundenen Geräte erkennen</string>
+    <string name="action_scan_network">Netzwerk analysieren</string>
+
+    <!-- Gerätebereiche -->
+    <string name="section_active">Aktive Geräte</string>
+    <string name="section_offline">Offline-Geräte</string>
+
+    <!-- Geräteinformationen -->
+    <string name="unknown_device">Unbekanntes Gerät</string>
+    <string name="unknown_manufacturer">Unbekannter Hersteller</string>
+    <string name="ip_address">IP: %s</string>
+    <string name="mac_address">MAC: %s</string>
+    <string name="hostname">Hostname: %s</string>
+    <string name="last_seen">Zuletzt gesehen: %s</string>
+    <string name="this_device">Dieses Gerät</string>
+
+    <!-- Leere Zustände -->
+    <string name="no_devices_title">Keine Geräte gefunden</string>
+    <string name="no_devices_message">Stellen Sie sicher, dass Sie mit einem WLAN verbunden sind, und versuchen Sie es erneut.</string>
+    <string name="no_wifi_title">Keine Netzwerkverbindung</string>
+    <string name="no_wifi_message">Es wurden keine aktiven Netzwerkschnittstellen gefunden. Stellen Sie eine Verbindung zu einem Netzwerk her und versuchen Sie es erneut.</string>
+    <string name="no_active_interfaces">Keine aktive Schnittstelle</string>
+
+    <!-- Schnittstellentypen -->
+    <string name="interface_type_wifi">WLAN</string>
+    <string name="interface_type_ethernet">Ethernet</string>
+    <string name="interface_type_vpn">VPN</string>
+    <string name="interface_type_cellular">Mobilfunk</string>
+    <string name="interface_type_network">Netzwerk</string>
+
+    <!-- Fehler -->
+    <string name="error_scan_failed">Analyse fehlgeschlagen: %s</string>
+    <string name="error_permission_denied">Zugriff verweigert</string>
+    <string name="error_no_network">Keine Netzwerkverbindung</string>
+
+    <!-- Berechtigungen -->
+    <string name="permission_location_title">Analyse verbessern</string>
+    <string name="permission_location_message">Die Standortberechtigung ist erforderlich, um für die Netzwerkanalyse auf WLAN-Informationen zugreifen zu können.</string>
+    <string name="permission_optional_message">Durch die Erteilung der Standortberechtigung können mehr Geräte erkannt und genauere Netzwerkinformationen angezeigt werden. Dies ist optional – die App funktioniert auch ohne diese Berechtigung.</string>
+    <string name="permission_nearby_title">Berechtigung für Geräte in der Nähe</string>
+    <string name="permission_nearby_message">Diese Berechtigung ermöglicht es der App, Geräte in Ihrem Netzwerk zu erkennen.</string>
+    <string name="grant_permission">Berechtigung erteilen</string>
+    <string name="skip">Überspringen</string>
+    <string name="permission_local_network_denied">Die Berechtigung für Geräte in der Nähe ist erforderlich, um Ihr lokales Netzwerk zu analysieren.</string>
+    <string name="action_open_settings">Einstellungen öffnen</string>
+
+    <!-- Design -->
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="theme_system">System</string>
+
+    <!-- Inhaltsbeschreibungen -->
+    <string name="cd_device_icon">Symbol für Gerätetyp</string>
+    <string name="cd_scan_button">Netzwerkanalyse starten</string>
+    <string name="cd_device_status">Gerätestatusanzeige</string>
+
+    <!-- Gerätedetail-Bildschirm -->
+    <string name="device_details">Gerätedetails</string>
+    <string name="section_identity">Identität</string>
+    <string name="section_network">Netzwerk</string>
+    <string name="deep_scan_results">Ergebnisse der Tiefen-Analyse</string>
+    <string name="open_ports">Offene Ports</string>
+
+    <!-- Bezeichnungen -->
+    <string name="label_ip_address">IP-Adresse</string>
+    <string name="label_mac_address">MAC-Adresse</string>
+    <string name="label_mac_address_randomized">MAC-Adresse (zufällig generiert)</string>
+    <string name="label_vendor">Hersteller</string>
+    <string name="label_latency">Latenz</string>
+    <string name="label_hostname">Hostname</string>
+    <string name="label_netbios_name">NetBIOS-Name</string>
+    <string name="label_services">Dienste</string>
+    <string name="label_discovered_via">Entdeckt über</string>
+    <string name="label_detected_os">Erkanntes Betriebssystem</string>
+    <string name="label_scan_duration">Analyse-Dauer</string>
+    <string name="label_friendly_name">Anzeigename</string>
+    <string name="label_model">Modell</string>
+    <string name="label_serial_number">Seriennummer</string>
+    <string name="label_os_hint">Betriebssystem-Hinweis (TTL)</string>
+    <string name="label_workgroup">Arbeitsgruppe</string>
+    <string name="label_upnp_type">UPnP-Typ</string>
+    <string name="label_web_interface">Weboberfläche</string>
+
+    <!-- TTL-basierte Betriebssystem-Hinweise -->
+    <string name="ttl_hint_unix">%d (Linux/Android/iOS)</string>
+    <string name="ttl_hint_windows">%d (Windows)</string>
+    <string name="ttl_hint_network">%d (Router/Switch)</string>
+
+    <!-- Fallbacks -->
+    <string name="port_service_unknown">Unbekannt</string>
+    <string name="cd_open_in_browser">Im Browser öffnen</string>
+
+    <!-- Deep-Scan-Zustände -->
+    <string name="tap_to_deep_scan">Zum Starten einer Tiefen-Analyse antippen</string>
+    <string name="start_deep_scan">Tiefen-Analyse starten</string>
+    <string name="no_open_ports">Keine offenen Ports gefunden</string>
+    <string name="scan_failed">Analyse fehlgeschlagen</string>
+    <string name="device_offline">Gerät ist offline</string>
+
+    <!-- Aktionen -->
+    <string name="action_cancel">Abbrechen</string>
+    <string name="action_copy">Kopieren</string>
+    <string name="copied_to_clipboard">In die Zwischenablage kopiert</string>
+    <string name="action_clear">Löschen</string>
+
+    <!-- Status -->
+    <string name="status_online">Online</string>
+    <string name="status_offline">Offline</string>
+
+    <!-- Formatzeichenfolgen -->
+    <string name="latency_ms">%d ms</string>
+    <string name="confidence_percent">%d%% Konfidenz</string>
+    <string name="duration_seconds">%.1f s</string>
+    <string name="action_retry">Erneut versuchen</string>
+    <string name="interface_option_format">%1$s (%2$s) – %3$s</string>
+
+    <!-- Einstellungsbildschirm -->
+    <string name="settings_title">Einstellungen</string>
+
+    <!-- Einstellungs-Kategorien -->
+    <string name="pref_category_appearance">Darstellung</string>
+    <string name="pref_category_scanning">Analyse</string>
+    <string name="pref_category_data">Daten</string>
+    <string name="pref_category_about">Über</string>
+
+    <!-- Einstellungen zur Darstellung -->
+    <string name="pref_theme_title">Design</string>
+    <string name="pref_language_title">Sprache</string>
+    <string name="language_system_default">Systemstandard</string>
+    <string name="pref_dynamic_colors_title">Dynamische Farben</string>
+    <string name="pref_dynamic_colors_summary">Farben aus Ihrem Hintergrundbild verwenden (Android 12+)</string>
+
+    <!-- Scan-Einstellungen -->
+    <string name="pref_auto_scan_title">Automatische Analyse beim Start</string>
+    <string name="pref_auto_scan_summary">Analyse automatisch starten, wenn die App geöffnet wird</string>
+    <string name="pref_scan_timeout_title">Analyse-Zeitüberschreitung</string>
+
+    <!-- Zeitlimit-Optionen -->
+    <string name="timeout_fast">Schnell (3 Sekunden)</string>
+    <string name="timeout_normal">Normal (5 Sekunden)</string>
+    <string name="timeout_thorough">Gründlich (10 Sekunden)</string>
+
+    <!-- Dateneinstellungen -->
+    <string name="pref_clear_cache_title">Zwischenspeicher leeren</string>
+    <string name="pref_clear_cache_summary">Temporäre Analyse-Daten löschen</string>
+    <string name="pref_clear_history_title">Geräteverlauf löschen</string>
+    <string name="pref_clear_history_summary">Alle gespeicherten Geräteinformationen entfernen</string>
+
+    <!-- Über-Einstellungen -->
+    <string name="pref_version_title">Version</string>
+    <string name="pref_about_title">Über Network Scanner</string>
+    <string name="pref_about_summary">App-Informationen und Danksagungen</string>
+    <string name="pref_privacy_title">Datenschutzerklärung</string>
+    <string name="pref_privacy_summary">Wie Ihre Daten behandelt werden</string>
+
+    <!-- Dialoge -->
+    <string name="dialog_clear_cache_title">Zwischenspeicher leeren?</string>
+    <string name="dialog_clear_cache_message">Dadurch werden alle temporären Analyse-Daten gelöscht. Ihr Geräteverlauf bleibt erhalten.</string>
+    <string name="dialog_clear_history_title">Geräteverlauf löschen?</string>
+    <string name="dialog_clear_history_message">Dadurch werden alle gespeicherten Geräteinformationen einschließlich eigener Namen entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden.</string>
+    <string name="dialog_about_title">Über Network Scanner</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner ist ein leistungsstarkes Werkzeug zum Erkennen und Analysieren von Geräten in Ihrem lokalen Netzwerk.\n\nMit Rücksicht auf Ihre Privatsphäre entwickelt. Die gesamte Analyse findet lokal auf Ihrem Gerät statt.\n\n⚠️ Hinweis: Geräteerkennung und Port-Scan sind nicht zu 100 % genau. Die Ergebnisse können je nach Netzwerkbedingungen und Gerätekonfiguration variieren.\n\nVersion 1.0.0 | GPL-3.0-Lizenz</string>
+    <string name="view_on_github">Auf GitHub ansehen</string>
+    <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
+    <string name="deep_scan_disclaimer">Port- und Betriebssystemerkennung sind Schätzungen und möglicherweise nicht ganz genau</string>
+    <string name="dialog_privacy_title">Datenschutzerklärung</string>
+    <string name="dialog_privacy_message">Network Scanner respektiert Ihre Privatsphäre:\n\n• Keine Datenerfassung: Alle Analyse-Ergebnisse bleiben auf Ihrem Gerät\n• Keine Werbung und kein Tracking\n• Für die Analyse ist keine Internetberechtigung erforderlich\n\nDie Standortberechtigung wird nur verwendet, um – wie von Android vorgeschrieben – auf WLAN-Informationen zuzugreifen, nicht um Ihren Standort zu verfolgen.</string>
+    <string name="dialog_theme_restart_title">Design geändert</string>
+    <string name="dialog_theme_restart_message">Änderungen an den dynamischen Farben werden nach einem Neustart der App vollständig wirksam.</string>
+
+    <!-- Hinweismeldungen -->
+    <string name="cache_cleared">Zwischenspeicher erfolgreich geleert</string>
+    <string name="history_cleared">Geräteverlauf gelöscht</string>
+
+    <!-- Barrierefreiheit – Inhaltsbeschreibungen -->
+    <string name="cd_settings_button">Einstellungen öffnen</string>
+    <string name="cd_theme_button">Design ändern</string>
+    <string name="cd_refresh_button">Geräteliste aktualisieren</string>
+    <string name="cd_device_online">Gerät ist online</string>
+    <string name="cd_device_offline">Gerät ist offline</string>
+    <string name="cd_navigate_back">Zurück</string>
+    <string name="cd_start_deep_scan">Tiefen-Analyse für dieses Gerät starten</string>
+    <string name="cd_cancel_scan">Aktuelle Analyse abbrechen</string>
+    <string name="cd_empty_state_icon">Illustration: keine Geräte</string>
+    <string name="cd_network_info">Netzwerkinformationen</string>
+    <string name="cd_interface_selector">Netzwerkschnittstelle auswählen</string>
+    <string name="cd_port_status">Port %1$d ist %2$s</string>
+
+    <!-- Barrierefreiheit der Geräteliste -->
+    <string name="cd_device_item">%1$s, %2$s, IP %3$s</string>
+    <string name="cd_device_current">Dies ist Ihr aktuelles Gerät</string>
+    <string name="cd_section_header">Bereich %1$s mit %2$d Geräten</string>
+
+    <!-- Fortschritt der Tiefen-Analyse -->
+    <string name="deep_scan_port_progress">%1$d/%2$d Ports</string>
+    <string name="deep_scan_open_count">%d offen</string>
+
+    <!-- Eigene Gerätenamen -->
+    <string name="edit_device_name">Gerätenamen bearbeiten</string>
+    <string name="edit_device_name_hint">Geben Sie diesem Gerät einen eigenen Namen, um es leicht wiederzuerkennen</string>
+    <string name="device_name">Gerätename</string>
+    <string name="action_save">Speichern</string>
+
+    <!-- Eigene Ports -->
+    <string name="custom_ports">Eigene Ports</string>
+    <string name="add_port">Port hinzufügen</string>
+    <string name="add_custom_port">Eigenen Port hinzufügen</string>
+    <string name="port_number">Portnummer</string>
+    <string name="service_name">Dienstname</string>
+    <string name="action_add">Hinzufügen</string>
+    <string name="delete_port">Port löschen</string>
+    <string name="no_custom_ports">Keine eigenen Ports konfiguriert</string>
+    <string name="tap_add_to_create">Tippen Sie auf +, um eigene Ports zur Analyse hinzuzufügen</string>
+
+    <!-- Vollständiger Port-Scan -->
+    <string name="full_scan">Vollständiger Scan</string>
+    <string name="full_port_scan">Vollständiger Port-Scan</string>
+    <string name="full_scan_warning">Dabei werden alle 65.535 Ports dieses Geräts gescannt. Dies kann mehrere Minuten dauern und erheblichen Netzwerkverkehr erzeugen.</string>
+    <string name="full_scan_details">• Dauer: 1–3 Minuten\n• Netzwerkintensiv\n• Kann von Sicherheitssystemen erkannt werden</string>
+    <string name="action_start">Starten</string>
+
+    <!-- Einstellungen – Eigene Ports -->
+    <string name="pref_custom_ports_title">Eigene Ports</string>
+    <string name="pref_custom_ports_summary">Ports verwalten, die bei der Tiefen-Analyse gescannt werden</string>
+
+    <!-- Auswahl des Gerätesymbols -->
+    <string name="choose_device_icon">Gerätesymbol auswählen</string>
+
+    <!-- Fortschritt der Netzwerkanalyse -->
+    <string name="checking_network_connectivity">Netzwerkverbindung wird geprüft…</string>
+    <string name="classifying_devices">Geräte werden klassifiziert</string>
+    <string name="identifying_devices">Geräte werden identifiziert…</string>
+    <string name="resolving_netbios_names">NetBIOS-Namen werden aufgelöst</string>
+    <string name="finding_upnp_devices">UPnP-Geräte werden gesucht…</string>
+    <string name="discovering_services">Dienste werden erkannt…</string>
+    <string name="getting_device_information">Geräteinformationen werden abgerufen…</string>
+    <string name="scanning_network">Netzwerk wird analysiert…</string>
+    <string name="reading_arp_cache">ARP-Cache wird gelesen…</string>
+    <string name="analyzing_port">Port %1$d wird analysiert…</string>
+    <string name="scanning_ports">Ports werden gescannt…</string>
+    <string name="scanning_port">Port %1$d wird gescannt…</string>
+    <string name="scanned_addresses_progress">%1$d/%2$d Adressen gescannt</string>
+    <string name="detecting_os">Betriebssystem wird erkannt…</string>
+
+</resources>

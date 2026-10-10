@@ -263,4 +263,5 @@
     <string name="section_network">الشبكة</string>
     <string name="action_copy">نسخ</string>
     <string name="copied_to_clipboard">تم النسخ إلى الحافظة</string>
+    <string name="network_name_unknown">غير معروف</string>
 </resources>

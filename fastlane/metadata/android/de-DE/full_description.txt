@@ -1,0 +1,47 @@
+Network Scanner ist ein schneller WLAN- und IP-Scanner, der alle Geräte in Ihrem lokalen Netzwerk anzeigt – mit IP-Adresse, Hostnamen, offenen Ports und Gerätetyp. Keine Werbung, kein Tracking, kein Root-Zugriff erforderlich.
+
+Egal, ob Sie Verbindungsprobleme beheben, die Sicherheit Ihres Netzwerks überprüfen oder einfach nur wissen möchten, wer mit Ihrem Router verbunden ist – Network Scanner funktioniert vollständig offline. Der gesamte Scan findet auf Ihrem Gerät statt, und die App ist vollständig quelloffen unter der GPL-3.0-Lizenz.
+
+<b>Wichtigste Funktionen:</b>
+
+• Schneller WLAN-Netzwerkscan, um alle Geräte in Ihrem lokalen Netzwerk zu erkennen
+• Ping-Scan mit TCP-Fallback, um Geräte zu erkennen, die ICMP blockieren
+• Gerätedetails einschließlich IP-Adresse, Hostname und Gerätetyp
+• Port-Scanner zur Identifizierung offener Ports und laufender Dienste
+• Vollständiger Port-Scan aller 65.535 Ports für eine tiefergehende Analyse
+• mDNS-/Bonjour-Erkennung für AirPlay, Chromecast, Drucker, SSH, SMB und mehr
+• Betriebssystem-Fingerabdruck zur Identifizierung von Windows, Linux, macOS, Routern und Druckern
+• MAC-Adress- und Hersteller-Abfrage, sofern Android dies zulässt – moderne Android-Versionen schränken die Sichtbarkeit von MAC-Adressen aus Datenschutzgründen ein, und zufällige (private) Adressen werden bei Erkennung gekennzeichnet
+• Die Herstellerabfrage erfolgt anhand einer in der App integrierten Datenbank, sodass keine Daten über eine Fernabfrage gesendet werden
+• Übersichtliche Benutzeroberfläche im Material Design 3
+• Benutzerdefinierte Geräte: Geräte umbenennen und eigene Symbole zuweisen
+• Auswahl der Schnittstelle (WLAN, Ethernet, VPN) und anpassbare Scan-Einstellungen
+
+<b>Wer ist in meinem WLAN?</b>
+
+• Finden Sie die IP-Adresse jedes mit Ihrem Netzwerk verbundenen Geräts
+• Unbekannte Geräte erkennen
+• Identifizieren Sie Gerätetypen – Telefone, Laptops, Fernseher, Router, Drucker, NAS und mehr
+• Überprüfen Sie offene Ports, um Schwachstellen in Ihrer Netzwerksicherheit aufzudecken
+• Beheben Sie Verbindungsprobleme
+• Überwachen Sie Ihr Heim- oder Büronetzwerk
+
+<b>Datenschutz an erster Stelle:</b>
+
+• Keine Werbung, kein Tracking, keine Analysedienste
+• Alle Scans finden lokal auf Ihrem Gerät statt
+• Es wird nichts hochgeladen, und keine Scan-Ergebnisse verlassen jemals Ihr Telefon
+• Nur minimale Berechtigungen erforderlich
+• 100 % Open Source (GPL-3.0) und vollständig überprüfbar
+
+<b>Erläuterung der Berechtigungen:</b>
+
+Network Scanner fordert nur die Berechtigungen an, die zum Scannen benötigt werden:
+
+• <b>Netzwerkzugriff</b> — Zur Kommunikation mit Geräten in Ihrem Netzwerk.
+
+• <b>WLAN-Status</b> — Um zu prüfen, ob Sie verbunden sind, und das zu analysierende Netzwerk zu identifizieren.
+
+• <b>WLAN-Geräte in der Nähe</b> — Erforderlich, um Geräte in Ihrem lokalen Netzwerk zu erkennen. Android schränkt den Zugriff auf das lokale Netzwerk zunehmend ein: Ab Android 17 müssen Apps über eine Berechtigung für das lokale Netzwerk verfügen, um überhaupt auf Geräte in Ihrem LAN zugreifen zu können. Ohne diese Berechtigung funktioniert der Scan nicht.
+
+• <b>Standort (optional, wird niemals zur Ortung verwendet)</b> — Nur zum Auslesen Ihres WLAN-Netzwerknamens (SSID) zur Anzeige. Der Scan funktioniert auch ohne diese Berechtigung einwandfrei.
