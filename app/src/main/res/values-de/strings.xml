@@ -38,6 +38,7 @@
 
     <!-- Schnittstellentypen -->
     <string name="interface_type_wifi">WLAN</string>
+    <string name="network_name_unknown">Unbekannt</string>
     <string name="interface_type_ethernet">Ethernet</string>
     <string name="interface_type_vpn">VPN</string>
     <string name="interface_type_cellular">Mobilfunk</string>
