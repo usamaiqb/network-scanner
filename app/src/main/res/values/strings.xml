@@ -198,6 +198,14 @@
     <string name="history_cleared">Device history cleared</string>
     <string name="neighbor_source_shizuku_unavailable">Shizuku is not running or permission was denied</string>
     <string name="neighbor_source_root_unavailable">Root access was denied</string>
+    <string name="neighbor_status_ready">Ready</string>
+    <string name="neighbor_status_shizuku_will_prompt">Shizuku will ask for permission</string>
+    <string name="neighbor_status_shizuku_denied">Permission denied. Allow it in the Shizuku app</string>
+    <string name="neighbor_status_shizuku_outdated">Shizuku needs to be updated</string>
+    <string name="neighbor_status_shizuku_not_running">Shizuku is not running</string>
+    <string name="neighbor_status_root_will_prompt">Your root manager will ask for access</string>
+    <string name="neighbor_status_root_not_found">Root not detected on this device</string>
+    <string name="neighbor_status_waiting">Waiting for access…</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">Open settings</string>

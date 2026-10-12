@@ -172,6 +172,14 @@
     <string name="history_cleared">История устройств очищена</string>
     <string name="neighbor_source_shizuku_unavailable">Shizuku не запущен или в разрешении отказано</string>
     <string name="neighbor_source_root_unavailable">В root-доступе отказано</string>
+    <string name="neighbor_status_ready">Готово</string>
+    <string name="neighbor_status_shizuku_will_prompt">Shizuku запросит разрешение</string>
+    <string name="neighbor_status_shizuku_denied">В разрешении отказано. Разрешите его в приложении Shizuku</string>
+    <string name="neighbor_status_shizuku_outdated">Shizuku нужно обновить</string>
+    <string name="neighbor_status_shizuku_not_running">Shizuku не запущен</string>
+    <string name="neighbor_status_root_will_prompt">Root-менеджер запросит доступ</string>
+    <string name="neighbor_status_root_not_found">Root не обнаружен на этом устройстве</string>
+    <string name="neighbor_status_waiting">Ожидание доступа…</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">Открыть настройки</string>

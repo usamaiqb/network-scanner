@@ -174,6 +174,14 @@
     <string name="history_cleared">Cronologia dispositivi cancellata</string>
     <string name="neighbor_source_shizuku_unavailable">Shizuku non è in esecuzione o il permesso è stato negato</string>
     <string name="neighbor_source_root_unavailable">Accesso root negato</string>
+    <string name="neighbor_status_ready">Pronto</string>
+    <string name="neighbor_status_shizuku_will_prompt">Shizuku chiederà il permesso</string>
+    <string name="neighbor_status_shizuku_denied">Permesso negato. Concedilo nell\'app Shizuku</string>
+    <string name="neighbor_status_shizuku_outdated">Shizuku deve essere aggiornato</string>
+    <string name="neighbor_status_shizuku_not_running">Shizuku non è in esecuzione</string>
+    <string name="neighbor_status_root_will_prompt">Il gestore root chiederà l\'accesso</string>
+    <string name="neighbor_status_root_not_found">Root non rilevato su questo dispositivo</string>
+    <string name="neighbor_status_waiting">In attesa dell\'accesso…</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">Apri impostazioni</string>

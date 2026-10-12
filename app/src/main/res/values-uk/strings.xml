@@ -172,6 +172,14 @@
     <string name="history_cleared">Історія пристрою очищена</string>
     <string name="neighbor_source_shizuku_unavailable">Shizuku не запущено або в дозволі відмовлено</string>
     <string name="neighbor_source_root_unavailable">У root-доступі відмовлено</string>
+    <string name="neighbor_status_ready">Готово</string>
+    <string name="neighbor_status_shizuku_will_prompt">Shizuku запитає дозвіл</string>
+    <string name="neighbor_status_shizuku_denied">У дозволі відмовлено. Надайте його в застосунку Shizuku</string>
+    <string name="neighbor_status_shizuku_outdated">Shizuku потрібно оновити</string>
+    <string name="neighbor_status_shizuku_not_running">Shizuku не запущено</string>
+    <string name="neighbor_status_root_will_prompt">Root-менеджер запитає доступ</string>
+    <string name="neighbor_status_root_not_found">Root не виявлено на цьому пристрої</string>
+    <string name="neighbor_status_waiting">Очікування доступу…</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">Відкрити налаштування</string>

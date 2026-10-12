@@ -195,6 +195,14 @@
     <string name="history_cleared">Geräteverlauf gelöscht</string>
     <string name="neighbor_source_shizuku_unavailable">Shizuku läuft nicht oder die Berechtigung wurde verweigert</string>
     <string name="neighbor_source_root_unavailable">Root-Zugriff wurde verweigert</string>
+    <string name="neighbor_status_ready">Bereit</string>
+    <string name="neighbor_status_shizuku_will_prompt">Shizuku fragt nach der Berechtigung</string>
+    <string name="neighbor_status_shizuku_denied">Berechtigung verweigert. Erlauben Sie sie in der Shizuku-App</string>
+    <string name="neighbor_status_shizuku_outdated">Shizuku muss aktualisiert werden</string>
+    <string name="neighbor_status_shizuku_not_running">Shizuku läuft nicht</string>
+    <string name="neighbor_status_root_will_prompt">Ihr Root-Manager fragt nach dem Zugriff</string>
+    <string name="neighbor_status_root_not_found">Auf diesem Gerät wurde kein Root gefunden</string>
+    <string name="neighbor_status_waiting">Warte auf Zugriff…</string>
 
     <!-- Barrierefreiheit – Inhaltsbeschreibungen -->
     <string name="cd_settings_button">Einstellungen öffnen</string>

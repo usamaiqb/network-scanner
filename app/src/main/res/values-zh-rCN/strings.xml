@@ -176,6 +176,14 @@
     <string name="history_cleared">设备历史已清除</string>
     <string name="neighbor_source_shizuku_unavailable">Shizuku 未运行或权限被拒绝</string>
     <string name="neighbor_source_root_unavailable">Root 权限被拒绝</string>
+    <string name="neighbor_status_ready">就绪</string>
+    <string name="neighbor_status_shizuku_will_prompt">Shizuku 将请求权限</string>
+    <string name="neighbor_status_shizuku_denied">权限被拒绝。请在 Shizuku 应用中允许</string>
+    <string name="neighbor_status_shizuku_outdated">Shizuku 需要更新</string>
+    <string name="neighbor_status_shizuku_not_running">Shizuku 未运行</string>
+    <string name="neighbor_status_root_will_prompt">Root 管理器将请求访问权限</string>
+    <string name="neighbor_status_root_not_found">未在此设备上检测到 Root</string>
+    <string name="neighbor_status_waiting">正在等待访问权限…</string>
 
     <!-- Accessibility - Content Descriptions -->
     <string name="cd_settings_button">打开设置</string>

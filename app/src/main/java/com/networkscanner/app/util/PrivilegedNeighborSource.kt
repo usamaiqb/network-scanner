@@ -13,6 +13,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import rikka.shizuku.Shizuku
+import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 import kotlin.coroutines.resume
@@ -30,6 +31,9 @@ import kotlin.system.exitProcess
 object PrivilegedNeighborSource {
 
     enum class Mode { NONE, SHIZUKU, ROOT }
+
+    /** What choosing a mode would currently lead to, determined without prompting the user. */
+    enum class Availability { READY, WILL_PROMPT, DENIED, OUTDATED, UNAVAILABLE }
 
     const val PREF_KEY = "privileged_neighbor_source"
 
@@ -77,6 +81,31 @@ object PrivilegedNeighborSource {
             }
         }
     }
+
+    /**
+     * Passive counterpart of [probe]: never shows a prompt. Root cannot be confirmed without
+     * asking the su manager, so a `su` binary on PATH only means [Availability.WILL_PROMPT].
+     */
+    suspend fun availability(mode: Mode): Availability = withContext(Dispatchers.IO) {
+        when (mode) {
+            Mode.NONE -> Availability.READY
+            Mode.ROOT -> if (suOnPath()) Availability.WILL_PROMPT else Availability.UNAVAILABLE
+            Mode.SHIZUKU -> try {
+                when {
+                    !Shizuku.pingBinder() -> Availability.UNAVAILABLE
+                    Shizuku.isPreV11() -> Availability.OUTDATED
+                    Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED -> Availability.READY
+                    Shizuku.shouldShowRequestPermissionRationale() -> Availability.DENIED
+                    else -> Availability.WILL_PROMPT
+                }
+            } catch (e: Exception) {
+                Availability.UNAVAILABLE
+            }
+        }
+    }
+
+    private fun suOnPath(): Boolean =
+        System.getenv("PATH").orEmpty().split(':').any { it.isNotEmpty() && File(it, "su").exists() }
 
     // The command goes through stdin because `su -c` is not universal (AOSP's su lacks it).
     private fun runSu(command: String): List<String> = try {

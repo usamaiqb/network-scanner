@@ -30,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +49,6 @@ import com.networkscanner.app.BuildConfig
 import com.networkscanner.app.R
 import com.networkscanner.app.ui.SettingsViewModel
 import com.networkscanner.app.ui.components.SegmentSurface
-import com.networkscanner.app.util.PrivilegedNeighborSource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,10 +62,13 @@ fun SettingsScreen(
     val autoScan by viewModel.autoScan.collectAsState()
     val language by viewModel.language.collectAsState()
     val neighborSource by viewModel.neighborSource.collectAsState()
+    val neighborAvailability by viewModel.neighborAvailability.collectAsState()
+    val neighborProbe by viewModel.neighborProbe.collectAsState()
 
     var showAboutDialog by remember { mutableStateOf(false) }
     var showPrivacyDialog by remember { mutableStateOf(false) }
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var showNeighborSourceSheet by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -177,17 +180,15 @@ fun SettingsScreen(
                         )
                     }
                     SegmentSurface(index = 1, count = 3) {
-                        SegmentedSettingItem(
+                        ClickableSettingItem(
                             title = stringResource(R.string.pref_neighbor_source_title),
                             summary = stringResource(R.string.pref_neighbor_source_summary),
                             icon = Icons.Rounded.Key,
-                            options = listOf(
-                                PrivilegedNeighborSource.Mode.NONE to stringResource(R.string.neighbor_source_none),
-                                PrivilegedNeighborSource.Mode.SHIZUKU to stringResource(R.string.neighbor_source_shizuku),
-                                PrivilegedNeighborSource.Mode.ROOT to stringResource(R.string.neighbor_source_root)
-                            ),
-                            selected = neighborSource,
-                            onSelected = { viewModel.setNeighborSource(it) }
+                            value = neighborSourceLabel(neighborSource),
+                            onClick = {
+                                viewModel.onNeighborPickerOpened()
+                                showNeighborSourceSheet = true
+                            }
                         )
                     }
                     SegmentSurface(index = 2, count = 3) {
@@ -267,6 +268,27 @@ fun SettingsScreen(
     }
     if (showPrivacyDialog) {
         PrivacyDialog(onDismiss = { showPrivacyDialog = false })
+    }
+    if (showNeighborSourceSheet) {
+        // The sheet stays open while access is requested and closes once the new source is saved.
+        val openedWith = remember { neighborSource }
+        LaunchedEffect(neighborSource) {
+            if (neighborSource != openedWith) showNeighborSourceSheet = false
+        }
+        NeighborSourcePickerSheet(
+            selected = neighborSource,
+            availability = neighborAvailability,
+            probe = neighborProbe,
+            onSelected = { mode ->
+                if (mode == neighborSource) {
+                    viewModel.cancelNeighborProbe()
+                    showNeighborSourceSheet = false
+                } else {
+                    viewModel.setNeighborSource(mode)
+                }
+            },
+            onDismiss = { showNeighborSourceSheet = false }
+        )
     }
     if (showLanguageDialog) {
         LanguagePickerSheet(
