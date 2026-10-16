@@ -1,0 +1,5 @@
+• MAC-Adressen von Geräten unter Android 10+ über Shizuku oder Root anzeigen
+• Neue Auswahl für „Zugriff auf MAC-Adressen“ zeigt, welche Optionen bereit sind
+• Deutsche Übersetzung hinzugefügt
+• Zeigt „Unbekannt“, wenn der WLAN-Name nicht gelesen werden kann
+• Hersteller-Datenbank für Geräte aktualisiert

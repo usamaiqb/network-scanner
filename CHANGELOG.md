@@ -1,3 +1,23 @@
+## [1.1.11] - 2026-10-16
+
+### Added
+- Show the MAC addresses of scanned devices on Android 10+ by reading the ARP table through Shizuku or root. The new "MAC address access" setting picks the source and only asks for permission when you select one (#84)
+- German translation of the app and store listing (#91)
+
+### Improved
+- The MAC address source is now picked from a bottom sheet that shows whether each option is ready, will ask for permission, or is unavailable, and shows a refusal inline instead of a toast (#97)
+- Updated the OUI vendor database and added a script to keep it in sync (#95)
+- The network name bar now uses an open-in-new icon instead of a dropdown caret, since tapping it opens the system Wi-Fi settings
+
+### Fixed
+- Devices found late in a scan and the gateway now also get their MAC address from Shizuku or root (#94)
+- The network name bar shows "Unknown" when the Wi-Fi name can't be read, instead of "Wi-Fi"
+- Added missing German, Italian, and Spanish strings (#93, #96)
+
+### Changed
+- Added a GitHub social preview image (#98)
+- Bumped gradle/actions/setup-gradle from 6.3.0 to 6.4.0 (#90)
+
 ## [1.1.10] - 2026-10-02
 
 ### Added

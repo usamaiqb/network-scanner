@@ -1,0 +1,5 @@
+• See device MAC addresses on Android 10+ through Shizuku or root
+• New MAC address access picker shows which options are ready
+• Added German translation
+• Shows "Unknown" when the Wi-Fi name can't be read
+• Updated device vendor database
