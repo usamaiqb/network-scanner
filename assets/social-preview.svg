@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+<defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004F58"/>
+      <stop offset="50%" stop-color="#006874"/>
+      <stop offset="100%" stop-color="#00363D"/>
+    </linearGradient>
+    <!-- Accent glow -->
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4FD8EB" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#4FD8EB" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Subtle grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#4FD8EB" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+  </defs>
+<rect width="1280" height="640" fill="url(#bg)"/>
+<rect width="1280" height="640" fill="url(#grid)"/>
+<g transform="translate(0,7.5) scale(1.25)">
+
+
+  <!-- Background -->
+  <ellipse cx="380" cy="250" rx="350" ry="300" fill="url(#glow)"/>
+
+  <!-- Decorative network nodes (left side) -->
+  <!-- Node connections -->
+  <line x1="120" y1="130" x2="200" y2="200" stroke="#4FD8EB" stroke-opacity="0.2" stroke-width="1.5"/>
+  <line x1="200" y1="200" x2="150" y2="310" stroke="#4FD8EB" stroke-opacity="0.2" stroke-width="1.5"/>
+  <line x1="200" y1="200" x2="310" y2="250" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="80" y1="350" x2="150" y2="310" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="150" y1="310" x2="260" y2="370" stroke="#4FD8EB" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- Nodes -->
+  <circle cx="120" cy="130" r="5" fill="#4FD8EB" fill-opacity="0.3"/>
+  <circle cx="200" cy="200" r="6" fill="#4FD8EB" fill-opacity="0.25"/>
+  <circle cx="150" cy="310" r="5" fill="#4FD8EB" fill-opacity="0.3"/>
+  <circle cx="80" cy="350" r="4" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="310" cy="250" r="4" fill="#4FD8EB" fill-opacity="0.15"/>
+  <circle cx="260" cy="370" r="4" fill="#4FD8EB" fill-opacity="0.2"/>
+
+  <!-- Decorative network nodes (right side) -->
+  <line x1="820" y1="120" x2="880" y2="200" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="880" y1="200" x2="950" y2="300" stroke="#4FD8EB" stroke-opacity="0.12" stroke-width="1.5"/>
+  <line x1="880" y1="200" x2="780" y2="280" stroke="#4FD8EB" stroke-opacity="0.15" stroke-width="1.5"/>
+  <line x1="780" y1="280" x2="850" y2="380" stroke="#4FD8EB" stroke-opacity="0.12" stroke-width="1.5"/>
+  <line x1="950" y1="300" x2="850" y2="380" stroke="#4FD8EB" stroke-opacity="0.1" stroke-width="1.5"/>
+
+  <circle cx="820" cy="120" r="4" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="880" cy="200" r="5" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="950" cy="300" r="4" fill="#4FD8EB" fill-opacity="0.15"/>
+  <circle cx="780" cy="280" r="4" fill="#4FD8EB" fill-opacity="0.2"/>
+  <circle cx="850" cy="380" r="5" fill="#4FD8EB" fill-opacity="0.15"/>
+
+  <!-- App icon (centered, reproduced from ic_launcher_foreground) -->
+  <g transform="translate(412, 120)">
+    <!-- Icon background circle -->
+    <circle cx="100" cy="100" r="90" fill="#97F0FF" fill-opacity="0.12" stroke="#4FD8EB" stroke-width="2" stroke-opacity="0.3"/>
+    <circle cx="100" cy="100" r="70" fill="#97F0FF" fill-opacity="0.08" stroke="#4FD8EB" stroke-width="1.5" stroke-opacity="0.2"/>
+
+    <!-- Outer ring -->
+    <path d="M100,30 C61.34,30 30,61.34 30,100 s31.34,70 70,70 70,-31.34 70,-70 S138.66,30 100,30z M100,156 c-30.93,0 -56,-25.07 -56,-56 s25.07,-56 56,-56 56,25.07 56,56 -25.07,56 -56,56z"
+          fill="#97F0FF" fill-opacity="0.9"/>
+    <!-- Middle ring -->
+    <path d="M100,58 c-23.2,0 -42,18.8 -42,42 s18.8,42 42,42 42,-18.8 42,-42 -18.8,-42 -42,-42z M100,128 c-15.46,0 -28,-12.54 -28,-28 s12.54,-28 28,-28 28,12.54 28,28 -12.54,28 -28,28z"
+          fill="#4FD8EB"/>
+    <!-- Center dot -->
+    <circle cx="100" cy="100" r="14" fill="#FFFFFF"/>
+    <!-- Crosshair lines -->
+    <line x1="100" y1="20" x2="100" y2="44" stroke="#97F0FF" stroke-width="3" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="100" y1="156" x2="100" y2="180" stroke="#97F0FF" stroke-width="3" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="20" y1="100" x2="44" y2="100" stroke="#97F0FF" stroke-width="3" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="156" y1="100" x2="180" y2="100" stroke="#97F0FF" stroke-width="3" stroke-linecap="round" stroke-opacity="0.7"/>
+  </g>
+
+  <!-- App name -->
+  <text x="512" y="390" text-anchor="middle" font-family="'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif" font-size="52" font-weight="700" fill="#FFFFFF" letter-spacing="1">
+    Network Scanner
+  </text>
+
+  <!-- Tagline -->
+  <text x="512" y="435" text-anchor="middle" font-family="'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif" font-size="20" font-weight="400" fill="#97F0FF" letter-spacing="2">
+    Fast. Private. Open Source.
+  </text>
+
+</g>
+</svg>
