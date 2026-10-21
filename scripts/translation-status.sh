@@ -22,6 +22,7 @@ display_name() {
         ru) echo "Русский"    ;;
         es) echo "Español"    ;;
         uk) echo "Українська" ;;
+        fa) echo "فارسی" ;;
         ar) echo "العربية"    ;;
         zh-rCN) echo "中文 (中国)" ;;
         it) echo "Italiano"   ;;

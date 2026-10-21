@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Network Scanner</string>
+
+    <!-- Menu items -->
+    <string name="action_settings">تنظیمات</string>
+    <string name="action_refresh">تازه‌سازی</string>
+    <string name="action_theme">تغییر پوسته</string>
+
+    <!-- Scan states -->
+    <string name="scanning">در حال اسکن شبکه ...</string>
+    <string name="scan_complete">اسکن کامل شد</string>
+    <string name="devices_found">%d دستگاه یافت شد</string>
+    <string name="pull_to_refresh">برای بازنشانی به پایین بکشید</string>
+
+    <!-- Initial state -->
+    <string name="initial_scan_title">اسکن شبکه</string>
+    <string name="initial_scan_message">همه‌ی دستگاه‌های متصل به شبکه‌ی Wi-Fi خود را پیدا کنید</string>
+    <string name="action_scan_network">اسکن شبکه</string>
+
+    <!-- Device sections -->
+    <string name="section_active">دستگاه‌های فعال</string>
+    <string name="section_offline">دستگاه‌های آفلاین</string>
+
+    <!-- Device info -->
+    <string name="unknown_device">دستگاه ناشناس</string>
+    <string name="unknown_manufacturer">سازنده‌ی ناشناس</string>
+    <string name="ip_address">IP: %s</string>
+    <string name="mac_address">MAC: %s</string>
+    <string name="hostname">Hostname: %s</string>
+    <string name="last_seen">آخرین مشاهده: %s</string>
+    <string name="this_device">دستگاه فعلی</string>
+
+    <!-- Empty states -->
+    <string name="no_devices_title">دستگاهی یافت نشد</string>
+    <string name="no_devices_message">مطمئن شوید به یک شبکه‌ی Wi-Fi متصل هستید و دوباره اسکن کنید.</string>
+    <string name="no_wifi_title">اتصال به شبکه وجود ندارد</string>
+    <string name="no_wifi_message">هیچ رابط شبکه‌ی فعالی پیدا نشد. به یک شبکه متصل شوید و دوباره تلاش کنید.</string>
+    <string name="no_active_interfaces">هیچ رابط شبکهٔ فعالی وجود ندارد</string>
+
+    <!-- Interface Types -->
+    <string name="interface_type_wifi">Wi-Fi</string>
+    <string name="network_name_unknown">نامشخص</string>
+    <string name="interface_type_ethernet">اترنت</string>
+    <string name="interface_type_vpn">VPN</string>
+    <string name="interface_type_cellular">شبکه‌ی تلفن همراه</string>
+    <string name="interface_type_network">شبکه</string>
+
+    <!-- Errors -->
+    <string name="error_scan_failed">اسکن ناموفق بود: %s</string>
+    <string name="error_permission_denied">دسترسی رد شد</string>
+    <string name="error_no_network">اتصال به شبکه وجود ندارد</string>
+
+    <!-- Permissions -->
+    <string name="permission_location_title">بهبود اسکن</string>
+    <string name="permission_location_message">برای دسترسی به اطلاعات Wi-Fi و اسکن شبکه، مجوز موقعیت مکانی لازم است.</string>
+    <string name="permission_optional_message">دادن مجوز موقعیت مکانی می‌تواند به پیدا کردن دستگاه‌های بیشتر و نمایش اطلاعات دقیق‌تر شبکه کمک کند. این مجوز اختیاری است و برنامه بدون آن هم کار می‌کند.</string>
+    <string name="permission_nearby_title">مجوز دستگاه‌های اطراف</string>
+    <string name="permission_nearby_message">این مجوز به برنامه اجازه می‌دهد دستگاه‌های اطراف را در شبکه‌ی شما پیدا کند.</string>
+    <string name="grant_permission">اعطای مجوز</string>
+    <string name="skip">رد کردن</string>
+    <string name="permission_local_network_denied">برای اسکن شبکه‌ی محلی، مجوز دستگاه‌های اطراف لازم است.</string>
+    <string name="action_open_settings">باز کردن تنظیمات</string>
+
+    <!-- Theme -->
+    <string name="theme_light">روشن</string>
+    <string name="theme_dark">تیره</string>
+    <string name="theme_system">سیستم</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_device_icon">نماد نوع دستگاه</string>
+    <string name="cd_scan_button">شروع اسکن شبکه</string>
+    <string name="cd_device_status">نشانگر وضعیت دستگاه</string>
+
+    <!-- Device Detail Screen -->
+    <string name="device_details">جزئیات دستگاه</string>
+    <string name="section_identity">مشخصات</string>
+    <string name="section_network">شبکه</string>
+    <string name="deep_scan_results">نتایج اسکن عمیق</string>
+    <string name="open_ports">پورت‌های باز</string>
+
+    <!-- Labels -->
+    <string name="label_ip_address">آدرس IP</string>
+    <string name="label_mac_address">آدرس MAC</string>
+    <string name="label_mac_address_randomized">آدرس MAC (تصادفی‌شده)</string>
+    <string name="label_vendor">سازنده</string>
+    <string name="label_latency">تأخیر</string>
+    <string name="label_hostname">نام میزبان</string>
+    <string name="label_netbios_name">نام NetBIOS</string>
+    <string name="label_services">سرویس‌ها</string>
+    <string name="label_discovered_via">شناسایی شده از طریق</string>
+    <string name="label_detected_os">سیستم‌عامل شناسایی‌شده</string>
+    <string name="label_scan_duration">مدت‌زمان اسکن</string>
+    <string name="label_friendly_name">نام نمایشی</string>
+    <string name="label_model">مدل</string>
+    <string name="label_serial_number">شماره سریال</string>
+    <string name="label_os_hint">حدس سیستم‌عامل (TTL)</string>
+    <string name="label_workgroup">گروه کاری</string>
+    <string name="label_upnp_type">نوع UPnP</string>
+    <string name="label_web_interface">رابط وب</string>
+
+    <!-- TTL-based OS hints -->
+    <string name="ttl_hint_unix">%d (Linux/Android/iOS)</string>
+    <string name="ttl_hint_windows">%d (Windows)</string>
+    <string name="ttl_hint_network">%d (Router/Switch)</string>
+
+    <!-- Fallbacks -->
+    <string name="port_service_unknown">نامشخص</string>
+    <string name="cd_open_in_browser">باز کردن در مرورگر</string>
+
+    <!-- Deep Scan States -->
+    <string name="tap_to_deep_scan">برای شروع اسکن عمیق کلیک کنید</string>
+    <string name="start_deep_scan">شروع اسکن عمیق</string>
+    <string name="no_open_ports">پورت بازی یافت نشد</string>
+    <string name="scan_failed">اسکن با خطا مواجه شد</string>
+    <string name="device_offline">دستگاه آفلاین است</string>
+
+    <!-- Actions -->
+    <string name="action_cancel">لغو</string>
+    <string name="action_copy">کپی</string>
+    <string name="copied_to_clipboard">در کلیپ‌بورد کپی شد</string>
+    <string name="action_clear">پاک کردن</string>
+
+    <!-- Status -->
+    <string name="status_online">آنلاین</string>
+    <string name="status_offline">آفلاین</string>
+
+    <!-- Format strings -->
+    <string name="latency_ms">%d میلی‌ثانیه</string>
+    <string name="confidence_percent">%d%% میزان اطمینان</string>
+    <string name="duration_seconds">%.1f ثانیه</string>
+    <string name="action_retry">تلاش مجدد</string>
+    <string name="interface_option_format">%1$s (%2$s) - %3$s</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">تنظیمات</string>
+
+    <!-- Preference Categories -->
+    <string name="pref_category_appearance">ظاهر</string>
+    <string name="pref_category_scanning">اسکن</string>
+    <string name="pref_category_data">داده‌ها</string>
+    <string name="pref_category_about">درباره</string>
+
+    <!-- Appearance Preferences -->
+    <string name="pref_theme_title">پوسته</string>
+    <string name="pref_language_title">زبان برنامه</string>
+    <string name="language_system_default">پیش‌فرض سیستم</string>
+    <string name="pref_dynamic_colors_title">رنگ‌های پویا</string>
+    <string name="pref_dynamic_colors_summary">هماهنگ‌سازی رنگ‌های برنامه با پس‌زمینهٔ دستگاه (اندروید ۱۲ به بالا)</string>
+
+    <!-- Scanning Preferences -->
+    <string name="pref_auto_scan_title">اسکن خودکار هنگام شروع</string>
+    <string name="pref_auto_scan_summary">با باز کردن برنامه، اسکن به‌صورت خودکار شروع میشود</string>
+    <string name="pref_scan_timeout_title">مهلت اسکن</string>
+    <string name="pref_neighbor_source_title">دسترسی به آدرس‌های MAC</string>
+    <string name="pref_neighbor_source_summary">در اندروید ۱۰ به بالا، آدرس MAC سایر دستگاه‌ها از دسترس برنامه‌ها خارج است. برای دسترسی به این آدرس‌ها، از Shizuku یا دسترسی روت استفاده کنید.</string>
+
+    <!-- Timeout options -->
+    <string name="timeout_fast">سریع (۳ ثانیه)</string>
+    <string name="timeout_normal">معمولی (۵ ثانیه)</string>
+    <string name="timeout_thorough">دقیق (۱۰ ثانیه)</string>
+
+    <!-- MAC address access options -->
+    <string name="neighbor_source_none">غیرفعال</string>
+    <string name="neighbor_source_shizuku" translatable="false">Shizuku</string>
+    <string name="neighbor_source_root">روت</string>
+
+    <!-- Data Preferences -->
+    <string name="pref_clear_cache_title">پاک کردن حافظه‌ی پنهان</string>
+    <string name="pref_clear_cache_summary">پاک کردن داده‌های موقت اسکن</string>
+    <string name="pref_clear_history_title">پاک کردن تاریخچه‌ی دستگاه‌ها</string>
+    <string name="pref_clear_history_summary">پاک کردن تمام اطلاعات ذخیره‌شده‌ی دستگاه‌ها</string>
+
+    <!-- About Preferences -->
+    <string name="pref_version_title">نسخه برنامه</string>
+    <string name="pref_about_title">درباره‌ی Network Scanner</string>
+    <string name="pref_about_summary">اطلاعات برنامه و توسعه‌دهندگان</string>
+    <string name="pref_privacy_title">سیاست حفظ حریم خصوصی</string>
+    <string name="pref_privacy_summary">نحوه‌ی مدیریت داده‌های شما</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_clear_cache_title">حافظه‌ی پنهان پاک شود؟</string>
+    <string name="dialog_clear_cache_message">تمام داده‌های موقت اسکن پاک خواهند شد، اما تاریخچهٔ دستگاه‌های شما حفظ می‌شود.</string>
+    <string name="dialog_clear_history_title">تاریخچه‌ی دستگاه‌ها پاک شود؟</string>
+    <string name="dialog_clear_history_message">تمام اطلاعات ذخیره‌شدهٔ دستگاه‌ها، از جمله نام‌های دلخواه، حذف خواهند شد. این کار قابل بازگشت نیست.</string>
+    <string name="dialog_about_title">درباره‌ی Network Scanner</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner ابزاری قدرتمند برای پیدا کردن و تحلیل دستگاه‌های شبکه‌ی محلی شماست. این برنامه با در نظر گرفتن حریم خصوصی شما ساخته شده است. تمام اسکن‌ها به‌صورت محلی روی دستگاه شما انجام می‌شود. ⚠️ توجه: شناسایی دستگاه‌ها و اسکن پورت‌ها ۱۰۰٪ دقیق نیست. نتایج ممکن است بسته به شرایط شبکه و پیکربندی دستگاه‌ها متفاوت باشد. نسخه‌ی 1.0.0 | مجوز GPL-3.0</string>
+    <string name="view_on_github">رفتن به GitHub</string>
+    <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
+    <string name="deep_scan_disclaimer">شناسایی پورت‌ها و سیستم‌عامل تخمینی است و ممکن است کاملاً دقیق نباشد.</string>
+    <string name="dialog_privacy_title">سیاست حفظ حریم خصوصی</string>
+    <string name="dialog_privacy_message">برنامهٔ اسکن شبکه به حریم خصوصی شما احترام می‌گذارد:\n\n• هیچ اطلاعاتی جمع‌آوری نمی‌شود؛ تمام نتایج اسکن روی دستگاه شما باقی می‌مانند.\n• بدون تبلیغات و ردیابی کاربران\n• برای اسکن شبکه نیازی به دسترسی به اینترنت نیست.\n\nمجوز مکان فقط برای دسترسی به اطلاعات Wi-Fi مطابق با الزامات اندروید، استفاده می‌شود و کاربردی برای ردیابی موقعیت مکانی شما ندارد.</string>
+    <string name="dialog_theme_restart_title">پوسته تغییر کرد</string>
+    <string name="dialog_theme_restart_message">تغییرات رنگ‌های پویا پس از راه‌اندازی مجدد برنامه به‌طور کامل اعمال می‌شوند.</string>
+
+    <!-- Toast Messages -->
+    <string name="cache_cleared">حافظه‌ی پنهان با موفقیت پاک شد</string>
+    <string name="history_cleared">تاریخچه‌ی دستگاه‌ها پاک شد</string>
+    <string name="neighbor_source_shizuku_unavailable">Shizuku اجرا نشده یا مجوز دسترسی داده نشده است.</string>
+    <string name="neighbor_source_root_unavailable">دسترسی روت رد شد</string>
+    <string name="neighbor_status_ready">آماده</string>
+    <string name="neighbor_status_shizuku_will_prompt">Shizuku درخواست مجوز می‌کند</string>
+    <string name="neighbor_status_shizuku_denied">اجازهٔ دسترسی داده نشد. وارد برنامهٔ Shizuku شوید و اجازهٔ دسترسی را فعال کنید.</string>
+    <string name="neighbor_status_shizuku_outdated">Shizuku نیاز به به‌روزرسانی دارد</string>
+    <string name="neighbor_status_shizuku_not_running">Shizuku در حال اجرا نیست</string>
+    <string name="neighbor_status_root_will_prompt">مدیر روت برای دریافت دسترسی از شما درخواست مجوز خواهد کرد.</string>
+    <string name="neighbor_status_root_not_found">دسترسی روت در این دستگاه شناسایی نشد.</string>
+    <string name="neighbor_status_waiting">در انتظار دریافت دسترسی…</string>
+
+    <!-- Accessibility - Content Descriptions -->
+    <string name="cd_settings_button">باز کردن تنظیمات</string>
+    <string name="cd_theme_button">تغییر پوسته</string>
+    <string name="cd_refresh_button">بازنشانی فهرست دستگاه‌ها</string>
+    <string name="cd_device_online">دستگاه آنلاین است</string>
+    <string name="cd_device_offline">دستگاه آفلاین است</string>
+    <string name="cd_navigate_back">بازگشت</string>
+    <string name="cd_start_deep_scan">شروع اسکن عمیق برای این دستگاه</string>
+    <string name="cd_cancel_scan">لغو اسکن فعلی</string>
+    <string name="cd_empty_state_icon">Illustration: هیچ دستگاهی وجود ندارد</string>
+    <string name="cd_network_info">اطلاعات شبکه</string>
+    <string name="cd_interface_selector">انتخاب رابط شبکه</string>
+    <string name="cd_port_status">پورت %1$d %2$s است</string>
+
+    <!-- Device list accessibility -->
+    <string name="cd_device_item">%1$s, %2$s, IP %3$s</string>
+    <string name="cd_device_current">این دستگاه، دستگاه فعلی شماست</string>
+    <string name="cd_section_header">بخش %1$s شامل %2$d دستگاه</string>
+
+    <!-- Deep scan progress -->
+    <string name="deep_scan_port_progress">%1$d/%2$d پورت</string>
+    <string name="deep_scan_open_count">%d باز</string>
+
+    <!-- Custom Device Names -->
+    <string name="edit_device_name">ویرایش نام دستگاه</string>
+    <string name="edit_device_name_hint">برای شناسایی آسان‌تر این دستگاه، یک نام دلخواه برای آن انتخاب کنید.</string>
+    <string name="device_name">نام دستگاه</string>
+    <string name="action_save">ذخیره</string>
+
+    <!-- Custom Ports -->
+    <string name="custom_ports">پورت‌های سفارشی</string>
+    <string name="add_port">افزودن پورت</string>
+    <string name="add_custom_port">افزودن پورت سفارشی</string>
+    <string name="port_number">شماره‌ی پورت</string>
+    <string name="service_name">نام سرویس</string>
+    <string name="action_add">افزودن</string>
+    <string name="delete_port">حذف پورت</string>
+    <string name="no_custom_ports">هیچ پورت سفارشی‌ای تنظیم نشده است.</string>
+    <string name="tap_add_to_create">برای افزودن درگاه‌های سفارشی جهت اسکن، روی + کلیک کنید.</string>
+
+    <!-- Full Port Scan -->
+    <string name="full_scan">اسکن کامل</string>
+    <string name="full_port_scan">اسکن کامل پورت‌ها</string>
+    <string name="full_scan_warning">این کار تمام ۶۵٬۵۳۵ پورت این دستگاه را اسکن می‌کند. ممکن است چند دقیقه طول بکشد و ترافیک شبکه قابل‌توجهی ایجاد کند.</string>
+    <string name="full_scan_details">• مدت زمان اسکن: ۱ تا ۳ دقیقه\n• مصرف بالای منابع شبکه\n• ممکن است توسط سامانه‌های امنیتی شناسایی شود</string>
+    <string name="action_start">شروع</string>
+
+    <!-- Settings - Custom Ports -->
+    <string name="pref_custom_ports_title">پورت‌های سفارشی</string>
+    <string name="pref_custom_ports_summary">مدیریت پورت‌هایی که هنگام اسکن عمیق بررسی می‌شوند</string>
+
+    <!-- Device Icon Selection -->
+    <string name="choose_device_icon">انتخاب نماد دستگاه</string>
+
+    <!-- Network scanner progress -->
+    <string name="checking_network_connectivity">در حال بررسی اتصال شبکه …</string>
+    <string name="classifying_devices">در حال دسته‌بندی دستگاه‌ها</string>
+    <string name="identifying_devices">در حال شناسایی دستگاه‌ها …</string>
+    <string name="resolving_netbios_names">در حال تشخیص نام‌های NetBIOS</string>
+    <string name="finding_upnp_devices">در حال جست‌وجوی دستگاه‌های UPnP …</string>
+    <string name="discovering_services">در حال کشف سرویس‌ها …</string>
+    <string name="getting_device_information">در حال دریافت اطلاعات دستگاه …</string>
+    <string name="scanning_network">در حال اسکن شبکه …</string>
+    <string name="reading_arp_cache">در حال خواندن حافظه‌ی پنهان ARP …</string>
+    <string name="analyzing_port">در حال تحلیل پورت %1$d …</string>
+    <string name="scanning_ports">در حال اسکن پورت‌ها …</string>
+    <string name="scanning_port">در حال اسکن پورت %1$d …</string>
+    <string name="scanned_addresses_progress">در حال اسکن %1$d از %2$d آدرس</string>
+    <string name="detecting_os">در حال شناسایی سیستم‌عامل …</string>
+    
+</resources>
