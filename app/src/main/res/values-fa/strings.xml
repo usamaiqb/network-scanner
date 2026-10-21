@@ -245,7 +245,7 @@
     <string name="action_add">افزودن</string>
     <string name="delete_port">حذف پورت</string>
     <string name="no_custom_ports">هیچ پورت سفارشی‌ای تنظیم نشده است.</string>
-    <string name="tap_add_to_create">برای افزودن درگاه‌های سفارشی جهت اسکن، روی + کلیک کنید.</string>
+    <string name="tap_add_to_create">برای افزودن پورت‌های سفارشی جهت اسکن، روی + کلیک کنید.</string>
 
     <!-- Full Port Scan -->
     <string name="full_scan">اسکن کامل</string>
