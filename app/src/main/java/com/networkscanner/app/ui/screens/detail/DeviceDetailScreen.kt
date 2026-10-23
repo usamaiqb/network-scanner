@@ -96,7 +96,10 @@ fun DeviceDetailScreen(
                 title = device?.displayName ?: stringResource(R.string.device_details),
                 scrollBehavior = scrollBehavior,
                 onNavigateBack = onNavigateBack,
-                navigateBackDescription = stringResource(R.string.cd_navigate_back)
+                navigateBackDescription = stringResource(R.string.cd_navigate_back),
+                // The title is a device name, not a literal: a long hostname would otherwise
+                // wrap and make the bar change height between devices.
+                titleMaxLines = 1
             )
         },
                 floatingActionButton = {

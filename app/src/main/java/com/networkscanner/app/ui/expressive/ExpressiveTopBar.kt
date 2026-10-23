@@ -36,10 +36,14 @@ import androidx.compose.ui.text.style.TextOverflow
  * The title is start-aligned: a centred title in a large bar has nowhere to travel as the
  * bar collapses, which is the whole point of the pattern.
  *
- * The title ellipsises rather than wrapping. A large bar's title is often data rather than a
- * literal - network-scanner puts the device's own name there, which can be a full hostname -
- * and an unbounded title pushes the bar's height around as the user navigates. Raise
- * [titleMaxLines] to 2 for a screen whose titles are genuinely long by design.
+ * The title wraps to [titleMaxLines] lines and then ellipsises. Two by default, because a
+ * screen title is usually a short literal that fits on one line in English and needs a second
+ * one in a longer locale - clipping "Custom Ports" to an ellipsis in Russian would be worse
+ * than letting it wrap.
+ *
+ * Pass `titleMaxLines = 1` when the title is *data* rather than a literal: network-scanner's
+ * detail screen puts the device's own name there, which can be a full hostname, and letting
+ * that wrap makes the bar change height as the user navigates between devices.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +58,7 @@ fun CollapsingLargeTopBar(
     modifier: Modifier = Modifier,
     onNavigateBack: (() -> Unit)? = null,
     navigateBackDescription: String = "Back",
-    titleMaxLines: Int = 1,
+    titleMaxLines: Int = 2,
     actions: @Composable () -> Unit = {}
 ) {
     LargeTopAppBar(
