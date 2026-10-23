@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Overrides the launcher label for debug builds only, so the debug and
+         release installs are tellable apart on the home screen. -->
+    <string name="app_name" translatable="false">Network Scanner Debug</string>
+</resources>

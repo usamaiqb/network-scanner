@@ -6,6 +6,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.starter.easylauncher") version "6.4.1"
 }
 
 // Load signing config from keystore.properties (local) or environment variables (CI)
@@ -57,6 +58,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
+
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -145,4 +151,12 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+}
+
+easylauncher {
+    buildTypes {
+        register("debug") {
+            filters(customRibbon(ribbonColor = "#FFB951", labelColor = "#2B1B00"))
+        }
+    }
 }

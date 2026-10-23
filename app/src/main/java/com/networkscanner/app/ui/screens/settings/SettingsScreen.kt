@@ -210,7 +210,7 @@ fun SettingsScreen(
                 val versionSummary = buildString {
                     append(BuildConfig.VERSION_NAME)
                     if (BuildConfig.DEBUG) {
-                        append(" (${BuildConfig.VERSION_CODE}) - Debug")
+                        append(" (${BuildConfig.VERSION_CODE})")
                     }
                 }
                 Column(

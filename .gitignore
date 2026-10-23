@@ -91,6 +91,7 @@ lint/reports/
 
 # Kotlin
 *.kotlin_module
+.kotlin/
 
 # OS generated files
 .DS_Store
