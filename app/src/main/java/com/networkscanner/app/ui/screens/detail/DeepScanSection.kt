@@ -25,8 +25,8 @@ import com.networkscanner.app.R
 import com.networkscanner.app.data.DeepScanProgress
 import com.networkscanner.app.data.DeepScanResult
 import com.networkscanner.app.ui.DeviceDetailViewModel
-import com.networkscanner.app.ui.components.SectionHeader
-import com.networkscanner.app.ui.components.SegmentSurface
+import com.networkscanner.app.ui.expressive.SectionHeader
+import com.networkscanner.app.ui.expressive.SegmentSurface
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -45,9 +45,15 @@ fun DeepScanSection(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val openPortCount = result?.openPorts?.size ?: 0
             SectionHeader(
                 title = stringResource(R.string.deep_scan_results),
-                count = result?.openPorts?.size ?: 0
+                count = openPortCount,
+                contentDescription = stringResource(
+                    R.string.cd_section_header,
+                    stringResource(R.string.deep_scan_results),
+                    openPortCount
+                )
             )
             if (state !is DeviceDetailViewModel.DeepScanState.Scanning && isDeviceOnline) {
                 TextButton(onClick = onFullScan) {

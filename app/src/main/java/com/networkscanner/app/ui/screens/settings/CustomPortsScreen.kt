@@ -4,22 +4,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.data.repository.CustomPortData
-import com.networkscanner.app.ui.components.ExpressiveSwitch
-import com.networkscanner.app.ui.components.SegmentSurface
+import com.networkscanner.app.ui.expressive.CollapsingLargeTopBar
+import com.networkscanner.app.ui.expressive.ExpressiveSwitch
+import com.networkscanner.app.ui.expressive.SegmentSurface
+import com.networkscanner.app.ui.expressive.rememberExpressiveHaptics
+import com.networkscanner.app.ui.expressive.rememberExpressiveScrollBehavior
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,33 +31,24 @@ fun CustomPortsScreen(
     onTogglePort: (Int, Boolean) -> Unit
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = rememberExpressiveScrollBehavior()
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         topBar = {
-            LargeTopAppBar(
-                title = { Text(stringResource(R.string.custom_ports)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_navigate_back)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                ),
-                scrollBehavior = scrollBehavior
+            CollapsingLargeTopBar(
+                title = stringResource(R.string.custom_ports),
+                scrollBehavior = scrollBehavior,
+                onNavigateBack = onNavigateBack,
+                navigateBackDescription = stringResource(R.string.cd_navigate_back)
             )
         },
         floatingActionButton = {
-            val haptics = LocalHapticFeedback.current
+            val haptics = rememberExpressiveHaptics()
             ExtendedFloatingActionButton(
                 onClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+                    haptics.confirm()
                     showAddDialog = true
                 },
                 icon = { Icon(Icons.Rounded.Add, contentDescription = null) },
@@ -151,13 +142,11 @@ private fun CustomPortItem(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val haptics = LocalHapticFeedback.current
+            val haptics = rememberExpressiveHaptics()
             ExpressiveSwitch(
                 checked = port.isEnabled,
                 onCheckedChange = { enabled ->
-                    haptics.performHapticFeedback(
-                        if (enabled) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff
-                    )
+                    haptics.toggle(enabled)
                     onToggle()
                 }
             )

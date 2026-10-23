@@ -1,4 +1,4 @@
-package com.networkscanner.app.ui.components
+package com.networkscanner.app.ui.expressive
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -17,6 +17,10 @@ import androidx.compose.ui.Modifier
 
 /**
  * M3 switch whose thumb cross-fades a Check/Close icon with the checked state.
+ *
+ * It fires no haptics of its own: inside a [SwitchSettingsRow] the whole row is the click
+ * target and the row owns the haptic, so doing it here as well would double-buzz.
+ * Standalone callers should pair it with [ExpressiveHaptics.toggle].
  */
 @Composable
 fun ExpressiveSwitch(
@@ -33,9 +37,7 @@ fun ExpressiveSwitch(
         thumbContent = {
             AnimatedContent(
                 targetState = checked,
-                transitionSpec = {
-                    fadeIn(tween(150)) togetherWith fadeOut(tween(150))
-                },
+                transitionSpec = { fadeIn(tween(150)) togetherWith fadeOut(tween(150)) },
                 label = "switchThumbIcon"
             ) { isChecked ->
                 Icon(

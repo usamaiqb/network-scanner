@@ -71,7 +71,7 @@ private fun neighborSourceStatus(mode: Mode, availability: Availability?, probe:
 }
 
 /**
- * Single-choice picker for where MAC addresses are read from, styled like [LanguagePickerSheet].
+ * Single-choice picker for where MAC addresses are read from, styled like [ExpressiveOptionSheet].
  * Unlike the language picker it stays open while the chosen backend is asked for access, so a
  * refusal is shown inline on that option; the caller dismisses it once the choice is applied.
  */

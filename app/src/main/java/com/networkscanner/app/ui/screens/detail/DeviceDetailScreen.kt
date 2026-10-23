@@ -3,7 +3,6 @@ package com.networkscanner.app.ui.screens.detail
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import androidx.core.net.toUri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Radar
 import androidx.compose.material3.AlertDialog
@@ -31,8 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,9 +48,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.networkscanner.app.R
 import com.networkscanner.app.ui.DeviceDetailViewModel
 import com.networkscanner.app.ui.MainViewModel
+import com.networkscanner.app.ui.expressive.CollapsingLargeTopBar
+import com.networkscanner.app.ui.expressive.rememberExpressiveScrollBehavior
 import com.networkscanner.app.ui.theme.StatusColors
 import com.networkscanner.app.util.NetworkUtils
 
@@ -84,35 +83,20 @@ fun DeviceDetailScreen(
         }
     }
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = rememberExpressiveScrollBehavior()
     val haptics = LocalHapticFeedback.current
     val isScanning = deepScanState is DeviceDetailViewModel.DeepScanState.Scanning
     val isOnline = device?.isOnline == true
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    Text(
-                        text = device?.displayName ?: stringResource(R.string.device_details),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_navigate_back)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                ),
-                scrollBehavior = scrollBehavior
+            CollapsingLargeTopBar(
+                title = device?.displayName ?: stringResource(R.string.device_details),
+                scrollBehavior = scrollBehavior,
+                onNavigateBack = onNavigateBack,
+                navigateBackDescription = stringResource(R.string.cd_navigate_back)
             )
         },
                 floatingActionButton = {

@@ -16,8 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.data.Device
-import com.networkscanner.app.ui.components.SectionHeader
-import com.networkscanner.app.ui.components.segmentShape
+import com.networkscanner.app.ui.expressive.SectionHeader
+import com.networkscanner.app.ui.expressive.segmentShape
 
 @Composable
 fun DeviceList(
@@ -73,19 +73,19 @@ private fun LazyListScope.deviceSection(
     getCustomIcon: (String) -> String?
 ) {
     item(key = "header_$sectionKey") {
+        val title = stringResource(titleRes)
         SectionHeader(
-            title = stringResource(titleRes),
+            title = title,
             count = devices.size,
+            // No bottom padding here: canonical SectionHeader carries its own 8.dp.
             modifier = Modifier
                 .animateItem(
                     fadeInSpec = tween(180),
                     fadeOutSpec = tween(120),
                     placementSpec = tween(200)
                 )
-                .padding(
-                    top = if (isFirstSection) 0.dp else 20.dp,
-                    bottom = 8.dp
-                )
+                .padding(top = if (isFirstSection) 0.dp else 20.dp),
+            contentDescription = stringResource(R.string.cd_section_header, title, devices.size)
         )
     }
     itemsIndexed(

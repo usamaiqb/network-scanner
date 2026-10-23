@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.data.Device
 import com.networkscanner.app.ui.components.StatusIndicator
-import com.networkscanner.app.ui.components.ValueBadge
+import com.networkscanner.app.ui.expressive.ValueBadge
 import com.networkscanner.app.ui.screens.detail.iconKeyToVector
 
 @Composable

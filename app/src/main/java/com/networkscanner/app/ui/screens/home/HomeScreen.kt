@@ -22,14 +22,12 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -43,15 +41,17 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.preference.PreferenceManager
 import com.networkscanner.app.R
 import com.networkscanner.app.data.Device
 import com.networkscanner.app.ui.MainViewModel
+import com.networkscanner.app.ui.expressive.CollapsingLargeTopBar
+import com.networkscanner.app.ui.expressive.rememberExpressiveScrollBehavior
 import com.networkscanner.app.util.ScanPermissions
 import kotlinx.coroutines.launch
 
@@ -71,7 +71,7 @@ fun HomeScreen(
     val selectedInterfaceName by viewModel.selectedInterfaceName.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = rememberExpressiveScrollBehavior()
     val haptics = LocalHapticFeedback.current
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -151,9 +151,11 @@ fun HomeScreen(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         topBar = {
-            LargeTopAppBar(
-                title = { Text(stringResource(R.string.app_name)) },
+            CollapsingLargeTopBar(
+                title = stringResource(R.string.app_name),
+                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = onSettingsClick) {
                         Icon(
@@ -161,12 +163,7 @@ fun HomeScreen(
                             contentDescription = stringResource(R.string.cd_settings_button)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                ),
-                scrollBehavior = scrollBehavior
+                }
             )
         },
         floatingActionButton = {

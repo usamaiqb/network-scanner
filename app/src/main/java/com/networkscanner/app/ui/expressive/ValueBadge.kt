@@ -1,4 +1,4 @@
-package com.networkscanner.app.ui.components
+package com.networkscanner.app.ui.expressive
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -16,8 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 /**
- * Pill-shaped badge showing a setting's current value or a row's trailing stat,
- * following the M3 Expressive value-badge pattern. Value changes cross-fade.
+ * Pill showing a setting's current value, or a row's trailing stat. Sits on
+ * `surfaceContainerLowest` so it reads as recessed *into* the `surfaceContainer` row.
+ * Value changes cross-fade rather than snapping.
  */
 @Composable
 fun ValueBadge(
@@ -25,15 +26,13 @@ fun ValueBadge(
     modifier: Modifier = Modifier
 ) {
     Surface(
+        modifier = modifier,
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.surfaceContainerLowest,
-        modifier = modifier
+        color = MaterialTheme.colorScheme.surfaceContainerLowest
     ) {
         AnimatedContent(
             targetState = text,
-            transitionSpec = {
-                fadeIn(tween(150)) togetherWith fadeOut(tween(150))
-            },
+            transitionSpec = { fadeIn(tween(150)) togetherWith fadeOut(tween(150)) },
             label = "valueBadge"
         ) { value ->
             Text(

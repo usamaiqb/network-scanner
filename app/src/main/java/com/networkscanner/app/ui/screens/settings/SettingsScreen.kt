@@ -1,16 +1,15 @@
 package com.networkscanner.app.ui.screens.settings
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Autorenew
 import androidx.compose.material.icons.rounded.Code
@@ -22,13 +21,8 @@ import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,19 +30,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import androidx.core.net.toUri
 import com.networkscanner.app.BuildConfig
 import com.networkscanner.app.R
 import com.networkscanner.app.ui.SettingsViewModel
-import com.networkscanner.app.ui.components.SegmentSurface
+import com.networkscanner.app.ui.expressive.ActionSettingsRow
+import com.networkscanner.app.ui.expressive.CollapsingLargeTopBar
+import com.networkscanner.app.ui.expressive.ControlSettingsRow
+import com.networkscanner.app.ui.expressive.InfoSettingsRow
+import com.networkscanner.app.ui.expressive.PickerSettingsRow
+import com.networkscanner.app.ui.expressive.SectionGap
+import com.networkscanner.app.ui.expressive.SectionHeader
+import com.networkscanner.app.ui.expressive.SegmentPosition
+import com.networkscanner.app.ui.expressive.SegmentedGroup
+import com.networkscanner.app.ui.expressive.SwitchSettingsRow
+import com.networkscanner.app.ui.expressive.ValueBadge
+import com.networkscanner.app.ui.expressive.rememberExpressiveScrollBehavior
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,31 +69,22 @@ fun SettingsScreen(
 
     var showAboutDialog by remember { mutableStateOf(false) }
     var showPrivacyDialog by remember { mutableStateOf(false) }
-    var showLanguageDialog by remember { mutableStateOf(false) }
     var showNeighborSourceSheet by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = rememberExpressiveScrollBehavior()
     val supportsDynamic = remember { viewModel.supportsDynamicColors() }
+    val languageOptions = rememberLanguageOptions()
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         topBar = {
-            LargeTopAppBar(
-                title = { Text(stringResource(R.string.settings_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_navigate_back)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                ),
-                scrollBehavior = scrollBehavior
+            CollapsingLargeTopBar(
+                title = stringResource(R.string.settings_title),
+                scrollBehavior = scrollBehavior,
+                onNavigateBack = onNavigateBack,
+                navigateBackDescription = stringResource(R.string.cd_navigate_back)
             )
         }
     ) { innerPadding ->
@@ -100,166 +93,134 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            // Header and rows live in one item so the header's own 8.dp keeps them together;
+            // this arrangement is then the gap *between* sections, not inside them.
+            verticalArrangement = Arrangement.spacedBy(SectionGap),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            // Appearance section
-            item {
-                SettingsCategoryHeader(stringResource(R.string.pref_category_appearance))
-            }
-            item {
-                val appearanceCount = if (supportsDynamic) 3 else 2
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    SegmentSurface(index = 0, count = appearanceCount) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Palette,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Text(
-                                    text = stringResource(R.string.pref_theme_title),
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                            }
-                            ThemeSegmentedButtons(
-                                selectedMode = themeMode,
-                                onModeSelected = { viewModel.setThemeMode(it) },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp)
-                            )
-                        }
+            item(key = "appearance") {
+                SettingsSection(stringResource(R.string.pref_category_appearance)) {
+                    ControlSettingsRow(
+                        position = SegmentPosition.First,
+                        title = stringResource(R.string.pref_theme_title),
+                        icon = Icons.Rounded.Palette
+                    ) {
+                        ThemeSegmentedButtons(
+                            selectedMode = themeMode,
+                            onModeSelected = { viewModel.setThemeMode(it) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
+                    // Dynamic colour is an API 31+ feature, so this row comes and goes and the
+                    // rows around it cannot assume a fixed position.
                     if (supportsDynamic) {
-                        SegmentSurface(index = 1, count = appearanceCount) {
-                            SwitchSettingItem(
-                                title = stringResource(R.string.pref_dynamic_colors_title),
-                                summary = stringResource(R.string.pref_dynamic_colors_summary),
-                                icon = Icons.Rounded.AutoAwesome,
-                                checked = dynamicColors,
-                                onCheckedChange = { viewModel.setDynamicColors(it) }
-                            )
-                        }
-                    }
-                    SegmentSurface(index = appearanceCount - 1, count = appearanceCount) {
-                        ClickableSettingItem(
-                            title = stringResource(R.string.pref_language_title),
-                            icon = Icons.Rounded.Language,
-                            value = currentLanguageLabel(language),
-                            onClick = { showLanguageDialog = true }
+                        SwitchSettingsRow(
+                            position = SegmentPosition.Middle,
+                            title = stringResource(R.string.pref_dynamic_colors_title),
+                            subtitle = stringResource(R.string.pref_dynamic_colors_summary),
+                            icon = Icons.Rounded.AutoAwesome,
+                            checked = dynamicColors,
+                            onCheckedChange = { viewModel.setDynamicColors(it) }
                         )
                     }
-                }
-            }
-
-            // Scanning section
-            item {
-                SettingsCategoryHeader(stringResource(R.string.pref_category_scanning))
-            }
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    SegmentSurface(index = 0, count = 3) {
-                        SwitchSettingItem(
-                            title = stringResource(R.string.pref_auto_scan_title),
-                            summary = stringResource(R.string.pref_auto_scan_summary),
-                            icon = Icons.Rounded.Autorenew,
-                            checked = autoScan,
-                            onCheckedChange = { viewModel.setAutoScan(it) }
-                        )
-                    }
-                    SegmentSurface(index = 1, count = 3) {
-                        ClickableSettingItem(
-                            title = stringResource(R.string.pref_neighbor_source_title),
-                            summary = stringResource(R.string.pref_neighbor_source_summary),
-                            icon = Icons.Rounded.Key,
-                            value = neighborSourceLabel(neighborSource),
-                            onClick = {
-                                viewModel.onNeighborPickerOpened()
-                                showNeighborSourceSheet = true
+                    PickerSettingsRow(
+                        position = SegmentPosition.Last,
+                        title = stringResource(R.string.pref_language_title),
+                        icon = Icons.Rounded.Language,
+                        options = languageOptions,
+                        optionLabel = { it.label },
+                        key = { it.code },
+                        selected = languageOptions.optionFor(language),
+                        onSelect = { option ->
+                            if (option.code != language) {
+                                // AppCompat reloads resources and recreates the activity once;
+                                // no manual recreate() needed.
+                                viewModel.setLanguage(option.code)
                             }
-                        )
-                    }
-                    SegmentSurface(index = 2, count = 3) {
-                        ClickableSettingItem(
-                            title = stringResource(R.string.pref_custom_ports_title),
-                            summary = stringResource(R.string.pref_custom_ports_summary),
-                            icon = Icons.Rounded.Tune,
-                            onClick = onNavigateToCustomPorts
-                        )
-                    }
+                        }
+                    )
                 }
             }
 
-            // About section
-            item {
-                SettingsCategoryHeader(stringResource(R.string.pref_category_about))
+            item(key = "scanning") {
+                SettingsSection(stringResource(R.string.pref_category_scanning)) {
+                    SwitchSettingsRow(
+                        position = SegmentPosition.First,
+                        title = stringResource(R.string.pref_auto_scan_title),
+                        subtitle = stringResource(R.string.pref_auto_scan_summary),
+                        icon = Icons.Rounded.Autorenew,
+                        checked = autoScan,
+                        onCheckedChange = { viewModel.setAutoScan(it) }
+                    )
+                    // Not a PickerSettingsRow: choosing a source asks its backend for access,
+                    // so the sheet has to stay open and report a refusal on the option itself.
+                    ActionSettingsRow(
+                        position = SegmentPosition.Middle,
+                        title = stringResource(R.string.pref_neighbor_source_title),
+                        subtitle = stringResource(R.string.pref_neighbor_source_summary),
+                        icon = Icons.Rounded.Key,
+                        onClick = {
+                            viewModel.onNeighborPickerOpened()
+                            showNeighborSourceSheet = true
+                        },
+                        trailing = { ValueBadge(text = neighborSourceLabel(neighborSource)) }
+                    )
+                    ActionSettingsRow(
+                        position = SegmentPosition.Last,
+                        title = stringResource(R.string.pref_custom_ports_title),
+                        subtitle = stringResource(R.string.pref_custom_ports_summary),
+                        icon = Icons.Rounded.Tune,
+                        onClick = onNavigateToCustomPorts
+                    )
+                }
             }
-            item {
+
+            item(key = "about") {
                 val versionSummary = buildString {
                     append(BuildConfig.VERSION_NAME)
                     if (BuildConfig.DEBUG) {
                         append(" (${BuildConfig.VERSION_CODE})")
                     }
                 }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    SegmentSurface(index = 0, count = 4) {
-                        ClickableSettingItem(
-                            title = stringResource(R.string.pref_version_title),
-                            summary = versionSummary,
-                            icon = Icons.Rounded.Info,
-                            onClick = {}
-                        )
-                    }
-                    SegmentSurface(index = 1, count = 4) {
-                        ClickableSettingItem(
-                            title = stringResource(R.string.pref_about_title),
-                            summary = stringResource(R.string.pref_about_summary),
-                            icon = Icons.Rounded.Description,
-                            onClick = { showAboutDialog = true }
-                        )
-                    }
-                    SegmentSurface(index = 2, count = 4) {
-                        val githubUrl = stringResource(R.string.github_url)
-                        ClickableSettingItem(
-                            title = stringResource(R.string.view_on_github),
-                            summary = githubUrl,
-                            icon = Icons.Rounded.Code,
-                            onClick = {
-                                try {
-                                    val intent = Intent(Intent.ACTION_VIEW, githubUrl.toUri())
-                                    context.startActivity(intent)
-                                } catch (_: ActivityNotFoundException) {
-                                    // No browser available
-                                }
+                val githubUrl = stringResource(R.string.github_url)
+                SettingsSection(stringResource(R.string.pref_category_about)) {
+                    // States the version and does nothing else, so it takes no click and
+                    // shows no ripple the user cannot explain.
+                    InfoSettingsRow(
+                        position = SegmentPosition.First,
+                        title = stringResource(R.string.pref_version_title),
+                        subtitle = versionSummary,
+                        icon = Icons.Rounded.Info
+                    )
+                    ActionSettingsRow(
+                        position = SegmentPosition.Middle,
+                        title = stringResource(R.string.pref_about_title),
+                        subtitle = stringResource(R.string.pref_about_summary),
+                        icon = Icons.Rounded.Description,
+                        onClick = { showAboutDialog = true }
+                    )
+                    ActionSettingsRow(
+                        position = SegmentPosition.Middle,
+                        title = stringResource(R.string.view_on_github),
+                        subtitle = githubUrl,
+                        icon = Icons.Rounded.Code,
+                        onClick = {
+                            try {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, githubUrl.toUri()))
+                            } catch (_: ActivityNotFoundException) {
+                                // No browser available
                             }
-                        )
-                    }
-                    SegmentSurface(index = 3, count = 4) {
-                        ClickableSettingItem(
-                            title = stringResource(R.string.pref_privacy_title),
-                            summary = stringResource(R.string.pref_privacy_summary),
-                            icon = Icons.Rounded.Shield,
-                            onClick = { showPrivacyDialog = true }
-                        )
-                    }
+                        }
+                    )
+                    ActionSettingsRow(
+                        position = SegmentPosition.Last,
+                        title = stringResource(R.string.pref_privacy_title),
+                        subtitle = stringResource(R.string.pref_privacy_summary),
+                        icon = Icons.Rounded.Shield,
+                        onClick = { showPrivacyDialog = true }
+                    )
                 }
             }
-
         }
     }
 
@@ -290,18 +251,16 @@ fun SettingsScreen(
             onDismiss = { showNeighborSourceSheet = false }
         )
     }
-    if (showLanguageDialog) {
-        LanguagePickerSheet(
-            selectedLanguage = language,
-            onLanguageSelected = { newLanguage ->
-                showLanguageDialog = false
-                if (newLanguage != language) {
-                    // AppCompat reloads resources and recreates the activity once;
-                    // no manual recreate() needed.
-                    viewModel.setLanguage(newLanguage)
-                }
-            },
-            onDismiss = { showLanguageDialog = false }
-        )
+}
+
+/** A titled run of connected rows: the header and the group it labels, as one unit. */
+@Composable
+private fun SettingsSection(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        SectionHeader(title = title)
+        SegmentedGroup(content = content)
     }
 }

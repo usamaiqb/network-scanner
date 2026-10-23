@@ -1,15 +1,14 @@
 package com.networkscanner.app.ui.screens.detail
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.networkscanner.app.ui.components.SectionHeader
-import com.networkscanner.app.ui.components.SegmentSurface
+import androidx.compose.ui.res.stringResource
+import com.networkscanner.app.R
+import com.networkscanner.app.ui.expressive.SectionHeader
+import com.networkscanner.app.ui.expressive.SegmentedGroup
+import com.networkscanner.app.ui.expressive.SegmentSurface
 
 /**
  * A single row inside a [DetailSection] or [DetailRows].
@@ -60,8 +59,11 @@ fun DetailSection(
     if (rows.isEmpty()) return
 
     Column(modifier = modifier.fillMaxWidth()) {
-        SectionHeader(title = title, count = rows.size)
-        Spacer(Modifier.height(8.dp))
+        SectionHeader(
+            title = title,
+            count = rows.size,
+            contentDescription = stringResource(R.string.cd_section_header, title, rows.size)
+        )
         SegmentedRows(rows)
     }
 }
@@ -85,10 +87,7 @@ private fun SegmentedRows(
     rows: List<DetailRow>,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
+    SegmentedGroup(modifier = modifier) {
         rows.forEachIndexed { index, row ->
             SegmentSurface(index = index, count = rows.size) {
                 row.content()
