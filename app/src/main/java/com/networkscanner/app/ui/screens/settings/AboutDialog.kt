@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.networkscanner.app.BuildConfig
 import com.networkscanner.app.R
 
 @Composable
@@ -29,7 +30,7 @@ fun AboutDialog(
         },
         text = {
             Text(
-                text = stringResource(R.string.dialog_about_message),
+                text = stringResource(R.string.dialog_about_message, BuildConfig.VERSION_NAME),
                 style = MaterialTheme.typography.bodyMedium
             )
         },
