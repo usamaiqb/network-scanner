@@ -18,7 +18,7 @@
 
     <!-- Device sections -->
     <string name="section_active">Активные устройства</string>
-    <string name="section_offline">Офлайн устройства</string>
+    <string name="section_offline">Устройства не в сети</string>
 
     <!-- Device info -->
     <string name="unknown_device">Неизвестное устройство</string>
@@ -68,7 +68,7 @@
     <string name="cd_device_status">Индикатор статуса устройства</string>
 
     <!-- Device Detail Screen -->
-    <string name="device_details">Детали устройства</string>
+    <string name="device_details">Сведения об устройстве</string>
     <string name="deep_scan_results">Результаты глубокого сканирования</string>
     <string name="open_ports">Открытые порты</string>
 
@@ -78,11 +78,11 @@
     <string name="label_vendor">Производитель</string>
     <string name="label_latency">Задержка</string>
     <string name="label_hostname">Имя хоста</string>
-    <string name="label_services">Сервисы</string>
+    <string name="label_services">Службы</string>
     <string name="label_discovered_via">Обнаружено через</string>
     <string name="label_detected_os">Обнаруженная ОС</string>
     <string name="label_scan_duration">Длительность сканирования</string>
-    <string name="label_friendly_name">Дружественное имя</string>
+    <string name="label_friendly_name">Имя устройства (UPnP)</string>
     <string name="label_model">Модель</string>
 
     <!-- Deep Scan States -->
@@ -127,8 +127,8 @@
     <string name="pref_auto_scan_title">Автосканирование при запуске</string>
     <string name="pref_auto_scan_summary">Автоматически начинать сканирование при открытии приложения</string>
     <string name="pref_scan_timeout_title">Тайм-аут сканирования</string>
-    <string name="pref_neighbor_source_title">Доступ к MAC адресам</string>
-    <string name="pref_neighbor_source_summary">Android 10+ скрывает от приложений MAC адреса других устройств. Читать их через Shizuku или root.</string>
+    <string name="pref_neighbor_source_title">Доступ к MAC-адресам</string>
+    <string name="pref_neighbor_source_summary">Android 10+ скрывает MAC-адреса других устройств от приложений. Для их получения используйте Shizuku или root-доступ.</string>
 
     <!-- Timeout options -->
     <string name="timeout_fast">Быстро (3 секунды)</string>
@@ -147,7 +147,7 @@
 
     <!-- About Preferences -->
     <string name="pref_version_title">Версия</string>
-    <string name="pref_about_title">О Сканере Сети</string>
+    <string name="pref_about_title">О Network Scanner</string>
     <string name="pref_about_summary">Информация о приложении и авторы</string>
     <string name="pref_privacy_title">Политика конфиденциальности</string>
     <string name="pref_privacy_summary">Как обрабатываются ваши данные</string>
@@ -161,7 +161,7 @@
     <string name="dialog_about_message" formatted="false">Сканер Сети - мощный инструмент для обнаружения и анализа устройств в вашей локальной сети.\n\nРазработано с заботой о вашей конфиденциальности. Все сканирование происходит локально на вашем устройстве.\n\n⚠️ Примечание: Обнаружение устройств и сканирование портов не являются 100% точными. Результаты могут отличаться в зависимости от условий сети и конфигураций устройств.\n\nВерсия 1.0.0 | Лицензия GPL-3.0</string>
     <string name="view_on_github">Посмотреть на GitHub</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
-    <string name="deep_scan_disclaimer">Обнаружение портов и ОС являются оценками и могут быть неточными</string>
+    <string name="deep_scan_disclaimer">Результаты определения портов и ОС могут быть неточными.</string>
     <string name="dialog_privacy_title">Политика конфиденциальности</string>
     <string name="dialog_privacy_message">Сканер Сети уважает вашу конфиденциальность:\n\n• Нет сбора данных: Все результаты сканирования остаются на вашем устройстве\n• Нет рекламы или отслеживания\n• Не требуется разрешение на интернет для сканирования\n\nРазрешение на местоположение используется только для доступа к информации WiFi, как требуется Android, а не для отслеживания вашего местоположения.</string>
     <string name="dialog_theme_restart_title">Тема изменена</string>
@@ -240,7 +240,7 @@
     <string name="label_mac_address_randomized">MAC-адрес (случайный)</string>
     <string name="label_netbios_name">Имя NetBIOS</string>
     <string name="label_serial_number">Серийный номер</string>
-    <string name="label_os_hint">Подсказка ОС (TTL)</string>
+    <string name="label_os_hint">Предполагаемая ОС (TTL)</string>
     <string name="label_workgroup">Рабочая группа</string>
     <string name="label_upnp_type">Тип UPnP</string>
     <string name="label_web_interface">Веб-интерфейс</string>
@@ -253,4 +253,20 @@
     <string name="action_copy">Копировать</string>
     <string name="copied_to_clipboard">Скопировано в буфер обмена</string>
     <string name="network_name_unknown">Неизвестная</string>
+    <string name="action_open_settings">Открыть настройки</string>
+    <string name="analyzing_port">Анализ порта %1$d…</string>
+    <string name="checking_network_connectivity">Проверка сетевого подключения…</string>
+    <string name="classifying_devices">Классификация устройств</string>
+    <string name="detecting_os">Определение ОС…</string>
+    <string name="discovering_services">Обнаружение служб…</string>
+    <string name="finding_upnp_devices">Поиск UPnP-устройств…</string>
+    <string name="getting_device_information">Получение сведений об устройстве…</string>
+    <string name="identifying_devices">Идентификация устройств…</string>
+    <string name="permission_local_network_denied">Для сканирования локальной сети необходимо разрешение на доступ к устройствам поблизости.</string>
+    <string name="reading_arp_cache">Чтение ARP-кеша…</string>
+    <string name="resolving_netbios_names">Определение имён NetBIOS</string>
+    <string name="scanned_addresses_progress">Просканировано адресов: %1$d из %2$d</string>
+    <string name="scanning_network">Сканирование сети…</string>
+    <string name="scanning_port">Сканирование порта %1$d…</string>
+    <string name="scanning_ports">Сканирование портов…</string>
 </resources>

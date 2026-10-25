@@ -8,17 +8,17 @@
     <!-- Scan states -->
     <string name="scanning">Сканування мережі…</string>
     <string name="scan_complete">Сканування завершено</string>
-    <string name="devices_found">Знайдено %d пристроїв</string>
+    <string name="devices_found">Знайдено пристроїв: %d</string>
     <string name="pull_to_refresh">Потягніть, щоб оновити</string>
 
     <!-- Initial state -->
     <string name="initial_scan_title">Скануйте свою мережу</string>
     <string name="initial_scan_message">Знайдіть усі пристрої, підключені до вашої мережі Wi-Fi</string>
-    <string name="action_scan_network">Сканування мережі</string>
+    <string name="action_scan_network">Сканувати мережу</string>
 
     <!-- Device sections -->
     <string name="section_active">Активні пристрої</string>
-    <string name="section_offline">Офлайн пристрої</string>
+    <string name="section_offline">Пристрої не в мережі</string>
 
     <!-- Device info -->
     <string name="unknown_device">Невідомий пристрій</string>
@@ -73,16 +73,16 @@
     <string name="open_ports">Відкриті порти</string>
 
     <!-- Labels -->
-    <string name="label_ip_address">IP адреса</string>
-    <string name="label_mac_address">MAC адреса</string>
-    <string name="label_vendor">Постачальник</string>
+    <string name="label_ip_address">IP-адреса</string>
+    <string name="label_mac_address">MAC-адреса</string>
+    <string name="label_vendor">Виробник</string>
     <string name="label_latency">Затримка</string>
     <string name="label_hostname">Ім\'я хоста</string>
-    <string name="label_services">Сервіси</string>
+    <string name="label_services">Служби</string>
     <string name="label_discovered_via">Виявлено через</string>
     <string name="label_detected_os">Виявлена ОС</string>
     <string name="label_scan_duration">Тривалість сканування</string>
-    <string name="label_friendly_name">Зрозуміле ім\'я</string>
+    <string name="label_friendly_name">Назва пристрою (UPnP)</string>
     <string name="label_model">Модель</string>
 
     <!-- Deep Scan States -->
@@ -142,26 +142,26 @@
     <!-- Data Preferences -->
     <string name="pref_clear_cache_title">Очистити кеш</string>
     <string name="pref_clear_cache_summary">Очистити тимчасові дані сканування</string>
-    <string name="pref_clear_history_title">Очистити історію пристрою</string>
-    <string name="pref_clear_history_summary">Видалити всю збережену інформацію про пристрій</string>
+    <string name="pref_clear_history_title">Очистити історію пристроїв</string>
+    <string name="pref_clear_history_summary">Видалити всю збережену інформацію про пристрої</string>
 
     <!-- About Preferences -->
     <string name="pref_version_title">Версія</string>
     <string name="pref_about_title">Про Network Scanner</string>
-    <string name="pref_about_summary">Інформація про програму та кредити</string>
+    <string name="pref_about_summary">Інформація про застосунок та його розробників</string>
     <string name="pref_privacy_title">Політика конфіденційності</string>
     <string name="pref_privacy_summary">Як обробляються ваші дані</string>
 
     <!-- Dialogs -->
     <string name="dialog_clear_cache_title">Очистити кеш?</string>
-    <string name="dialog_clear_cache_message">Це призведе до видалення всіх тимчасових даних сканування. Історія вашого пристрою залишиться незмінною.</string>
-    <string name="dialog_clear_history_title">Очистити історію пристрою?</string>
+    <string name="dialog_clear_cache_message">Усі тимчасові дані сканування буде видалено. Історія пристроїв збережеться.</string>
+    <string name="dialog_clear_history_title">Очистити історію пристроїв?</string>
     <string name="dialog_clear_history_message">Це призведе до видалення всієї збереженої інформації про пристрої, включаючи власні назви. Цю дію неможливо скасувати.</string>
     <string name="dialog_about_title">Про Network Scanner</string>
     <string name="dialog_about_message" formatted="false">Network Scanner — це потужний інструмент для виявлення та аналізу пристроїв у вашій локальній мережі.\n\nРозроблено з турботою про вашу конфіденційність. Усе сканування відбувається локально на вашому пристрої.\n\n⚠️ Примітка: Виявлення пристроїв та сканування портів не є точними на 100%. Результати можуть відрізнятися залежно від стану мережі та налаштувань пристроїв.\n\nВерсія 1.0.0 | Ліцензія GPL-3.0</string>
     <string name="view_on_github">Переглянути на GitHub</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
-    <string name="deep_scan_disclaimer">Виявлення портів та ОС є приблизними показниками та може бути не зовсім точним</string>
+    <string name="deep_scan_disclaimer">Результати визначення портів та ОС можуть бути неточними.</string>
     <string name="dialog_privacy_title">Політика конфіденційності</string>
     <string name="dialog_privacy_message">Network Scanner поважає вашу конфіденційність:\n\n• Відсутність збору даних: усі результати сканування залишаються на вашому пристрої\n• Відсутність реклами та відстеження\n• Для сканування не потрібен доступ до Інтернету\n\nДозвіл на доступ до даних про місцезнаходження використовується виключно для отримання інформації про Wi-Fi відповідно до вимог Android, а не для відстеження вашого місцезнаходження.</string>
     <string name="dialog_theme_restart_title">Тема змінена</string>
@@ -169,7 +169,7 @@
 
     <!-- Toast Messages -->
     <string name="cache_cleared">Кеш успішно очищено</string>
-    <string name="history_cleared">Історія пристрою очищена</string>
+    <string name="history_cleared">Історію пристроїв очищено</string>
     <string name="neighbor_source_shizuku_unavailable">Shizuku не запущено або в дозволі відмовлено</string>
     <string name="neighbor_source_root_unavailable">У root-доступі відмовлено</string>
     <string name="neighbor_status_ready">Готово</string>
@@ -248,7 +248,7 @@
     <string name="analyzing_port">Аналіз порту %1$d…</string>
     <string name="scanning_ports">Сканування портів…</string>
     <string name="scanning_port">Сканування порту %1$d…</string>
-    <string name="scanned_addresses_progress">Скановано %1$d/%2$d адрес</string>
+    <string name="scanned_addresses_progress">Проскановано адрес: %1$d із %2$d</string>
     <string name="detecting_os">Визначення ОС…</string>
 
     <!-- Device detail sections -->
@@ -256,7 +256,7 @@
     <string name="label_mac_address_randomized">MAC-адреса (випадкова)</string>
     <string name="label_netbios_name">Ім’я NetBIOS</string>
     <string name="label_serial_number">Серійний номер</string>
-    <string name="label_os_hint">Підказка ОС (TTL)</string>
+    <string name="label_os_hint">Імовірна ОС (TTL)</string>
     <string name="label_workgroup">Робоча група</string>
     <string name="label_upnp_type">Тип UPnP</string>
     <string name="label_web_interface">Вебінтерфейс</string>
@@ -269,4 +269,6 @@
     <string name="action_copy">Копіювати</string>
     <string name="copied_to_clipboard">Скопійовано до буфера обміну</string>
     <string name="network_name_unknown">Невідома</string>
+    <string name="action_open_settings">Відкрити налаштування</string>
+    <string name="permission_local_network_denied">Для сканування локальної мережі потрібен дозвіл на доступ до пристроїв поблизу.</string>
 </resources>
