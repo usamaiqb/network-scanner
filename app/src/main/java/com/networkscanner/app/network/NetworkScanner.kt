@@ -3,34 +3,67 @@ package com.networkscanner.app.network
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import android.os.Build
 import android.net.wifi.WifiManager
+import android.os.Build
 import com.networkscanner.app.R
-import com.networkscanner.app.data.*
+import com.networkscanner.app.data.CommonPorts
+import com.networkscanner.app.data.DeepScanPhase
+import com.networkscanner.app.data.DeepScanProgress
+import com.networkscanner.app.data.DeepScanResult
+import com.networkscanner.app.data.DeepScanStatus
+import com.networkscanner.app.data.Device
+import com.networkscanner.app.data.DeviceType
+import com.networkscanner.app.data.DiscoveryMethod
+import com.networkscanner.app.data.NetBiosInfo
+import com.networkscanner.app.data.NetworkInfo
+import com.networkscanner.app.data.OsFamily
+import com.networkscanner.app.data.OsInfo
+import com.networkscanner.app.data.PortInfo
+import com.networkscanner.app.data.ScanPhase
+import com.networkscanner.app.data.ScanProgress
+import com.networkscanner.app.data.ScanResult
+import com.networkscanner.app.data.ScanStatus
+import com.networkscanner.app.data.SsdpDeviceInfo
 import com.networkscanner.app.util.ArpReader
 import com.networkscanner.app.util.DnsLookup
 import com.networkscanner.app.util.MacVendorLookup
 import com.networkscanner.app.util.NetworkUtils
 import com.networkscanner.app.util.PrivilegedNeighborSource
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.DatagramPacket
-import java.net.HttpURLConnection
-import java.net.URL
 import java.net.DatagramSocket
+import java.net.HttpURLConnection
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
-import java.util.*
+import java.net.URL
+import java.util.Date
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withContext
 
 /**
  * Network scanner implementation with multiple discovery methods.
@@ -125,7 +158,11 @@ class NetworkScanner(private val context: Context) {
             ArpReader.invalidateCache()
 
             // Phase 0: Ping gateway to ensure network connectivity and populate ARP cache
-            updateProgress(ScanPhase.READING_ARP_CACHE, 0.05f, context.getString(R.string.checking_network_connectivity))
+            updateProgress(
+                ScanPhase.READING_ARP_CACHE,
+                0.05f,
+                context.getString(R.string.checking_network_connectivity)
+            )
             pingGateway(networkInfo)
 
             // Phase 1: Read ARP cache

@@ -4,7 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.networkscanner.app.NetworkScannerApp
-import com.networkscanner.app.data.*
+import com.networkscanner.app.data.CommonPorts
+import com.networkscanner.app.data.DeepScanProgress
+import com.networkscanner.app.data.DeepScanResult
+import com.networkscanner.app.data.DeepScanStatus
+import com.networkscanner.app.data.Device
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

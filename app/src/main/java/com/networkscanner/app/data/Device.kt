@@ -57,7 +57,8 @@ data class Device(
      * Check if this device has detailed information.
      */
     val hasDetails: Boolean
-        get() = hostname != null || vendor != null || mdnsServices.isNotEmpty() || ssdpInfo != null || netBiosInfo != null
+        get() = hostname != null || vendor != null || mdnsServices.isNotEmpty() ||
+            ssdpInfo != null || netBiosInfo != null
 
     /**
      * Stable identity for the physical device behind this entry: the MAC when

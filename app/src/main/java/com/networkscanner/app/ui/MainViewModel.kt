@@ -4,7 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.networkscanner.app.NetworkScannerApp
-import com.networkscanner.app.data.*
+import com.networkscanner.app.data.Device
+import com.networkscanner.app.data.NetworkInfo
+import com.networkscanner.app.data.ScanPhase
+import com.networkscanner.app.data.ScanProgress
+import com.networkscanner.app.data.ScanResult
+import com.networkscanner.app.data.ScanStatus
 import com.networkscanner.app.data.repository.DeviceCustomizationRepository
 import com.networkscanner.app.util.NetworkInterfaceOption
 import com.networkscanner.app.util.NetworkUtils
