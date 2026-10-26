@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.easylauncher)
+    alias(libs.plugins.detekt)
 }
 
 // Load signing config from keystore.properties (local) or environment variables (CI)
@@ -107,6 +108,27 @@ android {
     }
 }
 
+detekt {
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    // Findings that predate detekt, so the rules bind to new code without the change that
+    // introduced them rewriting the app. This file is meant to shrink and then be deleted —
+    // regenerating it wholesale during a refactor turns temporary debt into permanent debt.
+    baseline = file("$rootDir/config/detekt/baseline.xml")
+    // Our config only states where we differ, so detekt's own defaults still apply.
+    buildUponDefaultConfig = true
+    allRules = false
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    jvmTarget = JavaVersion.VERSION_17.toString()
+    reports {
+        html.required.set(true)
+        sarif.required.set(false)
+        md.required.set(false)
+        txt.required.set(false)
+    }
+}
+
 dependencies {
     // Core Android
     implementation(libs.androidx.core.ktx)
@@ -145,6 +167,9 @@ dependencies {
     // Shizuku (privileged ARP table access)
     implementation(libs.shizuku.api)
     implementation(libs.shizuku.provider)
+
+    // Kotlin static analysis, including the Compose rule set
+    detektPlugins(libs.detekt.compose.rules)
 
     // Testing
     testImplementation(libs.junit)

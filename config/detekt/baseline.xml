@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:Device.kt$Device$override fun equals(other: Any?): Boolean</ID>
+    <ID>CyclomaticComplexMethod:DeviceDetailScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun DeviceDetailScreen( deviceIp: String, mainViewModel: MainViewModel, viewModel: DeviceDetailViewModel, onNavigateBack: () -&gt; Unit )</ID>
+    <ID>CyclomaticComplexMethod:DeviceType.kt$DeviceType.Companion$private fun classifyMdns(service: String): DeviceType?</ID>
+    <ID>CyclomaticComplexMethod:NeighborSourcePickerSheet.kt$@Composable private fun neighborSourceStatus(mode: Mode, availability: Availability?, probe: NeighborProbe): String?</ID>
+    <ID>CyclomaticComplexMethod:NetworkInfoBar.kt$@OptIn(ExperimentalMaterial3ExpressiveApi::class) @Composable fun NetworkInfoBar( networkInfo: NetworkInfo?, interfaces: List&lt;NetworkInterfaceOption&gt;, selectedInterfaceName: String?, onInterfaceSelected: (String) -&gt; Unit, isScanning: Boolean, modifier: Modifier = Modifier )</ID>
+    <ID>CyclomaticComplexMethod:NetworkScanner.kt$NetworkScanner$private fun detectService(port: Int, banner: String?): String?</ID>
+    <ID>CyclomaticComplexMethod:NetworkScanner.kt$NetworkScanner$private fun parseNetBiosResponse(data: ByteArray, length: Int): NetBiosInfo?</ID>
+    <ID>CyclomaticComplexMethod:NetworkScanner.kt$NetworkScanner$private suspend fun discoverSsdp()</ID>
+    <ID>CyclomaticComplexMethod:NetworkScanner.kt$NetworkScanner$private suspend fun probePortHeuristics()</ID>
+    <ID>EmptyFunctionBlock:NetworkScanner.kt$NetworkScanner.&lt;no name provided&gt;${}</ID>
+    <ID>LargeClass:NetworkScanner.kt$NetworkScanner</ID>
+    <ID>LongMethod:NetworkScanner.kt$NetworkScanner$suspend fun performDeepScan( ipAddress: String, ports: List&lt;Int&gt; = CommonPorts.TOP_PORTS, customServiceNames: Map&lt;Int, String&gt; = emptyMap(), fullScan: Boolean = false ): DeepScanResult</ID>
+    <ID>LoopWithTooManyJumpStatements:DnsLookup.kt$DnsLookup$while</ID>
+    <ID>LoopWithTooManyJumpStatements:NetworkScanner.kt$NetworkScanner$while</ID>
+    <ID>MagicNumber:CustomPortsViewModel.kt$CustomPortsViewModel$5000</ID>
+    <ID>MagicNumber:Device.kt$Device$8</ID>
+    <ID>MagicNumber:DeviceDetailScreen.kt$4</ID>
+    <ID>MagicNumber:DeviceDetailViewModel.kt$DeviceDetailViewModel$65535</ID>
+    <ID>MagicNumber:DeviceList.kt$120</ID>
+    <ID>MagicNumber:DeviceList.kt$180</ID>
+    <ID>MagicNumber:DeviceList.kt$200</ID>
+    <ID>MagicNumber:MainViewModel.kt$MainViewModel$0xFF</ID>
+    <ID>MagicNumber:MainViewModel.kt$MainViewModel$4</ID>
+    <ID>MagicNumber:MainViewModel.kt$MainViewModel$8</ID>
+    <ID>MagicNumber:ScanResult.kt$NetworkInfo$32</ID>
+    <ID>MagicNumber:ScanResult.kt$NetworkInfo$4</ID>
+    <ID>ModifierMissing:CustomPortsScreen.kt$CustomPortsScreen</ID>
+    <ID>ModifierMissing:DeviceDetailScreen.kt$DeviceDetailScreen</ID>
+    <ID>ModifierMissing:HomeScreen.kt$HomeScreen</ID>
+    <ID>ModifierMissing:SettingsScreen.kt$SettingsScreen</ID>
+    <ID>ModifierMissing:Theme.kt$NetworkScannerTheme</ID>
+    <ID>NestedBlockDepth:ArpReader.kt$ArpReader$internal fun parseIpNeighLine(line: String): ArpEntry?</ID>
+    <ID>NestedBlockDepth:ArpReader.kt$ArpReader$private fun readFromIpNeigh(): List&lt;ArpEntry&gt;</ID>
+    <ID>NestedBlockDepth:ArpReader.kt$ArpReader$private fun readFromProcNetArp(): List&lt;ArpEntry&gt;</ID>
+    <ID>NestedBlockDepth:NetworkScanner.kt$NetworkScanner$private fun grabBanner(ip: String, port: Int): String?</ID>
+    <ID>ParameterNaming:NeighborSourcePickerSheet.kt$onSelected</ID>
+    <ID>ParameterNaming:NetworkInfoBar.kt$onInterfaceSelected</ID>
+    <ID>ParameterNaming:ThemeSegmentedButtons.kt$onModeSelected</ID>
+    <ID>PrintStackTrace:ArpReader.kt$ArpReader$e</ID>
+    <ID>PrintStackTrace:NetworkUtils.kt$NetworkUtils$e</ID>
+    <ID>ReturnCount:DnsLookup.kt$DnsLookup$private fun parsePtrResponse(data: ByteArray, length: Int): String?</ID>
+    <ID>ReturnCount:NetworkScanner.kt$NetworkScanner$private fun parseNetBiosResponse(data: ByteArray, length: Int): NetBiosInfo?</ID>
+    <ID>SpreadOperator:PrivilegedNeighborSource.kt$PrivilegedNeighborSource.ShizukuService$(*COMMAND)</ID>
+    <ID>SwallowedException:ArpReader.kt$ArpReader$e: Exception</ID>
+    <ID>SwallowedException:CustomPortRepository.kt$CustomPortRepository$e: Exception</ID>
+    <ID>SwallowedException:DeviceCustomizationRepository.kt$DeviceCustomizationRepository$e: Exception</ID>
+    <ID>SwallowedException:DnsLookup.kt$DnsLookup$e: Exception</ID>
+    <ID>SwallowedException:MacVendorLookup.kt$MacVendorLookup$e: Exception</ID>
+    <ID>SwallowedException:NetworkScanner.kt$NetworkScanner$e: CancellationException</ID>
+    <ID>SwallowedException:NetworkScanner.kt$NetworkScanner$e: Exception</ID>
+    <ID>SwallowedException:NetworkUtils.kt$NetworkUtils$e: Exception</ID>
+    <ID>SwallowedException:PrivilegedNeighborSource.kt$PrivilegedNeighborSource$e: Exception</ID>
+    <ID>SwallowedException:PrivilegedNeighborSource.kt$PrivilegedNeighborSource.ShizukuService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ArpReader.kt$ArpReader$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:CustomPortRepository.kt$CustomPortRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DeviceCustomizationRepository.kt$DeviceCustomizationRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DeviceDetailViewModel.kt$DeviceDetailViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DnsLookup.kt$DnsLookup$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MacVendorLookup.kt$MacVendorLookup$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MainViewModel.kt$MainViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NetworkScanner.kt$NetworkScanner$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NetworkUtils.kt$NetworkUtils$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PrivilegedNeighborSource.kt$PrivilegedNeighborSource$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PrivilegedNeighborSource.kt$PrivilegedNeighborSource.ShizukuService$e: Exception</ID>
+    <ID>TooManyFunctions:ArpReader.kt$ArpReader</ID>
+    <ID>TooManyFunctions:NetworkScanner.kt$NetworkScanner</ID>
+    <ID>TooManyFunctions:NetworkUtils.kt$NetworkUtils</ID>
+    <ID>UnusedParameter:NetworkScanner.kt$NetworkScanner$ip: String</ID>
+    <ID>UnusedPrivateProperty:NetworkScanner.kt$NetworkScanner$i</ID>
+    <ID>ViewModelInjection:NavGraph.kt$mainViewModel</ID>
+  </CurrentIssues>
+</SmellBaseline>
