@@ -170,8 +170,6 @@
 
     <!-- About Preferences -->
     <string name="pref_version_title">Versiunea</string>
-    <string name="pref_about_title">Despre Network Scanner</string>
-    <string name="pref_about_summary">Informații despre aplicație și contribuții</string>
     <string name="pref_privacy_title">Politica de confidențialitate</string>
     <string name="pref_privacy_summary">Cum sunt gestionate datele tale</string>
 
@@ -181,7 +179,7 @@
     <string name="dialog_clear_history_title">Ștergi istoricul dispozitivelor?</string>
     <string name="dialog_clear_history_message">Această acțiune va elimina toate informațiile salvate despre dispozitive, inclusiv numele personalizate. Acțiunea nu poate fi anulată.</string>
     <string name="dialog_about_title">Despre Network Scanner</string>
-    <string name="dialog_about_message" formatted="false">Network Scanner este un instrument puternic pentru descoperirea și analizarea dispozitivelor din rețeaua ta locală.\n\nDezvoltat cu grijă pentru confidențialitatea ta. Toate scanările au loc local, pe dispozitivul tău.\n\n⚠️ Notă: Detectarea dispozitivelor și scanarea porturilor nu sunt 100% precise. Rezultatele pot varia în funcție de condițiile rețelei și de configurațiile dispozitivelor.\n\nVersiunea 1.0.0 | Licență GPL-3.0</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner este un instrument puternic pentru descoperirea și analizarea dispozitivelor din rețeaua ta locală.\n\nDezvoltat cu grijă pentru confidențialitatea ta. Toate scanările au loc local, pe dispozitivul tău.\n\n⚠️ Notă: Detectarea dispozitivelor și scanarea porturilor nu sunt 100% precise. Rezultatele pot varia în funcție de condițiile rețelei și de configurațiile dispozitivelor.\n\nLicență GPL-3.0</string>
     <string name="view_on_github">Vezi pe GitHub</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
     <string name="deep_scan_disclaimer">Detectarea porturilor și a sistemului de operare este estimativă și poate să nu fie complet precisă</string>

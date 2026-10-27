@@ -147,8 +147,6 @@
 
     <!-- About Preferences -->
     <string name="pref_version_title">Версія</string>
-    <string name="pref_about_title">Про Network Scanner</string>
-    <string name="pref_about_summary">Інформація про застосунок та його розробників</string>
     <string name="pref_privacy_title">Політика конфіденційності</string>
     <string name="pref_privacy_summary">Як обробляються ваші дані</string>
 
@@ -158,7 +156,7 @@
     <string name="dialog_clear_history_title">Очистити історію пристроїв?</string>
     <string name="dialog_clear_history_message">Це призведе до видалення всієї збереженої інформації про пристрої, включаючи власні назви. Цю дію неможливо скасувати.</string>
     <string name="dialog_about_title">Про Network Scanner</string>
-    <string name="dialog_about_message" formatted="false">Network Scanner — застосунок для виявлення та аналізу пристроїв у локальній мережі.\n\nПід час розробки особливу увагу приділено конфіденційності. Сканування виконується локально на вашому пристрої.\n\n⚠️ Примітка: результати виявлення пристроїв і сканування портів можуть бути неточними. Точність залежить від стану мережі та налаштувань пристроїв.\n\nВерсія 1.0.0 | Ліцензія GPL-3.0</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner — застосунок для виявлення та аналізу пристроїв у локальній мережі.\n\nПід час розробки особливу увагу приділено конфіденційності. Сканування виконується локально на вашому пристрої.\n\n⚠️ Примітка: результати виявлення пристроїв і сканування портів можуть бути неточними. Точність залежить від стану мережі та налаштувань пристроїв.\n\nЛіцензія GPL-3.0</string>
     <string name="view_on_github">Переглянути на GitHub</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
     <string name="deep_scan_disclaimer">Результати визначення портів та ОС можуть бути неточними.</string>

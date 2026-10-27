@@ -1,23 +1,20 @@
 package com.networkscanner.app.ui.screens.settings
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Autorenew
 import androidx.compose.material.icons.rounded.Code
-import androidx.compose.material.icons.rounded.Description
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.rounded.Radar
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,24 +29,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
-import com.networkscanner.app.BuildConfig
 import com.networkscanner.app.R
 import com.networkscanner.app.ui.SettingsViewModel
 import com.networkscanner.app.ui.expressive.ActionSettingsRow
 import com.networkscanner.app.ui.expressive.CollapsingLargeTopBar
 import com.networkscanner.app.ui.expressive.ControlSettingsRow
-import com.networkscanner.app.ui.expressive.InfoSettingsRow
+import com.networkscanner.app.ui.expressive.ExternalLinkRow
 import com.networkscanner.app.ui.expressive.PickerSettingsRow
+import com.networkscanner.app.ui.expressive.RowLeadingChip
 import com.networkscanner.app.ui.expressive.SectionGap
 import com.networkscanner.app.ui.expressive.SectionHeader
 import com.networkscanner.app.ui.expressive.SegmentPosition
 import com.networkscanner.app.ui.expressive.SegmentedGroup
 import com.networkscanner.app.ui.expressive.SwitchSettingsRow
 import com.networkscanner.app.ui.expressive.ValueBadge
+import com.networkscanner.app.ui.expressive.rememberAppVersionLabel
 import com.networkscanner.app.ui.expressive.rememberExpressiveScrollBehavior
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +67,6 @@ fun SettingsScreen(
     var showPrivacyDialog by remember { mutableStateOf(false) }
     var showNeighborSourceSheet by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
     val scrollBehavior = rememberExpressiveScrollBehavior()
     val supportsDynamic = remember { viewModel.supportsDynamicColors() }
     val languageOptions = rememberLanguageOptions()
@@ -88,138 +83,125 @@ fun SettingsScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            // Header and rows live in one item so the header's own 8.dp keeps them together;
-            // this arrangement is then the gap *between* sections, not inside them.
-            verticalArrangement = Arrangement.spacedBy(SectionGap),
-            contentPadding = PaddingValues(bottom = 16.dp)
+                // Padding sits after verticalScroll so it scrolls with the content and the
+                // first section can pass under the collapsing bar rather than stopping below it.
+                .verticalScroll(rememberScrollState())
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
+            // Each SettingsSection pairs a header with its group and supplies the 8.dp
+            // between them, so this arrangement is the gap *between* sections, not inside them.
+            verticalArrangement = Arrangement.spacedBy(SectionGap)
         ) {
-            item(key = "appearance") {
-                SettingsSection(stringResource(R.string.pref_category_appearance)) {
-                    ControlSettingsRow(
-                        position = SegmentPosition.First,
-                        title = stringResource(R.string.pref_theme_title),
-                        icon = Icons.Rounded.Palette
-                    ) {
-                        ThemeSegmentedButtons(
-                            selectedMode = themeMode,
-                            onModeSelected = { viewModel.setThemeMode(it) },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    // Dynamic colour is an API 31+ feature, so this row comes and goes and the
-                    // rows around it cannot assume a fixed position.
-                    if (supportsDynamic) {
-                        SwitchSettingsRow(
-                            position = SegmentPosition.Middle,
-                            title = stringResource(R.string.pref_dynamic_colors_title),
-                            subtitle = stringResource(R.string.pref_dynamic_colors_summary),
-                            icon = Icons.Rounded.AutoAwesome,
-                            checked = dynamicColors,
-                            onCheckedChange = { viewModel.setDynamicColors(it) }
-                        )
-                    }
-                    PickerSettingsRow(
-                        position = SegmentPosition.Last,
-                        title = stringResource(R.string.pref_language_title),
-                        icon = Icons.Rounded.Language,
-                        options = languageOptions,
-                        optionLabel = { it.label },
-                        key = { it.code },
-                        selected = languageOptions.optionFor(language),
-                        onSelect = { option ->
-                            if (option.code != language) {
-                                // AppCompat reloads resources and recreates the activity once;
-                                // no manual recreate() needed.
-                                viewModel.setLanguage(option.code)
-                            }
-                        }
+            SettingsSection(stringResource(R.string.pref_category_appearance)) {
+                ControlSettingsRow(
+                    position = SegmentPosition.First,
+                    title = stringResource(R.string.pref_theme_title),
+                    icon = Icons.Rounded.Palette
+                ) {
+                    ThemeSegmentedButtons(
+                        selectedMode = themeMode,
+                        onModeSelected = { viewModel.setThemeMode(it) },
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-            }
-
-            item(key = "scanning") {
-                SettingsSection(stringResource(R.string.pref_category_scanning)) {
+                // Dynamic colour is an API 31+ feature, so this row comes and goes and the
+                // rows around it cannot assume a fixed position.
+                if (supportsDynamic) {
                     SwitchSettingsRow(
-                        position = SegmentPosition.First,
-                        title = stringResource(R.string.pref_auto_scan_title),
-                        subtitle = stringResource(R.string.pref_auto_scan_summary),
-                        icon = Icons.Rounded.Autorenew,
-                        checked = autoScan,
-                        onCheckedChange = { viewModel.setAutoScan(it) }
-                    )
-                    // Not a PickerSettingsRow: choosing a source asks its backend for access,
-                    // so the sheet has to stay open and report a refusal on the option itself.
-                    ActionSettingsRow(
                         position = SegmentPosition.Middle,
-                        title = stringResource(R.string.pref_neighbor_source_title),
-                        subtitle = stringResource(R.string.pref_neighbor_source_summary),
-                        icon = Icons.Rounded.Key,
-                        onClick = {
-                            viewModel.onNeighborPickerOpened()
-                            showNeighborSourceSheet = true
-                        },
-                        trailing = { ValueBadge(text = neighborSourceLabel(neighborSource)) }
-                    )
-                    ActionSettingsRow(
-                        position = SegmentPosition.Last,
-                        title = stringResource(R.string.pref_custom_ports_title),
-                        subtitle = stringResource(R.string.pref_custom_ports_summary),
-                        icon = Icons.Rounded.Tune,
-                        onClick = onNavigateToCustomPorts
+                        title = stringResource(R.string.pref_dynamic_colors_title),
+                        subtitle = stringResource(R.string.pref_dynamic_colors_summary),
+                        icon = Icons.Rounded.AutoAwesome,
+                        checked = dynamicColors,
+                        onCheckedChange = { viewModel.setDynamicColors(it) }
                     )
                 }
+                PickerSettingsRow(
+                    position = SegmentPosition.Last,
+                    title = stringResource(R.string.pref_language_title),
+                    icon = Icons.Rounded.Language,
+                    options = languageOptions,
+                    optionLabel = { it.label },
+                    key = { it.code },
+                    selected = languageOptions.optionFor(language),
+                    onSelect = { option ->
+                        if (option.code != language) {
+                            // AppCompat reloads resources and recreates the activity once;
+                            // no manual recreate() needed.
+                            viewModel.setLanguage(option.code)
+                        }
+                    }
+                )
             }
 
-            item(key = "about") {
-                val versionSummary = buildString {
-                    append(BuildConfig.VERSION_NAME)
-                    if (BuildConfig.DEBUG) {
-                        append(" (${BuildConfig.VERSION_CODE})")
-                    }
-                }
-                val githubUrl = stringResource(R.string.github_url)
-                SettingsSection(stringResource(R.string.pref_category_about)) {
-                    // States the version and does nothing else, so it takes no click and
-                    // shows no ripple the user cannot explain.
-                    InfoSettingsRow(
-                        position = SegmentPosition.First,
-                        title = stringResource(R.string.pref_version_title),
-                        subtitle = versionSummary,
-                        icon = Icons.Rounded.Info
-                    )
-                    ActionSettingsRow(
-                        position = SegmentPosition.Middle,
-                        title = stringResource(R.string.pref_about_title),
-                        subtitle = stringResource(R.string.pref_about_summary),
-                        icon = Icons.Rounded.Description,
-                        onClick = { showAboutDialog = true }
-                    )
-                    ActionSettingsRow(
-                        position = SegmentPosition.Middle,
-                        title = stringResource(R.string.view_on_github),
-                        subtitle = githubUrl,
-                        icon = Icons.Rounded.Code,
-                        onClick = {
-                            try {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, githubUrl.toUri()))
-                            } catch (_: ActivityNotFoundException) {
-                                // No browser available
-                            }
-                        }
-                    )
-                    ActionSettingsRow(
-                        position = SegmentPosition.Last,
-                        title = stringResource(R.string.pref_privacy_title),
-                        subtitle = stringResource(R.string.pref_privacy_summary),
-                        icon = Icons.Rounded.Shield,
-                        onClick = { showPrivacyDialog = true }
-                    )
-                }
+            SettingsSection(stringResource(R.string.pref_category_scanning)) {
+                SwitchSettingsRow(
+                    position = SegmentPosition.First,
+                    title = stringResource(R.string.pref_auto_scan_title),
+                    subtitle = stringResource(R.string.pref_auto_scan_summary),
+                    icon = Icons.Rounded.Autorenew,
+                    checked = autoScan,
+                    onCheckedChange = { viewModel.setAutoScan(it) }
+                )
+                // Not a PickerSettingsRow: choosing a source asks its backend for access,
+                // so the sheet has to stay open and report a refusal on the option itself.
+                ActionSettingsRow(
+                    position = SegmentPosition.Middle,
+                    title = stringResource(R.string.pref_neighbor_source_title),
+                    subtitle = stringResource(R.string.pref_neighbor_source_summary),
+                    icon = Icons.Rounded.Key,
+                    onClick = {
+                        viewModel.onNeighborPickerOpened()
+                        showNeighborSourceSheet = true
+                    },
+                    trailing = { ValueBadge(text = neighborSourceLabel(neighborSource)) }
+                )
+                ActionSettingsRow(
+                    position = SegmentPosition.Last,
+                    title = stringResource(R.string.pref_custom_ports_title),
+                    subtitle = stringResource(R.string.pref_custom_ports_summary),
+                    icon = Icons.Rounded.Tune,
+                    onClick = onNavigateToCustomPorts
+                )
+            }
+
+            SettingsSection(stringResource(R.string.pref_category_about)) {
+                // The app's identity and the "what is this app" dialog are one subject,
+                // so they are one row: the name and version state it, tapping explains
+                // it. Split in two, the section named the app twice under a header
+                // already saying About, and the identity half was the only row in the
+                // group that did not respond to a tap -- which reads as broken rather
+                // than as deliberate. It leads the section because it is the subject of
+                // it; an inert identity row is what belongs at the foot as a signature.
+                ActionSettingsRow(
+                    position = SegmentPosition.First,
+                    title = stringResource(R.string.app_name),
+                    subtitle = rememberAppVersionLabel(
+                        prefix = stringResource(R.string.pref_version_title) + " "
+                    ),
+                    leading = { RowLeadingChip(Icons.Rounded.Radar) },
+                    onClick = { showAboutDialog = true }
+                )
+                // No trailing chevron on either dialog row: every row in the group is
+                // tappable now, so nothing is the odd one out, and Android's own Settings
+                // marks navigable rows the same way -- not at all. The one real
+                // distinction left is leaving the app, which ExternalLinkRow does mark.
+                ActionSettingsRow(
+                    position = SegmentPosition.Middle,
+                    title = stringResource(R.string.pref_privacy_title),
+                    subtitle = stringResource(R.string.pref_privacy_summary),
+                    leading = { RowLeadingChip(Icons.Rounded.Shield) },
+                    onClick = { showPrivacyDialog = true }
+                )
+                ExternalLinkRow(
+                    position = SegmentPosition.Last,
+                    label = stringResource(R.string.view_on_github),
+                    url = stringResource(R.string.github_url),
+                    icon = Icons.Rounded.Code
+                )
             }
         }
     }

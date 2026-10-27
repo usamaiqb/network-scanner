@@ -172,8 +172,6 @@
 
     <!-- About Preferences -->
     <string name="pref_version_title">نسخه برنامه</string>
-    <string name="pref_about_title">درباره‌ی Network Scanner</string>
-    <string name="pref_about_summary">اطلاعات برنامه و توسعه‌دهندگان</string>
     <string name="pref_privacy_title">سیاست حفظ حریم خصوصی</string>
     <string name="pref_privacy_summary">نحوه‌ی مدیریت داده‌های شما</string>
 
@@ -183,7 +181,7 @@
     <string name="dialog_clear_history_title">تاریخچه‌ی دستگاه‌ها پاک شود؟</string>
     <string name="dialog_clear_history_message">تمام اطلاعات ذخیره‌شدهٔ دستگاه‌ها، از جمله نام‌های دلخواه، حذف خواهند شد. این کار قابل بازگشت نیست.</string>
     <string name="dialog_about_title">درباره‌ی Network Scanner</string>
-    <string name="dialog_about_message" formatted="false">Network Scanner ابزاری قدرتمند برای پیدا کردن و تحلیل دستگاه‌های شبکه‌ی محلی شماست. این برنامه با در نظر گرفتن حریم خصوصی شما ساخته شده است. تمام اسکن‌ها به‌صورت محلی روی دستگاه شما انجام می‌شود. ⚠️ توجه: شناسایی دستگاه‌ها و اسکن پورت‌ها ۱۰۰٪ دقیق نیست. نتایج ممکن است بسته به شرایط شبکه و پیکربندی دستگاه‌ها متفاوت باشد. نسخه‌ی 1.0.0 | مجوز GPL-3.0</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner ابزاری قدرتمند برای پیدا کردن و تحلیل دستگاه‌های شبکه‌ی محلی شماست. این برنامه با در نظر گرفتن حریم خصوصی شما ساخته شده است. تمام اسکن‌ها به‌صورت محلی روی دستگاه شما انجام می‌شود. ⚠️ توجه: شناسایی دستگاه‌ها و اسکن پورت‌ها ۱۰۰٪ دقیق نیست. نتایج ممکن است بسته به شرایط شبکه و پیکربندی دستگاه‌ها متفاوت باشد. مجوز GPL-3.0</string>
     <string name="view_on_github">رفتن به GitHub</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
     <string name="deep_scan_disclaimer">شناسایی پورت‌ها و سیستم‌عامل تخمینی است و ممکن است کاملاً دقیق نباشد.</string>

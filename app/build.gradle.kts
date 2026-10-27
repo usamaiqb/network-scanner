@@ -60,6 +60,8 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            // Marks the build in versionName, which is what the Settings identity row shows.
+            // Doing it here rather than in the UI keeps it out of release builds by construction.
             versionNameSuffix = "-debug"
         }
 

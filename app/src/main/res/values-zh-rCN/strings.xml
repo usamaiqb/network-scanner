@@ -150,8 +150,6 @@
 
     <!-- About Preferences -->
     <string name="pref_version_title">版本</string>
-    <string name="pref_about_title">关于 Network Scanner</string>
-    <string name="pref_about_summary">应用信息和致谢</string>
     <string name="pref_privacy_title">隐私政策</string>
     <string name="pref_privacy_summary">您的数据处理方式</string>
 
@@ -161,7 +159,7 @@
     <string name="dialog_clear_history_title">清除设备历史?</string>
     <string name="dialog_clear_history_message">这将删除所有已保存的设备信息，包括自定义名称。此操作不可撤销。</string>
     <string name="dialog_about_title">关于 Network Scanner</string>
-    <string name="dialog_about_message" formatted="false">Network Scanner 是一款用于发现和分析本地网络中设备的强大工具。\n\n精心开发，注重您的隐私。所有扫描均在您的设备本地完成。\n\n⚠️ 注意：设备检测和端口扫描并非 100% 准确。结果可能因网络条件和设备配置而异。\n\n版本 1.0.0 | GPL-3.0 许可证</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner 是一款用于发现和分析本地网络中设备的强大工具。\n\n精心开发，注重您的隐私。所有扫描均在您的设备本地完成。\n\n⚠️ 注意：设备检测和端口扫描并非 100% 准确。结果可能因网络条件和设备配置而异。\n\nGPL-3.0 许可证</string>
     <string name="view_on_github">在 GitHub 上查看</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
     <string name="deep_scan_disclaimer">端口和操作系统检测均为估算值，可能不完全准确</string>

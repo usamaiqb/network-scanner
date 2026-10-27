@@ -147,8 +147,6 @@
 
     <!-- About Preferences -->
     <string name="pref_version_title">Версия</string>
-    <string name="pref_about_title">О Network Scanner</string>
-    <string name="pref_about_summary">Информация о приложении и авторы</string>
     <string name="pref_privacy_title">Политика конфиденциальности</string>
     <string name="pref_privacy_summary">Как обрабатываются ваши данные</string>
 
@@ -158,7 +156,7 @@
     <string name="dialog_clear_history_title">Очистить историю устройств?</string>
     <string name="dialog_clear_history_message">Это удалит всю сохраненную информацию об устройствах, включая пользовательские имена. Это действие нельзя отменить.</string>
     <string name="dialog_about_title">О Network Scanner</string>
-    <string name="dialog_about_message" formatted="false">Network Scanner — приложение для обнаружения и анализа устройств в локальной сети.\n\nПри разработке уделено внимание конфиденциальности. Сканирование выполняется локально на вашем устройстве.\n\n⚠️ Примечание: результаты обнаружения устройств и сканирования портов могут быть неточными. Точность зависит от состояния сети и настроек устройств.\n\nВерсия 1.0.0 | Лицензия GPL-3.0</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner — приложение для обнаружения и анализа устройств в локальной сети.\n\nПри разработке уделено внимание конфиденциальности. Сканирование выполняется локально на вашем устройстве.\n\n⚠️ Примечание: результаты обнаружения устройств и сканирования портов могут быть неточными. Точность зависит от состояния сети и настроек устройств.\n\nЛицензия GPL-3.0</string>
     <string name="view_on_github">Посмотреть на GitHub</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
     <string name="deep_scan_disclaimer">Результаты определения портов и ОС могут быть неточными.</string>

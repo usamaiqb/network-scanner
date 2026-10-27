@@ -170,8 +170,6 @@
 
     <!-- Über-Einstellungen -->
     <string name="pref_version_title">Version</string>
-    <string name="pref_about_title">Über Network Scanner</string>
-    <string name="pref_about_summary">App-Informationen und Danksagungen</string>
     <string name="pref_privacy_title">Datenschutzerklärung</string>
     <string name="pref_privacy_summary">Wie Ihre Daten behandelt werden</string>
 
@@ -181,7 +179,7 @@
     <string name="dialog_clear_history_title">Geräteverlauf löschen?</string>
     <string name="dialog_clear_history_message">Dadurch werden alle gespeicherten Geräteinformationen einschließlich eigener Namen entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden.</string>
     <string name="dialog_about_title">Über Network Scanner</string>
-    <string name="dialog_about_message" formatted="false">Network Scanner ist ein leistungsstarkes Werkzeug zum Erkennen und Analysieren von Geräten in Ihrem lokalen Netzwerk.\n\nMit Rücksicht auf Ihre Privatsphäre entwickelt. Die gesamte Analyse findet lokal auf Ihrem Gerät statt.\n\n⚠️ Hinweis: Geräteerkennung und Port-Scan sind nicht zu 100 % genau. Die Ergebnisse können je nach Netzwerkbedingungen und Gerätekonfiguration variieren.\n\nVersion 1.0.0 | GPL-3.0-Lizenz</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner ist ein leistungsstarkes Werkzeug zum Erkennen und Analysieren von Geräten in Ihrem lokalen Netzwerk.\n\nMit Rücksicht auf Ihre Privatsphäre entwickelt. Die gesamte Analyse findet lokal auf Ihrem Gerät statt.\n\n⚠️ Hinweis: Geräteerkennung und Port-Scan sind nicht zu 100 % genau. Die Ergebnisse können je nach Netzwerkbedingungen und Gerätekonfiguration variieren.\n\nGPL-3.0-Lizenz</string>
     <string name="view_on_github">Auf GitHub ansehen</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
     <string name="deep_scan_disclaimer">Port- und Betriebssystemerkennung sind Schätzungen und möglicherweise nicht ganz genau</string>

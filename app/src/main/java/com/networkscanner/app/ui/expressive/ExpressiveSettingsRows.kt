@@ -106,11 +106,16 @@ fun RowLeadingIcon(icon: ImageVector, modifier: Modifier = Modifier, enabled: Bo
 }
 
 /** 48.dp circular `secondaryContainer` chip. The list-item and About-card alternative to
- *  [RowLeadingIcon] — heavier, so reserve it for content rows rather than settings. */
+ *  [RowLeadingIcon] — heavier, so reserve it for content rows rather than settings.
+ *
+ *  Carries the same trailing gap [RowLeadingIcon] does, so the two are interchangeable in a
+ *  row's leading position and a group that mixes them still lines its text up. */
 @Composable
 fun RowLeadingChip(icon: ImageVector, modifier: Modifier = Modifier) {
     Surface(
-        modifier = modifier.size(48.dp),
+        modifier = modifier
+            .padding(end = LeadingIconGap)
+            .size(48.dp),
         shape = CircleShape,
         color = MaterialTheme.colorScheme.secondaryContainer
     ) {
@@ -344,6 +349,11 @@ fun ControlSettingsRow(
  * Row that navigates or performs an action rather than holding a value. [trailing] is the
  * affordance slot — a chevron, an external-link glyph, a [ValueBadge], or nothing.
  * [titleColor] carries destructive intent: pass `error` for a delete or clear-all row.
+ *
+ * [leading] replaces the [icon] when the row needs something other than the standard 24.dp
+ * glyph — in practice a [RowLeadingChip], so an action row can sit in an About group beside
+ * [ExternalLinkRow] and [AppIdentityRow] without the group's text edge stepping sideways.
+ * Whatever you pass owns its own trailing gap; both [RowLeadingIcon] and [RowLeadingChip] do.
  */
 @Composable
 fun ActionSettingsRow(
@@ -352,6 +362,7 @@ fun ActionSettingsRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
+    leading: (@Composable () -> Unit)? = null,
     subtitle: String? = null,
     titleColor: Color = MaterialTheme.colorScheme.onSurface,
     enabled: Boolean = true,
@@ -372,7 +383,11 @@ fun ActionSettingsRow(
         }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            icon?.let { RowLeadingIcon(it, enabled = enabled) }
+            if (leading != null) {
+                leading()
+            } else {
+                icon?.let { RowLeadingIcon(it, enabled = enabled) }
+            }
             RowTitleBlock(
                 title = title,
                 subtitle = subtitle,

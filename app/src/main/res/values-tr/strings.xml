@@ -172,8 +172,6 @@
 
     <!-- Hakkında Tercihleri -->
     <string name="pref_version_title">Sürüm</string>
-    <string name="pref_about_title">Network Scanner Hakkında</string>
-    <string name="pref_about_summary">Uygulama bilgileri ve katkıda bulunanlar</string>
     <string name="pref_privacy_title">Gizlilik Politikası</string>
     <string name="pref_privacy_summary">Verilerinizin nasıl işlendiği</string>
 
@@ -183,7 +181,7 @@
     <string name="dialog_clear_history_title">Cihaz Geçmişi Temizlensin mi?</string>
     <string name="dialog_clear_history_message">Bu işlem, özel adlar da dahil olmak üzere kayıtlı tüm cihaz bilgilerini siler. Bu işlem geri alınamaz.</string>
     <string name="dialog_about_title">Network Scanner Hakkında</string>
-    <string name="dialog_about_message" formatted="false">Network Scanner, yerel ağınızdaki cihazları bulmak ve analiz etmek için tasarlanmış güçlü bir araçtır.\n\nGizliliğinize önem verilerek geliştirilmiştir. Tüm tarama işlemleri yalnızca cihazınızda yerel olarak gerçekleştirilir.\n\n⚠️ Not: Cihaz tespiti ve port taraması kesin sonuç garantisi vermez. Sonuçlar ağ koşullarına ve cihaz yapılandırmalarına bağlı olarak farklılık gösterebilir.\n\nSürüm 1.0.0 | GPL-3.0 Lisansı</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner, yerel ağınızdaki cihazları bulmak ve analiz etmek için tasarlanmış güçlü bir araçtır.\n\nGizliliğinize önem verilerek geliştirilmiştir. Tüm tarama işlemleri yalnızca cihazınızda yerel olarak gerçekleştirilir.\n\n⚠️ Not: Cihaz tespiti ve port taraması kesin sonuç garantisi vermez. Sonuçlar ağ koşullarına ve cihaz yapılandırmalarına bağlı olarak farklılık gösterebilir.\n\nGPL-3.0 Lisansı</string>
     <string name="view_on_github">GitHub\'da Görüntüle</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
     <string name="deep_scan_disclaimer">Port ve işletim sistemi tespiti tahmini olup kesin sonuç vermeyebilir</string>

@@ -148,8 +148,6 @@
 
     <!-- About Preferences -->
     <string name="pref_version_title">الإصدار</string>
-    <string name="pref_about_title">عن Network Scanner</string>
-    <string name="pref_about_summary">معلومات التطبيق والمساهمون</string>
     <string name="pref_privacy_title">سياسة الخصوصية</string>
     <string name="pref_privacy_summary">كيف نتعامل مع بياناتك</string>
 
@@ -159,7 +157,7 @@
     <string name="dialog_clear_history_title">مسح سجل الأجهزة؟</string>
     <string name="dialog_clear_history_message">سيؤدي هذا إلى إزالة كل معلومات الأجهزة المحفوظة بما في ذلك الأسماء المخصصة. لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="dialog_about_title">عن Network Scanner</string>
-    <string name="dialog_about_message" formatted="false">Network Scanner أداة فعّالة لاكتشاف وتحليل الأجهزة على شبكتك المحلية.\n\nطُوِّر مع مراعاة خصوصيتك. جميع عمليات الفحص تتم محلياً على جهازك.\n\n⚠️ ملاحظة: اكتشاف الأجهزة وفحص المنافذ ليس دقيقاً بنسبة 100%. قد تختلف النتائج حسب ظروف الشبكة وتكوينات الأجهزة.\n\nالإصدار 1.0.0 | رخصة GPL-3.0</string>
+    <string name="dialog_about_message" formatted="false">Network Scanner أداة فعّالة لاكتشاف وتحليل الأجهزة على شبكتك المحلية.\n\nطُوِّر مع مراعاة خصوصيتك. جميع عمليات الفحص تتم محلياً على جهازك.\n\n⚠️ ملاحظة: اكتشاف الأجهزة وفحص المنافذ ليس دقيقاً بنسبة 100%. قد تختلف النتائج حسب ظروف الشبكة وتكوينات الأجهزة.\n\nرخصة GPL-3.0</string>
     <string name="view_on_github">فتح على GitHub</string>
     <string name="github_url">https://github.com/usamaiqb/network-scanner</string>
     <string name="deep_scan_disclaimer">تقديرات كشف المنافذ ونظام التشغيل وقد لا تكون دقيقة تماماً</string>
