@@ -1,37 +1,27 @@
 #!/usr/bin/env bash
-# Compute per-locale translation completion and update/check the README table.
+# Derive everything that lists the app's languages from the values-* folders:
+#   - the README translation table (per-locale completion)
+#   - app/src/main/res/xml/locales_config.xml (system per-app language page and the
+#     in-app picker, see LanguageOptions.kt)
 #
 # Usage:
-#   bash scripts/translation-status.sh           # rewrite the table in README.md
-#   bash scripts/translation-status.sh --check   # exit 1 if the table is stale
+#   bash scripts/translation-status.sh           # rewrite README.md and locales_config.xml
+#   bash scripts/translation-status.sh --check   # exit 1 if either is stale
 #
-# Requires: bash, grep, sed, sort, comm, awk, find  (standard on Ubuntu CI)
+# Requires: bash, grep, sed, sort, comm, awk, and a JDK 11+ on PATH (the one that builds
+# the app). Language names come from scripts/LanguageNames.java, so adding a
+# values-<locale> folder needs no change here.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SOURCE_XML="$REPO_ROOT/app/src/main/res/values/strings.xml"
+RES_DIR="$REPO_ROOT/app/src/main/res"
+SOURCE_XML="$RES_DIR/values/strings.xml"
+LOCALES_CONFIG="$RES_DIR/xml/locales_config.xml"
 README="$REPO_ROOT/README.md"
 
-# Locale code -> endonym for the README table. The app derives endonyms at runtime via
-# Locale.getDisplayName (see LanguageDialog.kt); bash can't, so this map is maintained
-# independently. Add a case here when introducing a new values-<lang> locale.
-display_name() {
-    case "$1" in
-        en) echo "English"    ;;
-        ru) echo "Русский"    ;;
-        es) echo "Español"    ;;
-        uk) echo "Українська" ;;
-        fa) echo "فارسی"      ;;
-        ar) echo "العربية"    ;;
-        zh-rCN) echo "中文 (中国)" ;;
-        it) echo "Italiano"   ;;
-        de) echo "Deutsch"    ;;
-        tr) echo "Türkçe"     ;;
-        ro) echo "Română"     ;;
-        *)  echo "$1"         ;;
-    esac
-}
+# The language values/ is written in. It leads both the table and locales_config.
+SOURCE_LOCALE="en"
 
 # Percentage -> 12-char Unicode block progress bar (e.g. ███████████░)
 progress_bar() {
@@ -49,7 +39,8 @@ progress_bar() {
 
 # Sorted translatable key names from the source strings.xml
 source_keys() {
-    grep '<string name=' "$SOURCE_XML" \
+    tr -d '\r' < "$SOURCE_XML" \
+        | grep '<string name=' \
         | grep -v 'translatable="false"' \
         | grep -o 'name="[^"]*"' \
         | sed 's/name="//;s/"//' \
@@ -58,34 +49,50 @@ source_keys() {
 
 # Sorted key names from a locale strings.xml (path as $1)
 locale_keys() {
-    grep '<string name=' "$1" \
+    tr -d '\r' < "$1" \
+        | grep '<string name=' \
         | grep -o 'name="[^"]*"' \
         | sed 's/name="//;s/"//' \
         | sort
 }
 
+# Resource qualifiers of every translated locale (de, zh-rCN, ...). Folders without a
+# strings.xml (values-night, values-v31, ...) are not locales and drop out here.
+locale_qualifiers() {
+    for f in "$RES_DIR"/values-*/strings.xml; do
+        [[ -e "$f" ]] || continue
+        basename "$(dirname "$f")" | sed 's/^values-//'
+    done | sort
+}
+
+# Resource qualifier -> BCP 47 tag, the form locales_config takes:
+# zh-rCN -> zh-CN, b+sr+Latn -> sr-Latn
+language_tag() {
+    echo "$1" | sed -E 's/^b\+//; s/\+/-/g; s/-r([A-Z]{2}|[0-9]{3})$/-\1/'
+}
+
 # Print the Markdown table to stdout
 compute_table() {
-    local src_keys total
+    local src_keys total names
     src_keys="$(source_keys)"
     total="$(echo "$src_keys" | wc -l | tr -d '[:space:]')"
 
+    # One JVM start for every name rather than one per locale.
+    # shellcheck disable=SC2046
+    names="$(java "$SCRIPT_DIR/LanguageNames.java" "$SOURCE_LOCALE" $(locale_qualifiers) | tr -d '\r')"
+    name_of() { echo "$names" | awk -F'\t' -v q="$1" '$1 == q { print $2 }'; }
+
     echo "| Language | Progress |"
     echo "| --- | --- |"
-    echo "| English | $(progress_bar 100) 100% (source) |"
+    echo "| $(name_of "$SOURCE_LOCALE") | $(progress_bar 100) 100% (source) |"
 
-    find "$REPO_ROOT/app/src/main/res" -maxdepth 1 -name 'values-*' -type d \
-        | sort \
-        | while IFS= read -r locale_dir; do
-            local code lkeys matched pct name bar
-            code="$(basename "$locale_dir" | sed 's/^values-//')"
-            lkeys="$(locale_keys "$locale_dir/strings.xml")"
-            matched="$(comm -12 <(echo "$src_keys") <(echo "$lkeys") | wc -l | tr -d '[:space:]')"
-            pct="$(awk "BEGIN { printf \"%d\", int($matched * 100 / $total + 0.5) }")"
-            name="$(display_name "$code")"
-            bar="$(progress_bar "$pct")"
-            echo "| $name | $bar ${pct}% |"
-        done
+    local code matched pct
+    for code in $(locale_qualifiers); do
+        matched="$(comm -12 <(echo "$src_keys") <(locale_keys "$RES_DIR/values-$code/strings.xml") \
+            | wc -l | tr -d '[:space:]')"
+        pct="$(awk -v m="$matched" -v t="$total" 'BEGIN { printf "%d", int(m * 100 / t + 0.5) }')"
+        echo "| $(name_of "$code") | $(progress_bar "$pct") ${pct}% |"
+    done
 }
 
 # Print the full marker block (start marker + table + end marker) to stdout
@@ -95,38 +102,93 @@ generate_block() {
     echo "<!-- translations:end -->"
 }
 
+# Print locales_config.xml to stdout. The source locale comes first; the rest follow in
+# folder order, which is also the order the in-app picker shows them in.
+generate_locales_config() {
+    echo '<?xml version="1.0" encoding="utf-8"?>'
+    echo '<!-- Generated by scripts/translation-status.sh from the values-* folders. Do not edit;'
+    echo '     add a values-<locale>/strings.xml and rerun the script instead. -->'
+    echo '<locale-config xmlns:android="http://schemas.android.com/apk/res/android">'
+    echo "    <locale android:name=\"$SOURCE_LOCALE\"/>"
+    local code
+    for code in $(locale_qualifiers); do
+        echo "    <locale android:name=\"$(language_tag "$code")\"/>"
+    done
+    echo '</locale-config>'
+}
+
+# Write stdin to $1, keeping the file's existing line endings so a Windows checkout (CRLF)
+# does not come back with every line changed. Counted with tr rather than grep: Git Bash's
+# grep strips the \r before matching.
+write_keeping_eol() {
+    local target=$1 eol=""
+    if [[ -f "$target" && "$(tr -dc '\r' < "$target" | wc -c)" -gt 0 ]]; then eol=$'\r'; fi
+    sed "s/\$/$eol/" > "$target.tmp"
+    mv "$target.tmp" "$target"
+}
+
 # ── main ──────────────────────────────────────────────────────────────────────
 
 CHECK=false
 [[ "${1:-}" == "--check" ]] && CHECK=true
 
+new_config="$(generate_locales_config)"
+current_config="$(tr -d '\r' < "$LOCALES_CONFIG" 2>/dev/null || true)"
+
 if $CHECK; then
-    if ! grep -q '<!-- translations:start -->' "$README"; then
-        echo "ERROR: README is missing <!-- translations:start --> marker."
-        echo "Run: bash scripts/translation-status.sh"
-        exit 1
-    fi
-    new="$(generate_block)"
-    current="$(awk '/<!-- translations:start -->/,/<!-- translations:end -->/' "$README")"
-    if [[ "$current" == "$new" ]]; then
-        echo "Translation table is up to date."
-        exit 0
+    stale=false
+
+    if [[ "$current_config" == "$new_config" ]]; then
+        echo "locales_config.xml is up to date."
     else
-        echo "ERROR: README translation table is out of date."
-        echo "Run: bash scripts/translation-status.sh"
+        stale=true
+        echo "ERROR: locales_config.xml does not match the values-* folders."
         echo ""
-        diff <(echo "$current") <(echo "$new") || true
+        diff <(echo "$current_config") <(echo "$new_config") || true
+        echo ""
+    fi
+
+    if ! grep -q '<!-- translations:start -->' "$README"; then
+        stale=true
+        echo "ERROR: README is missing <!-- translations:start --> marker."
+    else
+        new="$(generate_block)"
+        current="$(tr -d '\r' < "$README" | awk '/<!-- translations:start -->/,/<!-- translations:end -->/')"
+        if [[ "$current" == "$new" ]]; then
+            echo "Translation table is up to date."
+        else
+            stale=true
+            echo "ERROR: README translation table is out of date."
+            echo ""
+            diff <(echo "$current") <(echo "$new") || true
+        fi
+    fi
+
+    if $stale; then
+        echo ""
+        echo "Run: bash scripts/translation-status.sh"
         exit 1
     fi
+    exit 0
+fi
+
+if [[ "$current_config" != "$new_config" ]]; then
+    echo "$new_config" | write_keeping_eol "$LOCALES_CONFIG"
+    echo "locales_config.xml: updated."
 fi
 
 if grep -q '<!-- translations:start -->' "$README"; then
     # Replace content between existing markers
-    {
-        awk '/<!-- translations:start -->/{exit} {print}' "$README"
-        generate_block
-        awk 'found{print} /<!-- translations:end -->/{found=1}' "$README"
-    } > "${README}.tmp" && mv "${README}.tmp" "$README"
+    block_file="$(mktemp)"
+    generate_block > "$block_file"
+    tr -d '\r' < "$README" \
+        | awk -v blk="$block_file" '
+            /<!-- translations:start -->/ { while ((getline line < blk) > 0) print line; skip = 1; next }
+            /<!-- translations:end -->/ { skip = 0; next }
+            !skip { print }
+        ' \
+        | write_keeping_eol "$README"
+    rm -f "$block_file"
     echo "README.md: translation table updated."
 else
     # Insert a full Translations section before ## Contributing
@@ -140,13 +202,15 @@ else
         echo ""
     } > "$tmpblock"
 
-    awk -v blk="$tmpblock" '
-        /^## Contributing/ {
-            while ((getline line < blk) > 0) printf "%s\n", line
-            close(blk)
-        }
-        { print }
-    ' "$README" > "${README}.tmp" && mv "${README}.tmp" "$README"
+    tr -d '\r' < "$README" \
+        | awk -v blk="$tmpblock" '
+            /^## Contributing/ {
+                while ((getline line < blk) > 0) printf "%s\n", line
+                close(blk)
+            }
+            { print }
+        ' \
+        | write_keeping_eol "$README"
     rm -f "$tmpblock"
     echo "README.md: Translations section inserted."
 fi
