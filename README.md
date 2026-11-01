@@ -112,7 +112,7 @@ The APK is written to `app/build/outputs/apk/debug/`. See [CONTRIBUTING.md](CONT
 | 中文 (中国) | ████████████ 100% |
 <!-- translations:end -->
 
-To add or improve a translation, edit `app/src/main/res/values-<locale>/strings.xml` and open a pull request.
+Translations are welcome! To add or improve one, edit `app/src/main/res/values-<locale>/strings.xml`, run `bash scripts/translation-status.sh` to update the language list and the table above, and open a pull request.
 
 ## Known limitations
 

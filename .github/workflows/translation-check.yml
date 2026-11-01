@@ -4,13 +4,17 @@ on:
   pull_request:
     paths:
       - 'app/src/main/res/values*/strings.xml'
+      - 'app/src/main/res/xml/locales_config.xml'
       - 'scripts/translation-status.sh'
+      - 'scripts/LanguageNames.java'
       - 'README.md'
   push:
     branches: [ main ]
     paths:
       - 'app/src/main/res/values*/strings.xml'
+      - 'app/src/main/res/xml/locales_config.xml'
       - 'scripts/translation-status.sh'
+      - 'scripts/LanguageNames.java'
       - 'README.md'
 
 permissions:
@@ -24,5 +28,11 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Verify README translation table is up to date
+      # LanguageNames.java names each language for the README table.
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Verify locales_config.xml and README translation table are up to date
         run: bash scripts/translation-status.sh --check
