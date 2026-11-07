@@ -7,13 +7,19 @@ import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.Build
 import com.networkscanner.app.data.NetworkInfo
-import kotlinx.coroutines.*
 import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
 import java.net.Socket
+import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Utility class for network-related operations.
@@ -212,7 +218,11 @@ object NetworkUtils {
             } ?: return null
 
             val mac = networkInterface.hardwareAddress ?: return null
-            return mac.joinToString(":") { String.format("%02X", it) }
+            // Locale.ROOT is explicit rather than load-bearing: hex conversions are not
+            // digit-localised, so this rendered correctly already (%02X gives "2A" under
+            // ar and fa alike; only %d substitutes digits). Stated so the formatting of a
+            // machine identifier does not depend on the default locale at all.
+            return mac.joinToString(":") { String.format(Locale.ROOT, "%02X", it) }
         } catch (e: Exception) {
             e.printStackTrace()
         }

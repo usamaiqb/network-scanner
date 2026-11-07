@@ -36,6 +36,11 @@ jobs:
       - name: Run lint
         run: ./gradlew lint
 
+      # Kotlin static analysis, including the Compose rule set. Pre-existing findings are
+      # recorded in config/detekt/baseline.xml, so this fails on new ones only.
+      - name: Run detekt
+        run: ./gradlew detekt
+
       # Builds the release variant (R8 + resource shrinking) WITHOUT signing —
       # no keystore secrets needed. Catches minification/ProGuard regressions on
       # every PR instead of only at tag-cut time.

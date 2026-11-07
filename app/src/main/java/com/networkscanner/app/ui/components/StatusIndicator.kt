@@ -20,7 +20,11 @@ fun StatusIndicator(
     modifier: Modifier = Modifier
 ) {
     val color = if (isOnline) StatusColors.online else StatusColors.offline
-    val description = if (isOnline) stringResource(R.string.cd_device_online) else stringResource(R.string.cd_device_offline)
+    val description = if (isOnline) {
+        stringResource(R.string.cd_device_online)
+    } else {
+        stringResource(R.string.cd_device_offline)
+    }
 
     Box(
         modifier = modifier

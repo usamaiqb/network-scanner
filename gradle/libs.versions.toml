@@ -1,0 +1,85 @@
+# Version catalog.
+#
+# Every version of someone else's artifact lives here — libraries and build plugins alike.
+# The app's own `versionCode` and `versionName` deliberately do NOT: they identify our
+# release rather than a dependency, and `.github/workflows/release-checks.yml` greps
+# `app/build.gradle.kts` for them directly and fails the build when it cannot parse them.
+
+[versions]
+# Build tooling
+agp = "9.2.0"
+kotlin = "2.0.21"
+easylauncher = "6.4.1"
+detekt = "1.23.8"
+detektComposeRules = "0.4.28"
+
+# AndroidX and Material
+androidxCore = "1.12.0"
+appcompat = "1.6.1"
+activityCompose = "1.9.3"
+composeBom = "2025.06.01"
+# Pinned ahead of the BOM: the Expressive APIs this app is built on (SegmentedGroup,
+# motionScheme, the expressive top bars) are not in a stable material3 release yet.
+# Moving it back to the BOM means giving those up, so it is a deliberate override
+# rather than a version that drifted.
+material3 = "1.5.0-alpha15"
+navigationCompose = "2.8.5"
+lifecycle = "2.8.7"
+preference = "1.2.1"
+material = "1.12.0"
+
+# Privileged ARP table access
+shizuku = "13.1.5"
+
+# Kotlin libraries
+coroutines = "1.7.3"
+serializationJson = "1.6.3"
+
+# Test
+junit = "4.13.2"
+androidxTestJunit = "1.1.5"
+espresso = "3.5.1"
+
+[libraries]
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
+
+google-material = { module = "com.google.android.material:material", version.ref = "material" }
+
+shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizuku" }
+shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizuku" }
+
+# Versionless entries are governed by the Compose BOM below them. material3 is the one
+# exception and carries its own version — see the note in [versions].
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
+androidx-compose-animation = { module = "androidx.compose.animation:animation" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui" }
+androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serializationJson" }
+
+detekt-compose-rules = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektComposeRules" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidxTestJunit" }
+androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+easylauncher = { id = "com.starter.easylauncher", version.ref = "easylauncher" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

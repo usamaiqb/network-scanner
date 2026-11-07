@@ -117,10 +117,21 @@ fun DeepScanSection(
                             ) {
                                 Text(
                                     text = buildString {
-                                        append(stringResource(R.string.deep_scan_port_progress, progress.portsScanned, progress.portsTotal))
+                                        append(
+                                            stringResource(
+                                                R.string.deep_scan_port_progress,
+                                                progress.portsScanned,
+                                                progress.portsTotal
+                                            )
+                                        )
                                         if (progress.openPortsFound > 0) {
                                             append(" \u2022 ")
-                                            append(stringResource(R.string.deep_scan_open_count, progress.openPortsFound))
+                                            append(
+                                                stringResource(
+                                                    R.string.deep_scan_open_count,
+                                                    progress.openPortsFound
+                                                )
+                                            )
                                         }
                                     },
                                     style = MaterialTheme.typography.bodySmall,

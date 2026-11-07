@@ -7,3 +7,20 @@ updates:
       interval: weekly
     commit-message:
       prefix: ci
+
+  # Library and build-plugin versions, which all live in gradle/libs.versions.toml.
+  # Grouped so one PR carries a coherent upgrade rather than a dozen competing ones.
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build
+    groups:
+      androidx:
+        patterns:
+          - "androidx.*"
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "org.jetbrains.kotlinx*"

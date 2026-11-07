@@ -34,7 +34,11 @@ enum class DeviceType(
     SMARTPHONE(
         displayName = "Smartphone",
         icon = Icons.Rounded.Smartphone,
-        keywords = listOf("iphone", "android", "pixel", "samsung", "oneplus", "xiaomi", "huawei", "mobile", "oppo", "vivo", "redmi", "poco", "motorola", "nokia", "zte", "meizu", "realme", "galaxy")
+        keywords = listOf(
+            "iphone", "android", "pixel", "samsung", "oneplus", "xiaomi", "huawei", "mobile",
+            "oppo", "vivo", "redmi", "poco", "motorola", "nokia", "zte", "meizu", "realme",
+            "galaxy"
+        )
     ),
     TABLET(
         displayName = "Tablet",
@@ -47,7 +51,10 @@ enum class DeviceType(
         // Note: NIC-vendor names (intel, realtek) and the too-generic "hp" are
         // deliberately excluded — they appear on desktops, servers and printers
         // just as often as laptops and caused systematic misclassification.
-        keywords = listOf("macbook", "laptop", "notebook", "thinkpad", "dell", "lenovo", "acer", "asus", "msi", "surface", "chromebook")
+        keywords = listOf(
+            "macbook", "laptop", "notebook", "thinkpad", "dell", "lenovo", "acer", "asus",
+            "msi", "surface", "chromebook"
+        )
     ),
     DESKTOP(
         displayName = "Desktop",
@@ -57,7 +64,10 @@ enum class DeviceType(
     TV(
         displayName = "Smart TV",
         icon = Icons.Rounded.Tv,
-        keywords = listOf("tv", "television", "roku", "firetv", "chromecast", "appletv", "samsung tv", "lg tv", "sony tv")
+        keywords = listOf(
+            "tv", "television", "roku", "firetv", "chromecast", "appletv", "samsung tv",
+            "lg tv", "sony tv"
+        )
     ),
     GAME_CONSOLE(
         displayName = "Game Console",

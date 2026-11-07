@@ -2,8 +2,22 @@ package com.networkscanner.app.ui.screens.detail
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DesktopMac
+import androidx.compose.material.icons.rounded.DesktopWindows
+import androidx.compose.material.icons.rounded.DevicesOther
+import androidx.compose.material.icons.rounded.Dns
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Laptop
 import androidx.compose.material.icons.rounded.LaptopMac
-import androidx.compose.material.icons.rounded.*
+import androidx.compose.material.icons.rounded.Print
+import androidx.compose.material.icons.rounded.Router
+import androidx.compose.material.icons.rounded.Smartphone
+import androidx.compose.material.icons.rounded.Speaker
+import androidx.compose.material.icons.rounded.SportsEsports
+import androidx.compose.material.icons.rounded.Storage
+import androidx.compose.material.icons.rounded.Tablet
+import androidx.compose.material.icons.rounded.Tv
+import androidx.compose.material.icons.rounded.Videocam
+import androidx.compose.material.icons.rounded.Watch
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class IconOption(val key: String, val icon: ImageVector, val label: String)

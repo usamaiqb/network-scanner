@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Android Lint policy.
+
+  CI runs `./gradlew lint` on every pull request and the job fails on lint *errors*.
+  Warnings stay warnings for now; revisit `warningsAsErrors` once the current run of
+  refactors has settled.
+
+  This file rather than a `lint { }` block in app/build.gradle.kts so the IDE, the CLI
+  and CI all read one policy instead of three.
+
+  Anything suppressed or downgraded here needs a reason next to it.
+-->
+<lint>
+    <!-- Fires on Compose-held state that never touches LiveData nullability. -->
+    <issue id="NullSafeMutableLiveData" severity="ignore" />
+
+    <!--
+      Translations are contributed by the community in separate PRs, so a feature PR may
+      add strings ahead of their translations. Android falls back to the default (en)
+      string at runtime, so an incomplete locale is a gap to fill rather than a broken
+      build. scripts/translation-status.sh tracks the actual coverage.
+    -->
+    <issue id="MissingTranslation" severity="warning" />
+</lint>

@@ -233,8 +233,10 @@ fun HomeScreen(
             // Floating scan progress bar at the bottom
             AnimatedVisibility(
                 visible = isScanning,
-                enter = slideInVertically(motionScheme.defaultSpatialSpec()) { it } + fadeIn(motionScheme.defaultEffectsSpec()),
-                exit = slideOutVertically(motionScheme.defaultSpatialSpec()) { it } + fadeOut(motionScheme.defaultEffectsSpec()),
+                enter = slideInVertically(motionScheme.defaultSpatialSpec()) { it } +
+                    fadeIn(motionScheme.defaultEffectsSpec()),
+                exit = slideOutVertically(motionScheme.defaultSpatialSpec()) { it } +
+                    fadeOut(motionScheme.defaultEffectsSpec()),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
