@@ -26,7 +26,7 @@ material3 = "1.5.0-alpha15"
 navigationCompose = "2.8.5"
 lifecycle = "2.8.7"
 preference = "1.2.1"
-material = "1.12.0"
+material = "1.14.0"
 
 # Privileged ARP table access
 shizuku = "13.1.5"
