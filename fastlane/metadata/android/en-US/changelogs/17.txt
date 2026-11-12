@@ -1,0 +1,5 @@
+• Added Persian, Turkish and Romanian translations
+• Improved Russian and Ukrainian translations
+• Simpler About section in Settings
+• About dialog now shows the correct app version
+• Languages listed alphabetically in the language picker
