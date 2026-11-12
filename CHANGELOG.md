@@ -1,3 +1,25 @@
+## [1.1.12] - 2026-11-12
+
+### Added
+- Persian, Turkish, and Romanian translations (#101, #102, #105)
+
+### Improved
+- Better Russian and Ukrainian translations (#106)
+- Reworked the About section in Settings. The app name and version are now one row that opens the About dialog, and the GitHub row shows that it opens outside the app (#108)
+- The language picker lists languages alphabetically after English, and new translations now appear in the picker automatically (#110)
+- Long device names stay on one line in the detail screen's top bar (#103)
+- Every screen now uses the same top bar and list styling (#103)
+
+### Fixed
+- The About dialog showed "Version 1.0.0" no matter which version was installed. The version now comes from the installed app (#108)
+- Restored the missing paragraph breaks in the Spanish About text (#108)
+
+### Changed
+- Debug builds install alongside the release build, with their own name and icon ribbon (#104)
+- Added detekt with the Compose rules, and moved dependency versions into a version catalog (#108)
+- Bumped the Android Gradle Plugin to 9.5.1, the Gradle wrapper to 9.8.2, Material Components to 1.14.0, and the Kotlin group (#116–#119)
+- Bumped actions/setup-java to 6.2.0 and gradle/actions/setup-gradle to 6.4.1 (#100, #109, #114)
+
 ## [1.1.11] - 2026-10-16
 
 ### Added

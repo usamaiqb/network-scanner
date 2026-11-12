@@ -1,0 +1,5 @@
+• Persische, türkische und rumänische Übersetzung hinzugefügt
+• Russische und ukrainische Übersetzung verbessert
+• Übersichtlicherer Info-Bereich in den Einstellungen
+• Der Info-Dialog zeigt jetzt die richtige App-Version
+• Sprachen in der Sprachauswahl alphabetisch sortiert

@@ -41,8 +41,8 @@ android {
         applicationId = "com.networkscanner.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 16
-        versionName = "1.1.11"
+        versionCode = 17
+        versionName = "1.1.12"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
