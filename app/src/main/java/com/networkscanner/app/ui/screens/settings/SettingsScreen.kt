@@ -33,7 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.networkscanner.app.R
 import com.networkscanner.app.ui.SettingsViewModel
-import com.networkscanner.app.ui.expressive.ActionSettingsRow
+import com.networkscanner.app.ui.expressive.ActionRow
 import com.networkscanner.app.ui.expressive.CollapsingLargeTopBar
 import com.networkscanner.app.ui.expressive.ControlSettingsRow
 import com.networkscanner.app.ui.expressive.ExternalLinkRow
@@ -148,7 +148,7 @@ fun SettingsScreen(
                 )
                 // Not a PickerSettingsRow: choosing a source asks its backend for access,
                 // so the sheet has to stay open and report a refusal on the option itself.
-                ActionSettingsRow(
+                ActionRow(
                     position = SegmentPosition.Middle,
                     title = stringResource(R.string.pref_neighbor_source_title),
                     subtitle = stringResource(R.string.pref_neighbor_source_summary),
@@ -159,7 +159,7 @@ fun SettingsScreen(
                     },
                     trailing = { ValueBadge(text = neighborSourceLabel(neighborSource)) }
                 )
-                ActionSettingsRow(
+                ActionRow(
                     position = SegmentPosition.Last,
                     title = stringResource(R.string.pref_custom_ports_title),
                     subtitle = stringResource(R.string.pref_custom_ports_summary),
@@ -176,7 +176,7 @@ fun SettingsScreen(
                 // group that did not respond to a tap -- which reads as broken rather
                 // than as deliberate. It leads the section because it is the subject of
                 // it; an inert identity row is what belongs at the foot as a signature.
-                ActionSettingsRow(
+                ActionRow(
                     position = SegmentPosition.First,
                     title = stringResource(R.string.app_name),
                     subtitle = rememberAppVersionLabel(
@@ -189,7 +189,7 @@ fun SettingsScreen(
                 // tappable now, so nothing is the odd one out, and Android's own Settings
                 // marks navigable rows the same way -- not at all. The one real
                 // distinction left is leaving the app, which ExternalLinkRow does mark.
-                ActionSettingsRow(
+                ActionRow(
                     position = SegmentPosition.Middle,
                     title = stringResource(R.string.pref_privacy_title),
                     subtitle = stringResource(R.string.pref_privacy_summary),
