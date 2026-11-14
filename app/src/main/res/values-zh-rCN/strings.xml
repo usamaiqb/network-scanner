@@ -189,6 +189,7 @@
     <string name="cd_device_online">设备在线</string>
     <string name="cd_device_offline">设备离线</string>
     <string name="cd_navigate_back">返回</string>
+    <string name="cd_selected">已选择</string>
     <string name="cd_start_deep_scan">对此设备开始深度扫描</string>
     <string name="cd_cancel_scan">取消当前扫描</string>
     <string name="cd_empty_state_icon">无设备插图</string>

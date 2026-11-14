@@ -133,8 +133,9 @@ fun AppIdentityRow(
  *    `versionNameSuffix`
  *
  * Read rather than hard-coded on purpose. A constant in the UI drifts from what shipped the
- * moment someone bumps `versionName` and forgets — the About dialog was still claiming 1.0.0
- * several releases later, in every locale.
+ * moment someone bumps `versionName` and forgets — debt-manager's Settings displayed a stale
+ * literal for exactly that reason, and network-scanner's About dialog was still claiming
+ * 1.0.0 at 1.1.7, in seven locales.
  *
  * The build number earns its place only where someone reads it back off a screenshot in a bug
  * report, which is a debug build; in a release identity row it is noise next to a version the

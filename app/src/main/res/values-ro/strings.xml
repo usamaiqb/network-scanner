@@ -209,6 +209,7 @@
     <string name="cd_device_online">Dispozitivul este conectat</string>
     <string name="cd_device_offline">Dispozitivul este deconectat</string>
     <string name="cd_navigate_back">Navighează înapoi</string>
+    <string name="cd_selected">Selectat</string>
     <string name="cd_start_deep_scan">Pornește scanarea aprofundată pentru acest dispozitiv</string>
     <string name="cd_cancel_scan">Anulează scanarea curentă</string>
     <string name="cd_empty_state_icon">Ilustrație fără dispozitive</string>

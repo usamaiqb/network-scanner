@@ -35,6 +35,20 @@ class ExpressiveHaptics(private val haptics: HapticFeedback) {
 
     /** A long-press gesture was recognised. */
     fun longPress() = haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+
+    /**
+     * A menu, sheet or picker is being opened. Deliberately not [confirm]: nothing has been
+     * chosen yet, the user has only asked to be shown the choices, and giving both the same
+     * feel makes opening a menu indistinguishable from committing to something.
+     */
+    fun open() = haptics.performHapticFeedback(HapticFeedbackType.ContextClick)
+
+    /**
+     * An action was refused — a failed validation, a value a picker will not accept. The
+     * counterpart to [confirm], and what lets a rejection be *felt* before it is read: noty
+     * fires it when a reminder time lands in the past.
+     */
+    fun reject() = haptics.performHapticFeedback(HapticFeedbackType.Reject)
 }
 
 @Composable

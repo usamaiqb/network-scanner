@@ -211,6 +211,7 @@
     <string name="cd_device_online">دستگاه آنلاین است</string>
     <string name="cd_device_offline">دستگاه آفلاین است</string>
     <string name="cd_navigate_back">بازگشت</string>
+    <string name="cd_selected">انتخاب‌شده</string>
     <string name="cd_start_deep_scan">شروع اسکن عمیق برای این دستگاه</string>
     <string name="cd_cancel_scan">لغو اسکن فعلی</string>
     <string name="cd_empty_state_icon">Illustration: هیچ دستگاهی وجود ندارد</string>
