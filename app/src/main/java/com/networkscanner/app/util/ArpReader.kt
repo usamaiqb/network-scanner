@@ -13,7 +13,7 @@ import java.io.FileReader
  */
 object ArpReader {
 
-    private const val ARP_FILE = "/proc/net/arp"
+    internal const val ARP_FILE = "/proc/net/arp"
 
     // Cached ARP entries to avoid re-reading the file hundreds of times per scan
     @Volatile
@@ -137,7 +137,7 @@ object ArpReader {
      * Format: IP address       HW type     Flags       HW address            Mask     Device
      * Example: 192.168.1.1     0x1         0x2         aa:bb:cc:dd:ee:ff     *        wlan0
      */
-    private fun parseProcNetArpLine(line: String): ArpEntry? {
+    internal fun parseProcNetArpLine(line: String): ArpEntry? {
         val parts = line.trim().split(Regex("\\s+"))
         if (parts.size < 6) return null
 
@@ -209,6 +209,20 @@ object ArpReader {
             )
         } catch (e: Exception) {
             return null
+        }
+    }
+
+    /**
+     * Parse a line that may come from either source. A /proc/net/arp row is recognised by its
+     * hex "HW type" column; everything else, including that file's header and any error text,
+     * goes to the 'ip neigh' parser, which yields an invalid entry or null for it.
+     */
+    internal fun parseNeighborLine(line: String): ArpEntry? {
+        val columns = line.trim().split(Regex("\\s+"))
+        return if (columns.size >= 6 && columns[1].startsWith("0x")) {
+            parseProcNetArpLine(line)
+        } else {
+            parseIpNeighLine(line)
         }
     }
 

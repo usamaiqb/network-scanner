@@ -24,9 +24,11 @@ import kotlin.system.exitProcess
  *
  * Since Android 10 SELinux hides other hosts' ARP entries from apps, so their
  * MAC addresses are only visible to a privileged identity: a Shizuku user
- * service (shell or root) or a `su` shell. Both backends run the same
- * `ip -4 neigh show` and feed [ArpReader]'s parser. Nothing is requested until
- * the user picks a backend in Settings.
+ * service (shell or root) or a `su` shell. Both backends run `ip -4 neigh show`
+ * and also read `/proc/net/arp`, because some systems (GrapheneOS) deny the
+ * shell user the netlink dump behind `ip neigh` while leaving the proc file
+ * readable. The combined lines feed [ArpReader]'s parsers. Nothing is requested
+ * until the user picks a backend in Settings.
  */
 object PrivilegedNeighborSource {
 
@@ -53,7 +55,7 @@ object PrivilegedNeighborSource {
         val lines = try {
             when (mode) {
                 Mode.NONE -> emptyList()
-                Mode.ROOT -> runSu(COMMAND.joinToString(" "))
+                Mode.ROOT -> runSu("${COMMAND.joinToString(" ")}; cat ${ArpReader.ARP_FILE}")
                 Mode.SHIZUKU -> shizukuService()?.neighbors().orEmpty()
             }
         } catch (e: CancellationException) {
@@ -61,8 +63,12 @@ object PrivilegedNeighborSource {
         } catch (e: Exception) {
             emptyList()
         }
-        lines.mapNotNull(ArpReader::parseIpNeighLine).filter { it.isValid }
+        parse(lines)
     }
+
+    /** Valid entries from mixed `ip neigh` and `/proc/net/arp` lines, one per IP address. */
+    internal fun parse(lines: List<String>): List<ArpReader.ArpEntry> =
+        lines.mapNotNull(ArpReader::parseNeighborLine).filter { it.isValid }.distinctBy { it.ipAddress }
 
     /**
      * Checks that [mode] is usable, which asks the user for consent through
@@ -122,9 +128,17 @@ object PrivilegedNeighborSource {
 
     /** Runs in the Shizuku process; instantiated there by class name. */
     class ShizukuService : INeighborService.Stub() {
-        override fun neighbors(): List<String> = try {
+        override fun neighbors(): List<String> = ipNeighLines() + procArpLines()
+
+        private fun ipNeighLines(): List<String> = try {
             ProcessBuilder(*COMMAND).redirectErrorStream(true).start()
                 .inputStream.bufferedReader().use { it.readLines() }
+        } catch (e: Exception) {
+            emptyList()
+        }
+
+        private fun procArpLines(): List<String> = try {
+            File(ArpReader.ARP_FILE).readLines()
         } catch (e: Exception) {
             emptyList()
         }
