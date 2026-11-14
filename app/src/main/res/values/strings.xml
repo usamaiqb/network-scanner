@@ -212,6 +212,7 @@
     <string name="cd_device_online">Device is online</string>
     <string name="cd_device_offline">Device is offline</string>
     <string name="cd_navigate_back">Navigate back</string>
+    <string name="cd_selected">Selected</string>
     <string name="cd_start_deep_scan">Start deep scan for this device</string>
     <string name="cd_cancel_scan">Cancel current scan</string>
     <string name="cd_empty_state_icon">No devices illustration</string>

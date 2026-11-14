@@ -188,6 +188,7 @@
     <string name="cd_device_online">El dispositivo está en línea</string>
     <string name="cd_device_offline">El dispositivo está desconectado</string>
     <string name="cd_navigate_back">Volver</string>
+    <string name="cd_selected">Seleccionado</string>
     <string name="cd_start_deep_scan">Iniciar escaneo profundo para este dispositivo</string>
     <string name="cd_cancel_scan">Cancelar escaneo actual</string>
     <string name="cd_empty_state_icon">Ilustración de no hay dispositivos</string>

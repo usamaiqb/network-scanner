@@ -127,6 +127,7 @@ fun SettingsScreen(
                     optionLabel = { it.label },
                     key = { it.code },
                     selected = languageOptions.optionFor(language),
+                    selectedDescription = stringResource(R.string.cd_selected),
                     onSelect = { option ->
                         if (option.code != language) {
                             // AppCompat reloads resources and recreates the activity once;

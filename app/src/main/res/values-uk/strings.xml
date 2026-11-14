@@ -186,6 +186,7 @@
     <string name="cd_device_online">Пристрій онлайн</string>
     <string name="cd_device_offline">Пристрій не в мережі</string>
     <string name="cd_navigate_back">Повернутися назад</string>
+    <string name="cd_selected">Вибрано</string>
     <string name="cd_start_deep_scan">Розпочати глибоке сканування цього пристрою</string>
     <string name="cd_cancel_scan">Скасувати поточне сканування</string>
     <string name="cd_empty_state_icon">Ілюстрація відсутності пристроїв</string>
