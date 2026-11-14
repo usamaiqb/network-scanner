@@ -186,6 +186,7 @@
     <string name="cd_device_online">Устройство онлайн</string>
     <string name="cd_device_offline">Устройство офлайн</string>
     <string name="cd_navigate_back">Назад</string>
+    <string name="cd_selected">Выбрано</string>
     <string name="cd_start_deep_scan">Начать глубокое сканирование этого устройства</string>
     <string name="cd_cancel_scan">Отменить текущее сканирование</string>
     <string name="cd_empty_state_icon">Иллюстрация отсутствия устройств</string>

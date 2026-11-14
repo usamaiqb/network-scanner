@@ -187,6 +187,7 @@
     <string name="cd_device_online">الجهاز متصل بالإنترنت</string>
     <string name="cd_device_offline">الجهاز غير متصل بالإنترنت</string>
     <string name="cd_navigate_back">الرجوع للخلف</string>
+    <string name="cd_selected">محدد</string>
     <string name="cd_start_deep_scan">ابدأ الفحص العميق لهذا الجهاز</string>
     <string name="cd_cancel_scan">إلغاء الفحص الحالي</string>
     <string name="cd_empty_state_icon">رسمة توضيحية لعدم وجود أجهزة</string>

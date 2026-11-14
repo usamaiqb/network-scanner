@@ -211,6 +211,7 @@
     <string name="cd_device_online">Cihaz çevrim içi</string>
     <string name="cd_device_offline">Cihaz çevrimdışı</string>
     <string name="cd_navigate_back">Geri dön</string>
+    <string name="cd_selected">Seçili</string>
     <string name="cd_start_deep_scan">Bu cihaz için derin taramayı başlat</string>
     <string name="cd_cancel_scan">Mevcut taramayı iptal et</string>
     <string name="cd_empty_state_icon">Cihaz bulunamadı görseli</string>

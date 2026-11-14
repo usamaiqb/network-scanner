@@ -209,6 +209,7 @@
     <string name="cd_device_online">Gerät ist online</string>
     <string name="cd_device_offline">Gerät ist offline</string>
     <string name="cd_navigate_back">Zurück</string>
+    <string name="cd_selected">Ausgewählt</string>
     <string name="cd_start_deep_scan">Tiefen-Analyse für dieses Gerät starten</string>
     <string name="cd_cancel_scan">Aktuelle Analyse abbrechen</string>
     <string name="cd_empty_state_icon">Illustration: keine Geräte</string>

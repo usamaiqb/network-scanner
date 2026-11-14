@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -43,10 +44,21 @@ import androidx.compose.ui.unit.dp
  * [optionIcon] is optional and worth supplying when the glyph carries meaning the label
  * repeats slowly - sort directions, theme modes, text alignment.
  *
+ * [selectedDescription] labels the trailing check. It is a parameter rather than a literal for
+ * the same reason [SectionHeader]'s contentDescription is: only the caller can localise it, and
+ * a hard-coded English word is the one part of this component a screen reader reads aloud.
+ *
  * The option list scrolls. A sheet is bounded by the screen, and an unscrollable column
  * silently truncates its tail: network-scanner's language picker grows a row per locale
  * shipped, so the options that fall off the bottom are exactly the ones a user who needs
  * them cannot reach.
+ *
+ * The sheet stops below the status bar instead of sliding under it. Left to its default, a
+ * `ModalBottomSheet` pads its content by however much of the status bar it currently covers,
+ * so its height depends on its position and its position on its height. A list just long
+ * enough to bring the sheet's top inside the bar has no place to rest, and the sheet jumps
+ * by the bar's height on every frame of a drag. Taking the inset on the sheet itself makes
+ * it a constant. The same list that needs to scroll is the one that gets there.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,13 +71,15 @@ fun <T> ExpressiveOptionSheet(
     onDismiss: () -> Unit,
     key: (T) -> Any? = { optionLabel(it) },
     optionSupporting: (T) -> String? = { null },
-    optionIcon: (T) -> ImageVector? = { null }
+    optionIcon: (T) -> ImageVector? = { null },
+    selectedDescription: String = "Selected"
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val haptics = rememberExpressiveHaptics()
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
+        modifier = Modifier.statusBarsPadding(),
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
@@ -91,7 +105,8 @@ fun <T> ExpressiveOptionSheet(
                         onDismiss()
                     },
                     supporting = optionSupporting(option),
-                    icon = optionIcon(option)
+                    icon = optionIcon(option),
+                    selectedDescription = selectedDescription
                 )
             }
         }
@@ -122,7 +137,8 @@ fun ExpressiveOptionRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     supporting: String? = null,
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
+    selectedDescription: String = "Selected"
 ) {
     val shape = RoundedCornerShape(20.dp)
     Surface(
@@ -183,7 +199,7 @@ fun ExpressiveOptionRow(
             if (selected) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Selected",
+                    contentDescription = selectedDescription,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
