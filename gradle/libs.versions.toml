@@ -33,7 +33,7 @@ shizuku = "13.1.5"
 
 # Kotlin libraries
 coroutines = "1.11.0"
-serializationJson = "1.12.0"
+serializationJson = "1.13.0"
 
 # Test
 junit = "4.13.2"
