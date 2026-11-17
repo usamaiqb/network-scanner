@@ -14,16 +14,16 @@ detekt = "1.23.8"
 detektComposeRules = "0.4.28"
 
 # AndroidX and Material
-androidxCore = "1.12.0"
-appcompat = "1.6.1"
+androidxCore = "1.19.1"
+appcompat = "1.8.0"
 activityCompose = "1.9.3"
-composeBom = "2025.06.01"
+composeBom = "2026.09.00"
 # Pinned ahead of the BOM: the Expressive APIs this app is built on (SegmentedGroup,
 # motionScheme, the expressive top bars) are not in a stable material3 release yet.
 # Moving it back to the BOM means giving those up, so it is a deliberate override
 # rather than a version that drifted.
-material3 = "1.5.0-alpha15"
-navigationCompose = "2.8.5"
+material3 = "1.5.0-rc01"
+navigationCompose = "2.10.2"
 lifecycle = "2.8.7"
 preference = "1.2.1"
 material = "1.14.0"
