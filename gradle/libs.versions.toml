@@ -11,7 +11,7 @@ agp = "9.5.1"
 kotlin = "2.4.21"
 easylauncher = "6.4.1"
 detekt = "1.23.8"
-detektComposeRules = "0.4.28"
+detektComposeRules = "0.6.8"
 
 # AndroidX and Material
 androidxCore = "1.12.0"
