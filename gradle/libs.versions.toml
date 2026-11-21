@@ -15,7 +15,7 @@ detektComposeRules = "0.4.28"
 
 # AndroidX and Material
 androidxCore = "1.12.0"
-appcompat = "1.6.1"
+appcompat = "1.8.0"
 activityCompose = "1.9.3"
 composeBom = "2025.06.01"
 # Pinned ahead of the BOM: the Expressive APIs this app is built on (SegmentedGroup,
@@ -23,7 +23,7 @@ composeBom = "2025.06.01"
 # Moving it back to the BOM means giving those up, so it is a deliberate override
 # rather than a version that drifted.
 material3 = "1.5.0-alpha15"
-navigationCompose = "2.8.5"
+navigationCompose = "2.10.2"
 lifecycle = "2.8.7"
 preference = "1.2.1"
 material = "1.14.0"
